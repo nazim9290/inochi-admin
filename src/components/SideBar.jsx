@@ -1,104 +1,48 @@
-import NavigationLink from "./NavigationLink";
+import NavigationLink from './NavigationLink';
+
+const routes = [
+  { name: 'Home', path: '/' },
+  { name: 'Students', path: '/students' },
+  { name: 'Create Blog', path: '/create-blog' },
+  { name: 'Account', path: '/accounts' },
+  { name: 'Student Certificate', path: '/certsec' },
+  { name: 'Question', path: '/create-question' },
+  { name: 'Branch', path: '/branch' },
+  { name: 'Video Create', path: '/create-video' },
+  { name: 'Create Certificate', path: '/create-certificate' },
+  { name: 'Update Session', path: '/update-session' },
+  { name: 'Team Create', path: '/team-create' },
+  { name: 'Create Service', path: '/create-service' },
+  { name: 'Create Carousel', path: '/create-crusel' },
+  { name: 'Booking List', path: '/semmenr-booklist' },
+  { name: 'Contact List', path: '/contact-list' },
+  { name: 'Subscriber List', path: '/subscriber-list' },
+];
 
 const SideBar = () => {
-  const routes = [
-    {
-      name: "Home",
-      path: "/",
-    },
-    {
-      name: "Students",
-      path: "/students",
-    },
-    {
-      name: "Create Blog",
-      path: "/create-blog",
-    },
-    {      name: "Account",
-      path:"/accounts",
-
-    },
-    
-    {
-      name: "StudentCertificate",
-      path: "/certsec",
-    },
-    {
-      name: "Quistion",
-      path: "/create-question",
-    },
-    // {
-    //   name: "Brand Partner",
-    //   path: "/create-brand",
-    // },
-    {
-      name: "Branch",
-      path: "/branch",
-    },
-    {
-      name: "Video Create",
-      path: "/create-video",
-    },
-    {
-      name: " Create Certificate",
-      path: "/create-certificate",
-    },
-    {
-      name: "Update session",
-      path: "/update-session",
-    }, {
-      name: "Team Create",
-      path: "/team-create",
-    },
-     {
-      name:"Create Service ",
-        path:"/create-service",
-    },
-    {
-      name:"Create Carusel",
-        path:"/create-crusel",
-    },
-    {
-      name:"BookList",
-      path:"/semmenr-booklist",
-
-    },
-    {
-      name:"Contact list",
-      path:"/contact-list",
-
-    },
-    {
-      name:"Subscriber list",
-      path:"/subscriber-list",
-
-    }
-  ];
-
   return (
-    <aside style={{ backgroundColor: "#F2F2F2" }} className="w-25">
-      <div className="d-flex flex-column align-items-center px-4 pt-4 ">
+    <aside className="w-64 min-h-screen bg-white border-r border-brand-tealLight/30">
+      <div className="flex flex-col items-center px-4 pt-6 pb-4 border-b border-brand-tealLight/30">
         <img
           src="./vite.svg"
           alt="Avatar"
-          height={100}
-          width={100}
-          className="rounded-circle"
+          className="w-24 h-24 rounded-full ring-2 ring-brand-tealLight"
         />
         <div className="text-center mt-3">
-          <h5 className="m-0">Md Rafiqul Islam</h5>
-          <p className="text-secondary fs-6">Dhaka, Bangladesh</p>
+          <h5 className="font-semibold text-brand-navy m-0">Md Rafiqul Islam</h5>
+          <p className="text-sm text-brand-slate mt-1">Dhaka, Bangladesh</p>
         </div>
       </div>
-      <div className="m-0">
-        <ul className="list-unstyled">
-          {routes.map((route, idx) => (
-            <NavigationLink key={idx} path={route.path}>
+
+      <nav className="py-2">
+        <ul className="list-none m-0 p-0">
+          {routes.map((route) => (
+            <NavigationLink key={route.path} path={route.path}>
               {route.name}
             </NavigationLink>
           ))}
         </ul>
-      </div>
+      </nav>
     </aside>
   );
 };
