@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
-import CreateCaruselTop from '../component/CreateCaruselTop';
-import CaruselPending from '../component/pendingCarusel.jsx';
+import CreateCaruselTop from '../components/CreateCaruselTop';
+import CaruselPending from '../components/pendingCarusel.jsx';
 import axiosInterceptor from '../axios/axiosInterceptor.js';
 
 const CreateCarusel = () => {

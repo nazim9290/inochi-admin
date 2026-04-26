@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import FreeStudent from '../component/FreeStudent'; // Import your FreeStudent component
-import PaidStudent from '../component/PaidStudent'; // Import your PaidStudent component
+import FreeStudent from '../components/FreeStudent'; // Import your FreeStudent component
+import PaidStudent from '../components/PaidStudent'; // Import your PaidStudent component
 
 const Account = () => {
     const [selectedOption, setSelectedOption] = useState(null);

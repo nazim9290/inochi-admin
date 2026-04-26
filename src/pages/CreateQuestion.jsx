@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axiosInterceptor from "../axios/axiosInterceptor";
 
 import QuizCreate from '../components/QuizCreate';
-import QusetionCard from '../component/QuestionCard';
+import QusetionCard from '../components/QuestionCard';
 
 const CreateQuestion = () => {
   const [questions,setQuestion] = useState([]);

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import axiosInterceptor from '../axios/axiosInterceptor';
-import PlaylistFrom from '../component/PlaylistFrom';
-import PlayList from "../component/Playlist.jsx"
+import PlaylistFrom from '../components/PlaylistFrom';
+import PlayList from "../components/Playlist.jsx"
 import { useVideoContext } from '../context/VideoContext.jsx';
-import YouTubeSingleVideo from '../component/YouTubeSingleVideo.jsx';
+import YouTubeSingleVideo from '../components/YouTubeSingleVideo.jsx';
 const PlayListAdd = () => {
     const [posts, setPosts] = useState([]);
     const { selectedVideoId } = useVideoContext();

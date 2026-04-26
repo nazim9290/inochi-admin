@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import axiosInterceptor from '../axios/axiosInterceptor';
 const ImageConverter = ({ id, onBase64Data }) => {
   const [base64Data, setBase64Data] = useState('');
   const [loading, setLoading] = useState(true);
-  const api = axiosInterceptor();
-
+const api=axiosInterceptor()
   useEffect(() => {
     const fetchData = async () => {
       try {

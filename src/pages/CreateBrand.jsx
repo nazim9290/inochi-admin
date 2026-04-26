@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import CreateBrandTop from '../component/CreateBrandTop';
+import CreateBrandTop from '../components/CreateBrandTop';
 
 
 const CreateBrand = () => {

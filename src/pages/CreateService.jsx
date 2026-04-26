@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import CreateCaruselTop from "../component/CreateCaruselTop.jsx";
-import CreateServiceTop from "../component/CreateService.jsx";
-import CaruselPending from "../component/pendingCarusel.jsx";
+import CreateCaruselTop from "../components/CreateCaruselTop.jsx";
+import CreateServiceTop from "../components/CreateService.jsx";
+import CaruselPending from "../components/pendingCarusel.jsx";
 import axiosInterceptor from "../axios/axiosInterceptor.js";
-import PendingBlogs from "../component/PendingBlogs.jsx";
+import PendingBlogs from "../components/PendingBlogs.jsx";
 const CreateService = () => {
   const [caruselData, setCaruselData] = useState([]);
   const api = axiosInterceptor();

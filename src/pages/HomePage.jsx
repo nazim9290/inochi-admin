@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import FreeStudent from '../component/FreeStudent'; // Import your FreeStudent component
-import PaidStudent from '../component/PaidStudent'; // Import your PaidStudent component
-import BranchA from '../component/BranchA';
-import BranchB from '../component/BranchB';
+import FreeStudent from '../components/FreeStudent'; // Import your FreeStudent component
+import PaidStudent from '../components/PaidStudent'; // Import your PaidStudent component
+import BranchA from '../components/BranchA';
+import BranchB from '../components/BranchB';
 
 const Account = () => {
     const [selectedOption, setSelectedOption] = useState(null);
