@@ -1,55 +1,53 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useEffect, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import PlaylistFrom from '../components/PlaylistFrom';
-import PlayList from "../components/Playlist.jsx"
+import PlayList from '../components/Playlist.jsx';
 import { useVideoContext } from '../context/VideoContext.jsx';
 import YouTubeSingleVideo from '../components/YouTubeSingleVideo.jsx';
+
 const PlayListAdd = () => {
-    const [posts, setPosts] = useState([]);
-    const { selectedVideoId } = useVideoContext();
-    const api = axiosInterceptor();
-    useEffect(() => {
-        fetchUserPosts();
-    }, []);
-    const fetchUserPosts = async () => {
-        try {
-            const response = await api.get("/video-playlist");
-            setPosts(response.data.video);
-        } catch (err) {
-            console.log(err);
-        }
-    };
-    const handleDelete = async (carouselId) => {
-        try {
-            await api.delete(`/blog/${carouselId}`);
-            fetchUserPosts();
-        } catch (err) {
-            console.log(err);
-        }
-    };
-    return (
-        <div>
-            <PlaylistFrom />
-            <br/>
-            <div className="" style={{marginTop:"auto"}}>
-      <div className="row">
-        <div className="col-md-4">
-          {/* Left Column: Video */}
-          {selectedVideoId && <YouTubeSingleVideo videoId={selectedVideoId} />}
-        </div>
-        <div className="col-md-7" style={{margin:"0px, auto",textAlignLast:"end"}}>
-          {/* Right Column: Playlist */}
-          {posts.map((item, index) => (
-            <div key={index} className="">
-              <PlayList data={item} handleDelete={() => handleDelete(item._id)} />
+  const [playlists, setPlaylists] = useState([]);
+  const { selectedVideoId } = useVideoContext();
+  const api = axiosInterceptor();
+
+  const fetchPlaylists = async () => {
+    try {
+      const { data } = await api.get('/video-playlist');
+      setPlaylists(data?.video || []);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchPlaylists();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <div className="space-y-6">
+      <PlaylistFrom onCreated={fetchPlaylists} />
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-1">
+          {selectedVideoId ? (
+            <YouTubeSingleVideo videoId={selectedVideoId} />
+          ) : (
+            <div className="bg-white border border-brand-tealLight/40 rounded-xl p-6 text-center text-brand-slate text-sm">
+              Pick a video thumbnail to play it here.
             </div>
-          ))}
+          )}
+        </div>
+        <div className="lg:col-span-2">
+          {playlists.length === 0 ? (
+            <p className="text-brand-slate">No playlists yet.</p>
+          ) : (
+            playlists.map((p) => <PlayList key={p.id || p._id} data={p} />)
+          )}
         </div>
       </div>
     </div>
-        </div>
-    );
+  );
 };
 
 export default PlayListAdd;

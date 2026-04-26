@@ -1,69 +1,64 @@
-// /all-student
-
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
-import { Avatar } from 'antd';
 
 const Contac = () => {
-  const [students, setStudents] = useState([]);
-  const [editMode, setEditMode] = useState(null); // null for no edit, student ID for edit mode
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
   const api = axiosInterceptor();
+
   useEffect(() => {
-    fetchUserStudents();
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data } = await api.get('all-contact-request');
+        if (!cancelled) setRows(data.contacts || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const fetchUserStudents = async () => {
-    try {
-      const { data } = await api.get("all-contact-request");
-      // console.log("data users", data.contacts);
-
-      setStudents( data.contacts );
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleEdit = (id) => {
-    setEditMode(id);
-  };
-
-  const handleCancelEdit = () => {
-    setEditMode(null);
-  };
-
-
-
   return (
-    <div>
-      <h2 className="text-center">Contact   List</h2>
-      <table className="table text-center" style={{ width: '80%', margin: 'auto' }}>
-        <thead>
-          <tr>
-            <th scope="col">No</th>
-            <th scope="col">Name</th>
-            <th scope="col">Phone</th>
-           
-            <th scope="col">Email</th>
-            <th scope="col">Messege</th>
-
-          </tr>
-        </thead>
-        <tbody>
-          {students.map((student, index) => (
-            <tr key={student._id}>
-              <td>{index + 1}</td>
-             <td>{student.name}</td>
-              <td>{student.phone}</td>
-              <td>{student.email}</td>
-              <td>{student.msg}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="bg-white rounded-xl shadow-sm border border-brand-tealLight/40 p-6">
+      <h2 className="text-xl font-extrabold text-brand-navy mb-4">Contact List</h2>
+      {loading ? (
+        <p className="text-brand-slate">Loading…</p>
+      ) : rows.length === 0 ? (
+        <p className="text-brand-slate">No contact requests yet.</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-left text-sm">
+            <thead className="bg-brand-tealLight/20 text-brand-navy">
+              <tr>
+                <th className="px-4 py-2">#</th>
+                <th className="px-4 py-2">Name</th>
+                <th className="px-4 py-2">Phone</th>
+                <th className="px-4 py-2">Email</th>
+                <th className="px-4 py-2">Message</th>
+              </tr>
+            </thead>
+            <tbody className="text-brand-slate">
+              {rows.map((row, i) => (
+                <tr key={row.id || row._id} className="border-b border-brand-tealLight/30 align-top">
+                  <td className="px-4 py-2">{i + 1}</td>
+                  <td className="px-4 py-2 text-brand-navy font-medium">{row.name}</td>
+                  <td className="px-4 py-2">{row.phone}</td>
+                  <td className="px-4 py-2">{row.email}</td>
+                  <td className="px-4 py-2 max-w-xs">{row.msg}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };
 
 export default Contac;
-
-

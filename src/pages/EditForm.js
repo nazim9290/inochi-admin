@@ -1,112 +1,65 @@
-import React, { useState } from "react";
-import { useParams } from "react-router";
-import axiosInterceptor from "../axios/axiosInterceptor";
-const EditForm = ({
-  questionName,
-  setQuestionName,
-  answer,
-  setAnswer,
-  first,
-  setFirst,
-  second,
-  setSecond,
-  third,
-  setThird,
-}) => {
-  let { id } = useParams();
-  let _id = id;
+import { useParams } from 'react-router-dom';
+import axiosInterceptor from '../axios/axiosInterceptor';
 
+const labelClass = 'block text-sm font-semibold text-brand-navy mb-1';
+const fieldClass = 'w-full px-3 py-2 border border-brand-tealLight/60 rounded focus:outline-none focus:ring-2 focus:ring-brand-teal/40';
+
+const EditForm = ({ questionName, setQuestionName, answer, setAnswer, first, setFirst, second, setSecond, third, setThird }) => {
+  const { id } = useParams();
   const api = axiosInterceptor();
 
-  const postSubmit = async (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-    console.log(answer)
     try {
-      const { data } = await api.put(`/update-question/${_id}`, {
+      const { data } = await api.put(`/update-question/${id}`, {
         questionName,
         first,
         second,
         third,
-        // incorrect_answer,
-       answer,
+        answer,
       });
-      if (data.error) {
-        console.log("err");
+      if (data?.error) {
+        window.alert('Update failed.');
       } else {
-        window.alert("you Successfully  update this question")
+        window.alert('Question updated successfully.');
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
+      window.alert('Update failed.');
     }
   };
-  return (
-    <>
-      <div className="container">
-        <div className="row">
-          <h2 className="text-center">Teacher Admin Panel</h2>
-          <div className="col-lg-3">
-            {/* <Sidebar /> */}
-          </div>
-          <div className="col-lg-9">
-            <div className="dashboard">
-              <div className="text-center">
-                <form className="question-form" onSubmit={postSubmit}>
-                  <h2>Update Questions</h2>
-                  <input
-                    className="form-control m-2"
-                    type="text"
-                    name="questionName"
-                    value={questionName}
-                    onChange={(e) => setQuestionName(e.target.value)}
-                    placeholder="Enter Question Name"
-                  />
-                  {/* set option  */}
-                  <input
-                    className="form-control m-2"
-                    type="text"
-                    name="correctAnswer"
-                    value={first}
-                    onChange={(e) => setFirst(e.target.value)}
-                    placeholder="Enter first option"
-                  />
 
-                  <input
-                    className="form-control m-2"
-                    type="text"
-                    name="option"
-                    value={second}
-                    onChange={(e) => setSecond(e.target.value)}
-                    placeholder="Enter second option"
-                  />
-                  {/*  */}
-                  <input
-                    className="form-control m-2"
-                    type="text"
-                    name="incorrectAnswers"
-                    value={third}
-                    onChange={(e) => setThird(e.target.value)}
-                    placeholder="Enter incorrect answers"
-                  />
-                  {/*  */}
-                  <input
-                    className="form-control m-2"
-                    type="text"
-                    name="incorrectAnswers"
-                    value={answer}
-                    onChange={(e) => setAnswer(e.target.value)}
-                    placeholder="Enter Correct answers"
-                  />
-                  {/*  */}
-                  <button type="submit" className="btn btn-success">
-                    Create
-                  </button>
-                </form>
-              </div>
-            </div>
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-brand-tealLight/40 p-6 max-w-2xl mx-auto">
+      <h2 className="text-xl font-extrabold text-brand-navy text-center mb-4">Update Question</h2>
+      <form onSubmit={submit} className="space-y-4">
+        <div>
+          <label className={labelClass}>Question</label>
+          <input type="text" value={questionName} onChange={(e) => setQuestionName(e.target.value)} className={fieldClass} />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label className={labelClass}>Wrong option 1</label>
+            <input type="text" value={first} onChange={(e) => setFirst(e.target.value)} className={fieldClass} />
+          </div>
+          <div>
+            <label className={labelClass}>Wrong option 2</label>
+            <input type="text" value={second} onChange={(e) => setSecond(e.target.value)} className={fieldClass} />
+          </div>
+          <div>
+            <label className={labelClass}>Wrong option 3</label>
+            <input type="text" value={third} onChange={(e) => setThird(e.target.value)} className={fieldClass} />
           </div>
         </div>
-      </div>
-    </>
+        <div>
+          <label className={labelClass}>Correct answer</label>
+          <input type="text" value={answer} onChange={(e) => setAnswer(e.target.value)} className={fieldClass} />
+        </div>
+        <button type="submit" className="bg-brand-teal hover:bg-brand-navy text-white font-semibold px-6 py-2 rounded transition-colors">
+          Save
+        </button>
+      </form>
+    </div>
   );
 };
 

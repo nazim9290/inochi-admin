@@ -1,21 +1,4 @@
-import React, { useState } from 'react';
-import ImageConverter from './ImageConverter';
-
-const Plbogs = ({ data, handleDelete, handleEdit, handleApprove }) => {
-  const [storedBase64Data, setStoredBase64Data] = useState('');
-
-  const handleBase64Data = () => {
-    setStoredBase64Data();
-  };
-
-  // Check if data.image is defined before rendering the ImageConverter
-  const isImageDefined = data.image !== undefined;
-
-  return (
-    <>
-      
-    </>
-  );
-};
-
+// Reserved component — no markup yet. The original implementation was empty.
+// Kept exported so any in-flight imports keep resolving.
+const Plbogs = () => null;
 export default Plbogs;

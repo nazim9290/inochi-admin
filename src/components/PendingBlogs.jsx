@@ -1,211 +1,61 @@
-// import React, { useState } from 'react';
-// import ImageConverter from './ImageConverter';
+import { useState } from 'react';
+import axiosInterceptor from '../axios/axiosInterceptor';
 
-// const PendingBlogs = ({ data, handleDelete, handleEdit, handleApprove }) => {
-//   const [storedBase64Data, setStoredBase64Data] = useState('');
-//   const [selectedProperties, setSelectedProperties] = useState({
-//     property1: false,
-//     property2: false,
-//     property3: false,
-//     // Add more properties as needed
-//   });
+const PendingBlogs = ({ data, handleDelete }) => {
+  const [tags, setTags] = useState({ blogs: false, study: false, service: false });
+  const [submitting, setSubmitting] = useState(false);
+  const api = axiosInterceptor();
 
-//   const handleBase64Data = (data) => {
-//     setStoredBase64Data(data);
-//   };
+  const toggle = (tag) => setTags({ ...tags, [tag]: !tags[tag] });
 
-//   const handleCheckboxChange = (property) => {
-//     setSelectedProperties({
-//       ...selectedProperties,
-//       [property]: !selectedProperties[property],
-//     });
-//   };
-
-//   const handleEditClick = () => {
-//     // Call the handleEdit function and pass the selected properties
-//     handleEdit(data._id, selectedProperties);
-//   };
-
-//   return (
-//     <>
-//       <ImageConverter id={data.image.public_id} onBase64Data={handleBase64Data} />
-//       {storedBase64Data ? (
-//         <div className="my-5">
-//           <div className="row my-lg-4">
-//             <div>
-//               <div className="card shadow rounded">
-//                 <div className="card-body text-center">
-//                   <img src={storedBase64Data} alt="Bootstrap" width={150} height={150} /><br />
-//                   <p className="text-center mb-5"><b>{data.category}</b></p>
-
-//                   {/* Checkboxes for properties */}
-//                   <div className="d-flex justify-content-around">
-//                     <label>
-//                       <input
-//                         type="checkbox"
-//                         checked={selectedProperties.property1}
-//                         onChange={() => handleCheckboxChange('service')}
-//                       />
-//                       service
-//                     </label>
-//                     <label>
-//                       <input
-//                         type="checkbox"
-//                         checked={selectedProperties.property2}
-//                         onChange={() => handleCheckboxChange('')}
-//                       />
-//                       stuysatle
-//                     </label>
-//                     <label>
-//                       <input
-//                         type="checkbox"
-//                         checked={selectedProperties.property2}
-//                         onChange={() => handleCheckboxChange('')}
-//                       />
-//                       blogs
-//                     </label>
-//                     {/* Add more checkboxes as needed */}
-//                   </div>
-
-//                   {/* Buttons for delete, edit, and approve */}
-//                   <div className="d-flex justify-content-around">
-//                     <button onClick={() => handleDelete(data._id)}>Delete</button>
-//                     <button onClick={handleEditClick}>Edit</button>
-//                     <button onClick={() => handleApprove(data._id)}>Approve</button>
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       ) : (
-//         <></>
-//       )}
-//     </>
-//   );
-// };
-
-// export default PendingBlogs;
-import React, { useState } from 'react';
-import ImageConverter from './ImageConverter';
-
-import axiosInterceptor from "../axios/axiosInterceptor.js"
-const PendingBlogs = ({ data, handleDelete, handleApprove }) => {
-  const [storedBase64Data, setStoredBase64Data] = useState('');
-  const [selectedTags, setSelectedTags] = useState({
-    blogs: false,
-    study: false,
-    service: false,
-  });
-  const api = axiosInterceptor()
-  const handleBase64Data = (data) => {
-    setStoredBase64Data(data);
-  };
-// console.log(data)
-  const handleCheckboxChange = (tag) => {
-    setSelectedTags({
-      ...selectedTags,
-      [tag]: !selectedTags[tag],
-    });
-  };
-
-  // Check if data.image is defined before rendering the ImageConverter
-  const isImageDefined = data.image !== undefined;
-
-  const handleApproveClick = async () => {
+  const approve = async () => {
+    setSubmitting(true);
     try {
-      // Create a payload object with the selected tags
-      const payload = {
-        tags: selectedTags,
-        status: 'published',
-        // Include other data you want to send to the backend for approval
-      };
-
-      // Make a request to approve the data with the specified ID and send the payload
-      await api.put(`/approve-blog/${data._id}`, payload);
-
-      // Refresh the data after approval
-      // fetchUserBlogs();
+      await api.put(`/approve-blog/${data.id || data._id}`, { tags, status: 'published' });
     } catch (err) {
-      console.log(err);
+      console.error(err);
+    } finally {
+      setSubmitting(false);
     }
   };
 
+  if (!data) return null;
+
   return (
-    <>
-
-      {data ? (
-        <div className="my-5">
-          <div className="row my-lg-4">
-            <div>
-              <div className="card shadow rounded">
-                <div className="card-body text-center">
-                  
-                {isImageDefined && (
-  <img
-    src={data.image.url}
-    alt="Bootstrap"
-    width={150}
-    height={150}
-  />
-)}
-
-              
-
-                  <br />
-                  <p className="text-center mb-5">
-                    <b> {data.content}</b>
-                  </p>
-                  <p className="text-center mb-5">
-                    <b>{data.category}</b>
-                  </p>
-                  {/* <p className="text-center mb-5">
-                    <b>Email: {data.author}</b>
-                  </p> */}
-                  {/* Checkboxes for tags */}
-                  <div className="d-flex justify-content-around">
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={selectedTags.blogs}
-                        onChange={() => handleCheckboxChange('blogs')}
-                      />
-                      Blogs
-                    </label>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={selectedTags.study}
-                        onChange={() => handleCheckboxChange('study')}
-                      />
-                      Study
-                    </label>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={selectedTags.service}
-                        onChange={() => handleCheckboxChange('service')}
-                      />
-                      Service
-                    </label>
-                  </div>
-
-                  {/* Buttons for delete, and approve */}
-                  <div className="d-flex justify-content-around">
-                    <button onClick={() => handleDelete(data._id)}>
-                      Delete
-                    </button>
-                    <button onClick={handleApproveClick}>Approve</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+    <div className="bg-white rounded-xl shadow-sm border border-brand-tealLight/40 overflow-hidden">
+      {data.image?.url && (
+        <div className="relative w-full aspect-video bg-brand-tealLight/10">
+          <img src={data.image.url} alt={data.title || 'Blog cover'} className="w-full h-full object-cover" />
         </div>
-      ) : (
-        <></>
       )}
-    </>
+      <div className="p-4 space-y-3">
+        {data.category && <p className="text-xs uppercase font-semibold text-brand-teal">{data.category}</p>}
+        {data.title && <p className="font-semibold text-brand-navy line-clamp-2">{data.title}</p>}
+        {data.content && <p className="text-sm text-brand-slate line-clamp-3" dangerouslySetInnerHTML={{ __html: data.content }} />}
+
+        <div className="flex flex-wrap gap-3 text-sm text-brand-slate">
+          {['blogs', 'study', 'service'].map((tag) => (
+            <label key={tag} className="flex items-center gap-1 capitalize">
+              <input type="checkbox" checked={tags[tag]} onChange={() => toggle(tag)} className="accent-brand-teal" />
+              {tag}
+            </label>
+          ))}
+        </div>
+
+        <div className="flex gap-2">
+          <button
+            onClick={approve}
+            disabled={submitting}
+            className="flex-1 bg-brand-teal hover:bg-brand-navy text-white text-sm font-semibold py-1.5 rounded transition-colors disabled:opacity-60"
+          >
+            {submitting ? 'Approving…' : 'Approve'}
+          </button>
+          <button onClick={handleDelete} className="flex-1 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-sm font-semibold py-1.5 rounded transition-colors">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 

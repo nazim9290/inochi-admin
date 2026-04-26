@@ -1,98 +1,53 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
-import { useNavigate } from 'react-router-dom';
 
-const SeminerCard = ({ data }) => {
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const navigate = useNavigate();
+const SeminerCard = ({ data, onDeleted }) => {
+  const [confirming, setConfirming] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const api = axiosInterceptor();
 
-  useEffect(() => {
-    // Use the state from useAuth to determine authentication status
-    navigate('/update-session');
-  }, [navigate]);
-// console.log(data)
- 
-
-  const handleDelete = async () => {
-    // Show confirmation dialog
-    setShowConfirmation(true);
-  };
-
-  const confirmDelete = async () => {
+  const remove = async () => {
+    setDeleting(true);
     try {
-      const response = await api.delete(`/seminar-delete/${data._id}`);
-      if (response.status === 200) {
-        // Reload the page upon successful deletion
-        window.location.reload();
-      } else {
-        console.error('Error deleting team member:', response.data.error);
-      }
-    } catch (error) {
-      console.error('Error deleting team member:', error);
+      await api.delete(`/seminar-delete/${data.id || data._id}`);
+      onDeleted?.();
+    } catch (err) {
+      console.error('Error deleting seminar:', err);
     } finally {
-      // Hide the confirmation dialog
-      setShowConfirmation(false);
+      setDeleting(false);
+      setConfirming(false);
     }
-  };
-  
-
-  const cancelDelete = () => {
-    // Hide the confirmation dialog
-    setShowConfirmation(false);
   };
 
   return (
-    <div className="my-5">
-     {showConfirmation && (
-        <div className="confirmation-dialog">
-          <p>Are you sure you want to delete?</p>
-          <button className="btn btn-danger" onClick={confirmDelete}>
-            Yes
-          </button>
-          <button className="btn btn-secondary" onClick={cancelDelete}>
-            No
-          </button>
+    <div className="bg-white rounded-xl shadow-sm border border-brand-tealLight/40 overflow-hidden">
+      {data.image?.url && (
+        <div className="relative w-full h-40 bg-brand-tealLight/10">
+          <img src={data.image.url} alt={data.title} className="w-full h-full object-cover" />
         </div>
       )}
-      <table className="table table-bordered">
-        <thead>
-          <tr>
-            <th scope="col">Image</th>
-            <th scope="col">Title</th>
-            <th scope="col">Content</th>
-            <th scope="col">Date</th>
-            <th scope="col">Time</th>
-
-            <th scope="col">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-            {
-            data.image ? (<>
-              <img src={data.image.url} alt="Team Member" width={50} height={50} />
-
-            </>):null
-            }
-              
-            </td>
-            <td>{data.title}</td>
-            <td>{data.subtitle}</td>
-            <td>{data.date}</td>
-            <td>{data.time}</td>
-
-            <td>
-              <button className="btn btn-danger btn-sm" onClick={handleDelete}>
-                Delete
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-     
+      <div className="p-4 space-y-2">
+        <p className="font-semibold text-brand-navy line-clamp-2">{data.title}</p>
+        {data.subtitle && <p className="text-sm text-brand-slate line-clamp-2">{data.subtitle}</p>}
+        <div className="flex justify-between text-xs text-brand-slate">
+          <span>{data.date}</span>
+          <span>{data.time}</span>
+        </div>
+        {confirming ? (
+          <div className="flex gap-2 pt-2">
+            <button onClick={remove} disabled={deleting} className="px-3 py-1 rounded text-xs font-semibold bg-red-600 hover:bg-red-700 text-white disabled:opacity-60">
+              {deleting ? 'Deleting…' : 'Confirm delete'}
+            </button>
+            <button onClick={() => setConfirming(false)} className="px-3 py-1 rounded text-xs font-semibold bg-brand-tealLight/30 hover:bg-brand-tealLight/50 text-brand-navy">
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <button onClick={() => setConfirming(true)} className="px-3 py-1 rounded text-xs font-semibold bg-red-50 hover:bg-red-100 text-red-700 border border-red-200">
+            Delete
+          </button>
+        )}
+      </div>
     </div>
   );
 };

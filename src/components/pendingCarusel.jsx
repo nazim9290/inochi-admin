@@ -1,39 +1,20 @@
-import React from 'react';
-
 const PendingCarusel = ({ data, handleDelete, handleApprove }) => {
-  // Uncomment the following line if you need to use state for image
-  // const [image, setImage] = useState(data.image);
+  if (!data?.image?.url) return null;
 
-  // Use let to declare a variable
-  let imageUrl = data.image && data.image.url;
-  const isImageDefined = data.image !== undefined;
-
-// console.log(data)
   return (
-    <>
-      {isImageDefined &&  (
-        <div className="my-5">
-        <h1>Carusel List</h1>
-          <div className="row my-lg-4">
-            <div>
-              <div className="card shadow rounded">
-                <div className="card-body text-center">
-                  {/* Use imageUrl instead of data.image.url */}
-                  <img src={imageUrl} alt="Bootstrap" width={150} height={150} /><br />
-                  <p className="text-center mb-5"><b>{data.category}</b></p>
-
-                  {/* Buttons for delete, edit, and approve */}
-                  <div className="d-flex justify-content-around">
-                    <button onClick={() => handleDelete(data._id)}>Delete</button>
-                    <button onClick={() => handleApprove(data._id)}>Approve</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+    <div className="bg-white rounded-xl shadow-sm border border-brand-tealLight/40 overflow-hidden">
+      <div className="relative w-full aspect-video bg-brand-tealLight/10">
+        <img src={data.image.url} alt={data.category || 'Carousel'} className="w-full h-full object-cover" />
+      </div>
+      <div className="p-4 space-y-3">
+        {data.category && <p className="text-xs uppercase font-semibold text-brand-teal">{data.category}</p>}
+        {data.title && <p className="font-semibold text-brand-navy line-clamp-2">{data.title}</p>}
+        <div className="flex gap-2">
+          <button onClick={handleApprove} className="flex-1 bg-brand-teal hover:bg-brand-navy text-white text-sm font-semibold py-1.5 rounded transition-colors">Approve</button>
+          <button onClick={handleDelete} className="flex-1 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-sm font-semibold py-1.5 rounded transition-colors">Delete</button>
         </div>
-      ) }
-    </>
+      </div>
+    </div>
   );
 };
 

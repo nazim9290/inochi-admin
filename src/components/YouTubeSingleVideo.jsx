@@ -1,25 +1,14 @@
-import React from 'react';
 import YouTube from 'react-youtube';
 
-const YouTubeSingleVideo = ({videoId}) => {
+const YouTubeSingleVideo = ({ videoId }) => {
   const opts = {
+    width: '100%',
     height: '360',
-    width: '640',
-    playerVars: {
-      autoplay: 1,
-      modestbranding: 1,
-      controls: 1,
-      showinfo: 0,
-      rel: 0,
-    },
+    playerVars: { autoplay: 1, modestbranding: 1, controls: 1, rel: 0 },
   };
-
-  const onReady = (event) => {
-  };
-
   return (
-    <div>
-      <YouTube videoId={videoId} opts={opts} onReady={onReady} />
+    <div className="rounded-xl overflow-hidden border border-brand-tealLight/40 shadow-sm bg-black">
+      <YouTube videoId={videoId} opts={opts} className="aspect-video" />
     </div>
   );
 };

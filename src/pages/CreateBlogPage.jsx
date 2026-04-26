@@ -1,152 +1,131 @@
-import { useState } from "react";
+import { useState } from 'react';
+import axiosInterceptor from '../axios/axiosInterceptor';
 
-import axiosInterceptor from '../axios/axiosInterceptor.js';
+const labelClass = 'block text-sm font-semibold text-brand-navy mb-1';
+const fieldClass = 'w-full px-3 py-2 border border-brand-tealLight/60 rounded focus:outline-none focus:ring-2 focus:ring-brand-teal/40';
 
 const CreateBlogPage = () => {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
   const [image, setImage] = useState({});
-  const [uploading, setUploading] = useState(false);
   const [content, setContent] = useState('');
-  const [id, setId] = useState({});
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const api=axiosInterceptor()
- 
+  const [uploading, setUploading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState(null);
+  const api = axiosInterceptor();
+
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
-    let formData = new FormData();
-    formData.append("image", file);
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('image', file);
     setUploading(true);
+    setMessage(null);
     try {
-      const { data } = await api.post("/upload-image-file", formData);
-      setImage({
-                url: data.url,
-                public_id:data.public_id,
-              });
-      setUploading(false);
+      const { data } = await api.post('/upload-image-file', formData);
+      setImage({ url: data.url, public_id: data.public_id });
     } catch (err) {
-      console.error('Error uploading image:', err);
+      console.error('Upload error:', err);
+      setMessage({ kind: 'error', text: 'Failed to upload image. Please try again.' });
+    } finally {
       setUploading(false);
-      setSuccessMessage('');
-      setErrorMessage("Failed to upload image. Please try again.");
     }
-  };
-
-
-  const handleCategoryChange = (event) => {
-    setCategory(event.target.value);
   };
 
   const handleSubmit = async () => {
+    if (!title.trim() || !category || !content.trim()) {
+      setMessage({ kind: 'error', text: 'Title, category and description are required.' });
+      return;
+    }
+    setSubmitting(true);
+    setMessage(null);
     try {
-      const { data } = await api.post("/create-blog", {
-        image,
-        title,
-        content,
-        category,
-      });
-      if(data.erro){
-        setErrorMessage("Failed to create blog. Please try again.");
-        
-      }else{
-        setSuccessMessage("Blog created successfully!");
-        setErrorMessage(''); // Clear any previous error message
+      const { data } = await api.post('/create-blog', { image, title, content, category });
+      if (data?.error) {
+        setMessage({ kind: 'error', text: 'Failed to create blog. Please try again.' });
+      } else {
+        setMessage({ kind: 'ok', text: 'Blog created successfully!' });
+        setTitle('');
+        setContent('');
+        setCategory('');
         setImage({});
-        setTitle(' ');
-        setContent(" ");
-        setCategory(' ')
       }
-      
     } catch (err) {
-      console.error("Error:", err);
-      setSuccessMessage('');
-      setErrorMessage("Failed to create blog. Please try again.");
+      console.error('Error:', err);
+      setMessage({ kind: 'error', text: 'Failed to create blog. Please try again.' });
+    } finally {
+      setSubmitting(false);
     }
   };
-  return (
-    <div className="p-4 w-100 d-flex justify-content-center">
-      <div className="w-100 d-flex flex-column align-items-center">
-        <h3 className="text-center">Create a Blog</h3>
 
-        <div className="w-75">
-        {errorMessage && (
-        <div className="alert alert-danger mt-3" role="alert">
-          {errorMessage}
-        </div>
+  return (
+    <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-sm border border-brand-tealLight/40 p-6 sm:p-8">
+      <h1 className="text-2xl font-extrabold text-brand-navy text-center mb-6">Create a Blog</h1>
+
+      {message && (
+        <p className={`text-sm rounded px-3 py-2 mb-4 ${
+          message.kind === 'ok'
+            ? 'bg-brand-tealLight/30 text-brand-navy border border-brand-teal/40'
+            : 'bg-red-50 text-red-700 border border-red-200'
+        }`}>
+          {message.text}
+        </p>
       )}
-      {successMessage && (
-        <div className="alert alert-success mt-3" role="alert">
-          {successMessage}
+
+      <div className="space-y-4">
+        <div>
+          <label className={labelClass}>Title</label>
+          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" className={fieldClass} />
         </div>
-      )}
-          <div className="mb-3">
-            <label className="form-label">Title</label>
-            <input
-              className="form-control w-100"
-              type="text"
-              value={title}
-              placeholder="title"
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">
-              Blogs Title Image (if you want)
-            </label>
-            <input
-              className="form-control w-100"
-              type="file"
-              onChange={handleImageChange}
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Category</label>
-            <select
-              value={category}
-              onChange={handleCategoryChange}
-              className="form-select"
-            >
-              <option value="" disabled>
-                Select a category
-              </option>
-              <option value="category1">Category 1</option>
-              <option value="category2">Category 2</option>
-              <option value="category3">Category 3</option>
-              <option value="category4">Category 4</option>
-              <option value="category5">Category 5</option>
-            </select>
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Description</label>
-            <textarea
-              className="form-control"
-              rows="6"
-              value={content}
-              placeholder="Content here"
-              onChange={(e) => setContent(e.target.value)}
-            ></textarea>
-          </div>
-          <div className="d-flex gap-4">
-            <button
-              type="button"
-              className="btn btn-sm"
-              style={{ backgroundColor: "#4F46E5", color: "white" }}
-            >
-              Preview
-            </button>
-            <button
-              type="button"
-              className="btn bg-success btn-sm text-white"
-              onClick={handleSubmit}
-            >
-              Submit
-            </button>
-            
-          </div>
+
+        <div>
+          <label className={labelClass}>Cover Image (optional)</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="block w-full text-sm text-brand-slate file:mr-3 file:py-2 file:px-4 file:rounded file:border-0 file:bg-brand-tealLight/30 file:text-brand-navy file:font-semibold hover:file:bg-brand-tealLight/50"
+          />
+          {uploading && <p className="text-xs text-brand-slate mt-1">Uploading…</p>}
+          {image.url && (
+            <img src={image.url} alt="Preview" className="mt-2 max-h-40 rounded border border-brand-tealLight/30" />
+          )}
+        </div>
+
+        <div>
+          <label className={labelClass}>Category</label>
+          <select value={category} onChange={(e) => setCategory(e.target.value)} className={fieldClass}>
+            <option value="" disabled>Select a category</option>
+            <option value="study">Study in Japan</option>
+            <option value="service">Services</option>
+            <option value="blogs">Blogs</option>
+            <option value="culture">Culture</option>
+            <option value="news">News</option>
+          </select>
+        </div>
+
+        <div>
+          <label className={labelClass}>Description</label>
+          <textarea
+            rows={8}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Write the article content here. HTML is supported."
+            className={fieldClass}
+          />
+        </div>
+
+        <div className="flex gap-3 pt-2">
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={submitting}
+            className="bg-brand-teal hover:bg-brand-navy text-white font-semibold px-6 py-2 rounded transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {submitting ? 'Submitting…' : 'Publish Blog'}
+          </button>
         </div>
       </div>
-      
     </div>
   );
 };
