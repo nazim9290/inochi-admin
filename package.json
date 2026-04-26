@@ -1,14 +1,17 @@
 {
-  "name": "incho-admin",
+  "name": "inochi-admin",
   "private": true,
   "version": "0.0.0",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
-    "start": "node server.js",
+    "dev": "vite",
     "build": "vite build",
-    "dev": "react-scripts start",
+    "preview": "vite preview",
+    "start": "node server.js",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "lint:fix": "eslint . --ext js,jsx --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
@@ -31,7 +34,7 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
+    "prettier": "^3.2.5",
     "vite": "^5.0.8"
-  },
-  "proxy": ""
+  }
 }
