@@ -24,12 +24,12 @@ const SideBar = () => {
     <aside className="w-64 min-h-screen bg-white border-r border-brand-tealLight/30">
       <div className="flex flex-col items-center px-4 pt-6 pb-4 border-b border-brand-tealLight/30">
         <img
-          src="./vite.svg"
-          alt="Avatar"
-          className="w-24 h-24 rounded-full ring-2 ring-brand-tealLight"
+          src="/Inochi_logo.png"
+          alt="Inochi Global Education"
+          className="w-24 h-24 object-contain"
         />
         <div className="text-center mt-3">
-          <h5 className="font-semibold text-brand-navy m-0">Md Rafiqul Islam</h5>
+          <h5 className="font-semibold text-brand-navy m-0">Inochi Admin</h5>
           <p className="text-sm text-brand-slate mt-1">Dhaka, Bangladesh</p>
         </div>
       </div>
