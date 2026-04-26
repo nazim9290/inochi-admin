@@ -1,15 +1,14 @@
-// axiosInterceptor.js
-import axios from "axios";
-import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { BaseUrl } from '../utils/constant';
 
 const axiosInterceptor = () => {
   const { state, logout } = useAuth();
-  const { navigate } = useNavigate();
+  const navigate = useNavigate();
 
   const instance = axios.create({
-    baseURL: "https://api.inochieducation.com/api/",
-    //baseURL: "http://localhost:5000/api/",
+    baseURL: `${BaseUrl}/`,
   });
 
   instance.interceptors.request.use(
@@ -19,18 +18,15 @@ const axiosInterceptor = () => {
       }
       return config;
     },
-    (error) => {
-      return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
   );
 
   instance.interceptors.response.use(
     (response) => response,
     (error) => {
       if (error.response && error.response.status === 401) {
-        // Unauthorized, log out user and redirect to login page
         logout();
-        navigate("/login");
+        navigate('/login');
       }
       return Promise.reject(error);
     }

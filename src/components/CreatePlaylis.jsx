@@ -1,11 +1,11 @@
 
 import React, { useEffect, useState } from 'react';
 import usePlaylistVideos from './usePlaylistVideos';
- import { useVideoContext } from '../context/VideoContext';
+import { useVideoContext } from '../context/VideoContext';
+import { YoutubeApiKey } from '../utils/constant';
 
 const PlaylistVideos = ({ Id }) => {
-  const apiKey = 'AIzaSyBhX7lUFUKEFEdZOhrKvwPw2XSZTkZm4rs';
-  const { videos, error } = usePlaylistVideos(Id, apiKey);
+  const { videos, error } = usePlaylistVideos(Id, YoutubeApiKey);
   const [selectedVideoId, setSelectedVideoId] = useState(null);
   const { setVideoId } = useVideoContext();
 
