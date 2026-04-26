@@ -1,39 +1,54 @@
-// AdminPanel.js
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Outlet } from 'react-router-dom';
 import axiosInterceptor from '../axios/axiosInterceptor';
-import { Outlet } from "react-router-dom";
-import SideBar  from "../components/SideBar";
+import SideBar from '../components/SideBar';
+
 const AdminPanel = () => {
   const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const api = axiosInterceptor();
 
   useEffect(() => {
-    // Fetch current user information
-    api.get('/profile')
-      .then((response) => {
-        setCurrentUser(response.data);
-      })
-      .catch((error) => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data } = await api.get('/profile');
+        if (!cancelled) setCurrentUser(data);
+      } catch (error) {
         console.error('Error fetching current user:', error);
-      });
-      api.get("/review").then((response)=>{
-        console.log(response.data)
-      });
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return (
-    <div>
-      <h1>Admin Panel</h1>
-      {currentUser ? (
-        <div className="d-flex">
-      <SideBar />
-      <div className="w-75">
-        <Outlet />
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-brand-tealLight/10">
+        <p className="text-brand-slate">Loading…</p>
       </div>
-    </div>
-      ) : (
-        <p>Loading...</p>
-      )}
+    );
+  }
+
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-brand-tealLight/10">
+        <p className="text-brand-slate">Unable to load admin profile.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen flex bg-brand-tealLight/10">
+      <SideBar />
+      <main className="flex-1 p-6 overflow-x-hidden">
+        <h1 className="text-2xl font-extrabold text-brand-navy mb-6">Admin Panel</h1>
+        <Outlet />
+      </main>
     </div>
   );
 };

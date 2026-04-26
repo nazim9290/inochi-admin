@@ -1,38 +1,41 @@
-import React, { useState } from 'react';
-import FreeStudent from '../components/FreeStudent'; // Import your FreeStudent component
-import PaidStudent from '../components/PaidStudent'; // Import your PaidStudent component
+import { useState } from 'react';
 import BranchA from '../components/BranchA';
 import BranchB from '../components/BranchB';
 
+const tabClass = (active) =>
+  `px-5 py-2 rounded font-semibold transition-colors ${
+    active
+      ? 'bg-brand-teal text-white'
+      : 'bg-white text-brand-navy border border-brand-tealLight/60 hover:bg-brand-tealLight/20'
+  }`;
+
 const Account = () => {
-    const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState(null);
 
-    const handleButtonClick = (option) => {
-        setSelectedOption(option);
-    };
+  return (
+    <div>
+      <h1 className="text-center text-2xl font-extrabold text-brand-navy mb-6">Account</h1>
+      <div className="flex justify-center gap-3 mb-8">
+        <button
+          type="button"
+          onClick={() => setSelectedOption('paid')}
+          className={tabClass(selectedOption === 'paid')}
+        >
+          Branch A
+        </button>
+        <button
+          type="button"
+          onClick={() => setSelectedOption('free')}
+          className={tabClass(selectedOption === 'free')}
+        >
+          Branch B
+        </button>
+      </div>
 
-    return (
-        <div>
-            <h1 className="text-center">Account</h1>
-            <div className="text-center">
-                <button
-                    className="btn btn-primary mr-2"
-                    onClick={() => handleButtonClick('paid')}
-                >
-                    Branch A
-                </button>
-                <button
-                    className="btn btn-success"
-                    onClick={() => handleButtonClick('free')}
-                >
-                                        Branch B
-                </button>
-            </div>
-
-            {selectedOption === 'paid' && <BranchA />}
-            {selectedOption === 'free' && <BranchB />}
-        </div>
-    );
-}
+      {selectedOption === 'paid' && <BranchA />}
+      {selectedOption === 'free' && <BranchB />}
+    </div>
+  );
+};
 
 export default Account;
