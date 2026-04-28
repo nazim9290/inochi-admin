@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import BilingualField from '../components/BilingualField';
+import ImageUploadField from '../components/ImageUploadField';
 
 const inputClass =
   'w-full px-3 py-2 text-sm border border-brand-tealLight/60 rounded focus:outline-none focus:ring-2 focus:ring-brand-teal/40';
@@ -25,8 +26,6 @@ const SuccessStoriesManage = () => {
   const [stories, setStories] = useState([]);
   const [form, setForm] = useState(empty);
   const [editingId, setEditingId] = useState(null);
-  const [uploading, setUploading] = useState(false);
-  const [uploadMsg, setUploadMsg] = useState(null);
 
   const load = async () => {
     try {
@@ -50,29 +49,13 @@ const SuccessStoriesManage = () => {
     });
   };
 
-  const handlePhotoChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const formData = new FormData();
-    formData.append('image', file);
-    setUploading(true);
-    setUploadMsg(null);
-    try {
-      const { data } = await api.post('/upload-image-file', formData);
-      setForm((prev) => ({ ...prev, photoUrl: data.url }));
-      setUploadMsg({ kind: 'ok', text: '✓ ছবি upload হয়েছে।' });
-    } catch (err) {
-      console.error('Upload error:', err);
-      setUploadMsg({ kind: 'error', text: 'ছবি upload হয়নি — আবার চেষ্টা করুন।' });
-    } finally {
-      setUploading(false);
-    }
-  };
+  // EN: Photo URL bubbles up from ImageUploadField as a plain string.
+  // BN: ImageUploadField থেকে photo URL plain string হিসেবে আসে।
+  const setPhotoUrl = (url) => setForm((prev) => ({ ...prev, photoUrl: url }));
 
   const reset = () => {
     setForm(empty);
     setEditingId(null);
-    setUploadMsg(null);
   };
 
   const submit = async (e) => {
@@ -136,37 +119,12 @@ const SuccessStoriesManage = () => {
               <span className="text-xs text-brand-navy font-semibold">Published</span>
             </label>
             <div className="md:col-span-2">
-              <span className={labelClass}>Student photo</span>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handlePhotoChange}
-                className="block w-full text-sm text-brand-slate file:mr-3 file:py-2 file:px-4 file:rounded file:border-0 file:bg-brand-tealLight/30 file:text-brand-navy file:font-semibold hover:file:bg-brand-tealLight/50"
-              />
-              {uploading && <p className="text-xs text-brand-slate mt-1">Uploading…</p>}
-              {uploadMsg && (
-                <p
-                  className={`text-xs mt-1 ${
-                    uploadMsg.kind === 'ok' ? 'text-brand-teal' : 'text-red-600'
-                  }`}
-                >
-                  {uploadMsg.text}
-                </p>
-              )}
-              <input
-                name="photoUrl"
+              <ImageUploadField
+                label="Student-এর ছবি"
                 value={form.photoUrl}
-                onChange={onChange}
-                className={`${inputClass} mt-2`}
-                placeholder="অথবা photo URL paste করুন (https://…)"
+                onChange={setPhotoUrl}
+                hint="Square / portrait ছবি ভাল দেখায়। File picker থেকে select করলে auto-upload হবে।"
               />
-              {form.photoUrl && (
-                <img
-                  src={form.photoUrl}
-                  alt="Preview"
-                  className="mt-2 max-h-32 rounded border border-brand-tealLight/30"
-                />
-              )}
             </div>
           </div>
           <BilingualField label="Location" name="location" value={form.location} valueEn={form.locationEn} onChange={onChange} placeholderBn="টোকিও, জাপান" placeholderEn="Tokyo, Japan" />
