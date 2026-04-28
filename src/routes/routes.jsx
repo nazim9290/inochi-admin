@@ -28,6 +28,7 @@ import HowItWorksManage from "../pages/HowItWorksManage";
 import JlptCoursesManage from "../pages/JlptCoursesManage";
 import SuccessStoriesManage from "../pages/SuccessStoriesManage";
 import FaqsManage from "../pages/FaqsManage";
+import Applications from "../pages/Applications";
 const PrivateRoute = ({ element }) => {
   const { state } = useAuth();
   return state.isAuthenticated ? element : <Navigate to="/login" replace />;
@@ -112,6 +113,10 @@ const routesConfig = [
       {
         path: "/contact-list",
         element: <PrivateRoute element={<ContactList />} />,
+      },
+      {
+        path: "/applications",
+        element: <PrivateRoute element={<Applications />} />,
       },
       {
         path: "/subscriber-list",

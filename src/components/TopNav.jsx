@@ -24,20 +24,25 @@ export default function TopNav() {
 
   const active = findActiveSection(location.pathname);
 
-  // EN: Poll the inbox pending count so admins notice fresh enquiries even
-  //     while sitting on a different tab. Refresh on window focus too —
-  //     covers the case of returning from another browser tab.
-  // BN: Inbox-এর pending count poll করি — admin অন্য tab-এ থাকলেও নতুন
-  //     enquiry-র খবর পাবে। Window focus-এও refresh — অন্য browser tab
-  //     থেকে ফিরে আসার case-ও cover।
+  // EN: Poll the inbox unread count so admins notice fresh items even while
+  //     sitting on a different tab. Sums pending contact requests + new
+  //     applications. Both endpoints fire in parallel; failures fall through
+  //     silently so a transient backend hiccup doesn't reset the badge to 0.
+  // BN: Inbox-এর unread count poll করি — admin অন্য tab-এ থাকলেও নতুন item-এর
+  //     খবর পাবে। Pending contact + new application sum করে। দুই endpoint
+  //     parallel; failure silently ignore — transient hiccup-এ badge 0 হয় না।
   useEffect(() => {
     let alive = true;
     const refresh = async () => {
       try {
-        const { data } = await api.get('/all-contact-request');
+        const [contacts, apps] = await Promise.all([
+          api.get('/all-contact-request').catch(() => ({ data: { contacts: [] } })),
+          api.get('/applications?status=new').catch(() => ({ data: { applications: [] } })),
+        ]);
         if (!alive) return;
-        const pending = (data?.contacts || []).filter((c) => (c.status || 'Pending') === 'Pending').length;
-        setPendingCount(pending);
+        const pendingContacts = (contacts.data?.contacts || []).filter((c) => (c.status || 'Pending') === 'Pending').length;
+        const newApps = (apps.data?.applications || []).length;
+        setPendingCount(pendingContacts + newApps);
       } catch {
         // EN: Silently ignore — badge just stays at last known value.
         // BN: Silently ignore — badge সর্বশেষ value-তেই থাকবে।

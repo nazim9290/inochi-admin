@@ -119,8 +119,9 @@ export const NAV_SECTIONS = [
     label: 'ইনবক্স',
     labelEn: 'Inbox',
     icon: ICONS.inbox,
-    home: '/contact-list',
+    home: '/applications',
     routes: [
+      { path: '/applications', label: 'আবেদন', labelEn: 'Applications' },
       { path: '/contact-list', label: 'যোগাযোগ', labelEn: 'Contacts' },
       { path: '/semmenr-booklist', label: 'বুকিং', labelEn: 'Bookings' },
       { path: '/subscriber-list', label: 'সাবস্ক্রাইবার', labelEn: 'Subscribers' },
