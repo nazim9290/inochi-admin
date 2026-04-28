@@ -7,10 +7,11 @@
  *     হয়, যেটা একটা drawer toggle করে।
  */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { NAV_SECTIONS, findActiveSection } from '../lib/navConfig';
+import axiosInterceptor from '../axios/axiosInterceptor';
 import MobileMenu from './MobileMenu';
 
 export default function TopNav() {
@@ -18,13 +19,50 @@ export default function TopNav() {
   const navigate = useNavigate();
   const { logout, state } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [pendingCount, setPendingCount] = useState(0);
+  const api = axiosInterceptor();
 
   const active = findActiveSection(location.pathname);
+
+  // EN: Poll the inbox pending count so admins notice fresh enquiries even
+  //     while sitting on a different tab. Refresh on window focus too —
+  //     covers the case of returning from another browser tab.
+  // BN: Inbox-এর pending count poll করি — admin অন্য tab-এ থাকলেও নতুন
+  //     enquiry-র খবর পাবে। Window focus-এও refresh — অন্য browser tab
+  //     থেকে ফিরে আসার case-ও cover।
+  useEffect(() => {
+    let alive = true;
+    const refresh = async () => {
+      try {
+        const { data } = await api.get('/all-contact-request');
+        if (!alive) return;
+        const pending = (data?.contacts || []).filter((c) => (c.status || 'Pending') === 'Pending').length;
+        setPendingCount(pending);
+      } catch {
+        // EN: Silently ignore — badge just stays at last known value.
+        // BN: Silently ignore — badge সর্বশেষ value-তেই থাকবে।
+      }
+    };
+    refresh();
+    const interval = setInterval(refresh, 60_000);
+    const onFocus = () => refresh();
+    window.addEventListener('focus', onFocus);
+    return () => {
+      alive = false;
+      clearInterval(interval);
+      window.removeEventListener('focus', onFocus);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
+
+  // EN: Map section.key → badge count. Currently only inbox has a badge.
+  // BN: section.key → badge count map। এখন শুধু inbox-এ badge।
+  const badgeFor = (key) => (key === 'inbox' && pendingCount > 0 ? pendingCount : null);
 
   return (
     <>
@@ -36,7 +74,12 @@ export default function TopNav() {
           {/* BN: Desktop tab strip — md breakpoint-এর নিচে hidden। */}
           <nav className="hidden flex-1 items-center justify-center gap-1 md:flex">
             {NAV_SECTIONS.map((section) => (
-              <NavTab key={section.key} section={section} isActive={section.key === active.key} />
+              <NavTab
+                key={section.key}
+                section={section}
+                isActive={section.key === active.key}
+                badge={badgeFor(section.key)}
+              />
             ))}
           </nav>
 
@@ -65,7 +108,13 @@ export default function TopNav() {
         </div>
       </header>
 
-      <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} activeKey={active.key} onLogout={handleLogout} />
+      <MobileMenu
+        open={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        activeKey={active.key}
+        onLogout={handleLogout}
+        badges={{ inbox: pendingCount }}
+      />
     </>
   );
 }
@@ -84,17 +133,25 @@ function BrandLogo() {
   );
 }
 
-// EN: Single top tab with icon + Bangla label. Active state gets brand-teal underline + bg.
-// BN: একটা top tab — icon + Bangla label। Active হলে brand-teal underline + bg পায়।
-function NavTab({ section, isActive }) {
+// EN: Single top tab with icon + Bangla label. Active state gets brand-teal
+//     underline + bg. Optional `badge` shows a pulsing red dot with count
+//     (used for unread inbox enquiries).
+// BN: একটা top tab — icon + Bangla label। Active হলে brand-teal underline + bg।
+//     Optional `badge` — pulsing red dot with count (unread inbox-এর জন্য)।
+function NavTab({ section, isActive, badge }) {
   const base =
-    'inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-semibold transition-colors no-underline';
+    'relative inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-semibold transition-colors no-underline';
   const activeCls = 'bg-brand-teal/15 text-brand-navy';
   const inactiveCls = 'text-brand-slate hover:bg-brand-tealLight/20 hover:text-brand-navy';
   return (
     <Link to={section.home} className={`${base} ${isActive ? activeCls : inactiveCls}`}>
       <span className={isActive ? 'text-brand-teal' : 'text-brand-slate/60'}>{section.icon}</span>
       <span>{section.label}</span>
+      {badge != null && badge > 0 && (
+        <span className="ml-0.5 inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white shadow ring-2 ring-white">
+          {badge > 99 ? '99+' : badge}
+        </span>
+      )}
     </Link>
   );
 }

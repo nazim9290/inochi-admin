@@ -8,7 +8,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { NAV_SECTIONS } from '../lib/navConfig';
 
-export default function MobileMenu({ open, onClose, activeKey, onLogout }) {
+export default function MobileMenu({ open, onClose, activeKey, onLogout, badges = {} }) {
   const location = useLocation();
   if (!open) return null;
 
@@ -48,6 +48,7 @@ export default function MobileMenu({ open, onClose, activeKey, onLogout }) {
               isActive={section.key === activeKey}
               currentPath={location.pathname}
               onSelect={onClose}
+              badge={badges[section.key]}
             />
           ))}
         </nav>
@@ -73,7 +74,7 @@ export default function MobileMenu({ open, onClose, activeKey, onLogout }) {
 //     if the section has no sub-routes, like the dashboard).
 // BN: একটা mobile section block — header + sub-route list (বা শুধু home link যদি
 //     section-এ sub-route না থাকে, যেমন dashboard)।
-function SectionBlock({ section, isActive, currentPath, onSelect }) {
+function SectionBlock({ section, isActive, currentPath, onSelect, badge }) {
   return (
     <div className="mb-2">
       <Link
@@ -86,7 +87,12 @@ function SectionBlock({ section, isActive, currentPath, onSelect }) {
         }`}
       >
         <span className={isActive ? 'text-brand-teal' : 'text-brand-slate/60'}>{section.icon}</span>
-        <span>{section.label}</span>
+        <span className="flex-1">{section.label}</span>
+        {badge != null && badge > 0 && (
+          <span className="inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white">
+            {badge > 99 ? '99+' : badge}
+          </span>
+        )}
       </Link>
 
       {isActive && section.routes.length > 0 && (
