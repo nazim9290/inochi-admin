@@ -266,19 +266,14 @@ const TeamCreate = () => {
             কোন team member যোগ করা হয়নি। উপরে form-এ পূরণ করে &quot;Add Member&quot; বাটনে ক্লিক করুন।
           </p>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {teams.map((t) => (
-              <div key={t.id || t._id} className="relative group">
-                <TeamCard data={t} />
-                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1 bg-white/95 rounded shadow px-2 py-1">
-                  <button onClick={() => edit(t)} className="text-xs text-brand-teal font-semibold hover:text-brand-navy">
-                    Edit
-                  </button>
-                  <button onClick={() => remove(t.id || t._id)} className="text-xs text-red-500 font-semibold hover:text-red-700">
-                    Delete
-                  </button>
-                </div>
-              </div>
+              <TeamCard
+                key={t.id || t._id}
+                data={t}
+                onEdit={() => edit(t)}
+                onDelete={() => remove(t.id || t._id)}
+              />
             ))}
           </div>
         )}
