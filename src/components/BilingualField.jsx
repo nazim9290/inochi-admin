@@ -1,13 +1,23 @@
-// Reusable bilingual input — renders BN + EN field side-by-side with a small
-// flag chip for clarity. Used across all admin forms that edit translatable
-// content.
+/**
+ * EN: Reusable bilingual input — Bangla on the left, English on the right, each
+ *     with a clear language chip ABOVE the input (not overlapping the parent label).
+ *     Used across every site-content form so admins can see both languages at once.
+ * BN: Reusable bilingual input — বাঁয়ে বাংলা, ডানে English, প্রতিটার উপরে স্পষ্ট
+ *     ভাষা চিপ (parent label-এর সাথে overlap করে না)। সব site-content form-এ
+ *     ব্যবহৃত যাতে admin একসাথে দুই ভাষা দেখতে পারে।
+ */
 
 const baseInput =
-  'w-full px-3 py-2 text-sm border border-brand-tealLight/60 rounded focus:outline-none focus:ring-2 focus:ring-brand-teal/40';
-const labelClass = 'block text-xs font-semibold text-brand-navy mb-1';
+  'w-full rounded-md border border-brand-tealLight/60 bg-white px-3 py-2.5 text-sm text-brand-navy placeholder:text-brand-slate/50 focus:outline-none focus:ring-2 focus:ring-brand-teal/40 focus:border-brand-teal';
+
+const labelClass = 'mb-2 block text-sm font-semibold text-brand-navy';
+
+const chipClass =
+  'inline-block rounded px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider';
 
 const BilingualField = ({
   label,
+  hint,
   name,
   value,
   valueEn,
@@ -17,8 +27,11 @@ const BilingualField = ({
   placeholderBn = '',
   placeholderEn = '',
 }) => {
+  // EN: Render either an input or textarea based on the `type` prop.
+  // BN: `type` prop অনুযায়ী input বা textarea রেন্ডার করে।
   const renderInput = (n, v, ph, lang) => {
     const dir = lang === 'bn' ? 'auto' : 'ltr';
+    const cls = baseInput;
     if (type === 'textarea') {
       return (
         <textarea
@@ -28,7 +41,7 @@ const BilingualField = ({
           placeholder={ph}
           dir={dir}
           rows={rows}
-          className={baseInput + ' min-h-[80px]'}
+          className={cls + ' min-h-[88px] resize-y'}
         />
       );
     }
@@ -40,24 +53,31 @@ const BilingualField = ({
         onChange={onChange}
         placeholder={ph}
         dir={dir}
-        className={baseInput}
+        className={cls}
       />
     );
   };
 
   return (
     <div>
-      <span className={labelClass}>{label}</span>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-        <div className="relative">
-          <span className="absolute -top-2 left-2 bg-white text-[9px] font-bold text-brand-teal px-1.5 z-10 leading-none rounded">
-            🇧🇩 BN
+      <label className={labelClass}>{label}</label>
+      {hint && <p className="-mt-1 mb-2 text-xs text-brand-slate">{hint}</p>}
+
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+        {/* EN: Bangla column — uses brand teal chip + bn-friendly font hint. */}
+        {/* BN: বাংলা column — brand teal chip + bn-friendly font hint। */}
+        <div>
+          <span className={`${chipClass} mb-1.5 bg-brand-teal/10 text-brand-teal`}>
+            বাংলা
           </span>
           {renderInput(name, value, placeholderBn, 'bn')}
         </div>
-        <div className="relative">
-          <span className="absolute -top-2 left-2 bg-white text-[9px] font-bold text-brand-navy px-1.5 z-10 leading-none rounded">
-            🇺🇸 EN
+
+        {/* EN: English column — navy chip to visually distinguish from Bangla. */}
+        {/* BN: English column — Bangla থেকে আলাদা করতে navy chip। */}
+        <div>
+          <span className={`${chipClass} mb-1.5 bg-brand-navy/10 text-brand-navy`}>
+            English
           </span>
           {renderInput(`${name}En`, valueEn, placeholderEn, 'en')}
         </div>

@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import BilingualField from '../components/BilingualField';
+import ImageUploadField from '../components/ImageUploadField';
 
-const labelClass = 'block text-xs font-semibold text-brand-navy mb-1';
+// EN: Shared input/label classes — kept consistent so all fields look the same.
+// BN: Shared input/label class — সব field-এর look একরকম রাখতে।
+const labelClass = 'mb-2 block text-sm font-semibold text-brand-navy';
 const inputClass =
-  'w-full px-3 py-2 text-sm border border-brand-tealLight/60 rounded focus:outline-none focus:ring-2 focus:ring-brand-teal/40 bg-white';
-const sectionClass = 'bg-white rounded-xl border border-brand-tealLight/40 shadow-sm p-5';
+  'w-full rounded-md border border-brand-tealLight/60 bg-white px-3 py-2.5 text-sm text-brand-navy placeholder:text-brand-slate/50 focus:border-brand-teal focus:outline-none focus:ring-2 focus:ring-brand-teal/40';
+const sectionClass = 'bg-white rounded-xl border border-brand-tealLight/40 shadow-sm p-6 md:p-7';
 const sectionHead =
-  'text-sm font-bold text-brand-navy uppercase tracking-wide mb-4 pb-2 border-b border-brand-tealLight/40';
+  'text-lg font-bold text-brand-navy mb-1';
+const sectionSub = 'text-xs text-brand-slate mb-5 pb-4 border-b border-brand-tealLight/30';
 
 const SinglePlain = ({ label, name, value, onChange, placeholder = '' }) => (
   <label className="block">
@@ -81,20 +85,30 @@ const SiteSettingsEdit = () => {
   }
 
   return (
-    <form onSubmit={submit} className="space-y-5 max-w-6xl">
-      <div className="flex items-center justify-between sticky top-0 z-10 bg-brand-tealLight/10 -mx-6 px-6 py-3 backdrop-blur">
+    <form onSubmit={submit} className="space-y-6 max-w-6xl">
+      {/* EN: Sticky save bar — high contrast so the user always knows where to save. */}
+      {/* BN: Sticky save bar — high contrast, user যাতে সবসময় কোথায় save করবে তা বোঝে। */}
+      <div className="sticky top-0 z-20 -mx-6 mb-2 flex items-center justify-between border-b border-brand-tealLight/40 bg-white/95 px-6 py-4 shadow-sm backdrop-blur">
         <div>
-          <h1 className="text-xl font-extrabold text-brand-navy">Site Settings</h1>
+          <h1 className="text-2xl font-extrabold text-brand-navy">Site Settings</h1>
           <p className="text-xs text-brand-slate">
-            Hero, stats, contact info — site-wide content. Edit BN + EN side by side.
+            Hero, stats, contact info — সাইটের সব setting এখানে। Bangla + English পাশাপাশি edit করুন।
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          {msg && <span className="text-sm font-semibold text-brand-teal">{msg}</span>}
+        <div className="flex items-center gap-4">
+          {msg && (
+            <span
+              className={`text-sm font-semibold ${
+                msg.startsWith('✓') ? 'text-brand-teal' : 'text-red-600'
+              }`}
+            >
+              {msg}
+            </span>
+          )}
           <button
             type="submit"
             disabled={saving}
-            className="bg-brand-teal hover:bg-brand-navy disabled:opacity-50 text-white font-semibold px-5 py-2 rounded transition-colors"
+            className="rounded-md bg-brand-teal px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-navy disabled:cursor-not-allowed disabled:opacity-50"
           >
             {saving ? 'Saving…' : 'Save Changes'}
           </button>
@@ -103,7 +117,8 @@ const SiteSettingsEdit = () => {
 
       <div className={sectionClass}>
         <h2 className={sectionHead}>Hero Section</h2>
-        <div className="space-y-4">
+        <p className={sectionSub}>হোম পেজের সবচেয়ে উপরের অংশ — title, subtitle, ছবি ও call-to-action button।</p>
+        <div className="space-y-5">
           <BilingualField label="Eyebrow text" name="heroEyebrow" value={data.heroEyebrow} valueEn={data.heroEyebrowEn} onChange={onChange} />
           <SinglePlain label="Japanese title (日本語)" name="heroTitleJp" value={data.heroTitleJp} onChange={onChange} />
           <BilingualField label="Main title" name="heroTitle" value={data.heroTitle} valueEn={data.heroTitleEn} onChange={onChange} />
@@ -114,46 +129,83 @@ const SiteSettingsEdit = () => {
             <BilingualField label="Secondary CTA text" name="heroCtaSecondary" value={data.heroCtaSecondary} valueEn={data.heroCtaSecondaryEn} onChange={onChange} />
             <SinglePlain label="Secondary CTA link" name="heroCtaSecondaryLink" value={data.heroCtaSecondaryLink} onChange={onChange} />
           </div>
-          <SinglePlain label="Hero background image URL" name="heroBackgroundUrl" value={data.heroBackgroundUrl} onChange={onChange} placeholder="https://…" />
+          <ImageUploadField
+            label="Hero background image"
+            value={data.heroBackgroundUrl}
+            onChange={(url) => setData({ ...data, heroBackgroundUrl: url })}
+            hint="হোম পেজের উপরের ছবিটা। Landscape (চওড়া) ছবি ভাল দেখায় — প্রস্থ ১৬০০px+"
+          />
         </div>
 
-        <div className="mt-5">
-          <p className={labelClass}>Hero badges</p>
-          <div className="space-y-2">
+        <div className="mt-6 border-t border-brand-tealLight/30 pt-5">
+          <p className={labelClass}>Hero trust badges</p>
+          <p className="-mt-1 mb-4 text-xs text-brand-slate">
+            Hero-এর নিচের ছোট badge গুলো (যেমন "Govt. Registered", "BAIRA Member")।
+            Icon-এ একটা চিহ্ন দিন (যেমন <span className="font-bold text-brand-teal">✓</span>{' '}
+            বা <span className="font-bold text-brand-teal">⭐</span>) আর Bangla + English label দিন।
+          </p>
+          <div className="space-y-3">
             {(data.heroBadges || []).map((b, idx) => (
-              <div key={idx} className="grid grid-cols-1 md:grid-cols-7 gap-2 items-end">
-                <input
-                  type="text"
-                  placeholder="Value"
-                  value={b.value || ''}
-                  onChange={(e) => onBadgeChange(idx, 'value', e.target.value)}
-                  className={inputClass + ' md:col-span-1'}
-                />
-                <input
-                  type="text"
-                  placeholder="🇧🇩 Label (Bangla)"
-                  value={b.label || ''}
-                  onChange={(e) => onBadgeChange(idx, 'label', e.target.value)}
-                  className={inputClass + ' md:col-span-3'}
-                />
-                <input
-                  type="text"
-                  placeholder="🇺🇸 Label (English)"
-                  value={b.labelEn || ''}
-                  onChange={(e) => onBadgeChange(idx, 'labelEn', e.target.value)}
-                  className={inputClass + ' md:col-span-2'}
-                />
+              <div
+                key={idx}
+                className="grid grid-cols-1 gap-3 rounded-lg border border-brand-tealLight/40 bg-brand-tealLight/5 p-3 md:grid-cols-12 md:items-end"
+              >
+                <div className="md:col-span-1">
+                  <span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-brand-slate">
+                    Icon
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="✓"
+                    value={b.value || ''}
+                    onChange={(e) => onBadgeChange(idx, 'value', e.target.value)}
+                    className={inputClass + ' text-center'}
+                  />
+                </div>
+                <div className="md:col-span-5">
+                  <span className="mb-1 inline-block rounded bg-brand-teal/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-brand-teal">
+                    বাংলা
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="যেমন: সরকার অনুমোদিত"
+                    value={b.label || ''}
+                    onChange={(e) => onBadgeChange(idx, 'label', e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+                <div className="md:col-span-5">
+                  <span className="mb-1 inline-block rounded bg-brand-navy/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-brand-navy">
+                    English
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="e.g. Govt. Registered"
+                    value={b.labelEn || ''}
+                    onChange={(e) => onBadgeChange(idx, 'labelEn', e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
                 <button
                   type="button"
                   onClick={() => removeBadge(idx)}
-                  className="text-red-500 hover:text-red-700 font-bold"
+                  className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-600 hover:bg-red-100 md:col-span-1"
+                  aria-label="Remove badge"
                 >
-                  ✕
+                  Delete
                 </button>
               </div>
             ))}
-            <button type="button" onClick={addBadge} className="text-sm text-brand-teal hover:text-brand-navy font-semibold">
-              + Add badge
+            <button
+              type="button"
+              onClick={addBadge}
+              className="inline-flex items-center gap-1.5 rounded-md border border-brand-teal/40 bg-white px-3 py-2 text-sm font-semibold text-brand-teal hover:bg-brand-teal/5"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              নতুন badge যোগ করুন
             </button>
           </div>
         </div>
@@ -161,6 +213,7 @@ const SiteSettingsEdit = () => {
 
       <div className={sectionClass}>
         <h2 className={sectionHead}>Stats Counter (4 numbers)</h2>
+        <p className={sectionSub}>হোম পেজে দেখানো ৪টা পরিসংখ্যান (যেমন "৫০০+ Students", "৯৫% Visa Success")।</p>
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
             <SinglePlain label="Stat 1 value" name="statStudents" value={data.statStudents} onChange={onChange} />
@@ -177,6 +230,7 @@ const SiteSettingsEdit = () => {
 
       <div className={sectionClass}>
         <h2 className={sectionHead}>Trust & Compliance</h2>
+        <p className={sectionSub}>সরকারি registration ও BAIRA membership-এর তথ্য — visitor-এর বিশ্বাস বাড়াতে।</p>
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <SinglePlain label="Govt. registration number" name="govLicense" value={data.govLicense} onChange={onChange} />
@@ -188,6 +242,7 @@ const SiteSettingsEdit = () => {
 
       <div className={sectionClass}>
         <h2 className={sectionHead}>Contact Info</h2>
+        <p className={sectionSub}>WhatsApp, hotline, email ও দুই দেশের office address। Footer ও contact page-এ দেখাবে।</p>
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <SinglePlain label="WhatsApp number" name="whatsappNumber" value={data.whatsappNumber} onChange={onChange} placeholder="+8801XXXXXXXXX" />
@@ -204,6 +259,7 @@ const SiteSettingsEdit = () => {
 
       <div className={sectionClass}>
         <h2 className={sectionHead}>Social Links</h2>
+        <p className={sectionSub}>Footer-এর social icon গুলোতে এই link কাজ করবে। না দিলে icon-টা hide হয়ে যাবে।</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <SinglePlain label="Facebook URL" name="facebookUrl" value={data.facebookUrl} onChange={onChange} />
           <SinglePlain label="YouTube URL" name="youtubeUrl" value={data.youtubeUrl} onChange={onChange} />
@@ -214,10 +270,16 @@ const SiteSettingsEdit = () => {
 
       <div className={sectionClass}>
         <h2 className={sectionHead}>About Section</h2>
+        <p className={sectionSub}>হোম পেজের "About" সেকশন — heading, body text ও পাশের ছবি।</p>
         <div className="space-y-4">
           <BilingualField label="Heading" name="aboutHeading" value={data.aboutHeading} valueEn={data.aboutHeadingEn} onChange={onChange} />
           <BilingualField label="Body" name="aboutBody" value={data.aboutBody} valueEn={data.aboutBodyEn} onChange={onChange} type="textarea" rows={5} />
-          <SinglePlain label="Image URL" name="aboutImageUrl" value={data.aboutImageUrl} onChange={onChange} />
+          <ImageUploadField
+            label="About section image"
+            value={data.aboutImageUrl}
+            onChange={(url) => setData({ ...data, aboutImageUrl: url })}
+            hint="About সেকশনের পাশে দেখানো ছবি — square বা portrait orientation ভাল।"
+          />
         </div>
       </div>
 
