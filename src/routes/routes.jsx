@@ -3,6 +3,7 @@ import { createBrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { useAuth } from "@context/AuthContext";
 import App from "../App";
 import HomePage from "../pages/HomePage";
+import AdminDashboard from "../pages/AdminDashboard";
 import CreateBlogPage from "../pages/CreateBlogPage"; // Assuming you have an AdminPanel component
 import LoginComponent from "../components/LoginComponent";
 import StudentList from "../pages/StudentList";
@@ -22,6 +23,11 @@ import CertificateSecend from "../pages/CertificateSecend";
 import BookingPage from "../pages/BookingPage";
 import ContactList from "../pages/ContactList";
 import Subscriber from "../pages/Subscriber";
+import SiteSettingsEdit from "../pages/SiteSettingsEdit";
+import HowItWorksManage from "../pages/HowItWorksManage";
+import JlptCoursesManage from "../pages/JlptCoursesManage";
+import SuccessStoriesManage from "../pages/SuccessStoriesManage";
+import FaqsManage from "../pages/FaqsManage";
 const PrivateRoute = ({ element }) => {
   const { state } = useAuth();
   return state.isAuthenticated ? element : <Navigate to="/login" replace />;
@@ -34,7 +40,11 @@ const routesConfig = [
     children: [
       {
         path: "/",
-        element: <HomePage />,
+        element: <PrivateRoute element={<AdminDashboard />} />,
+      },
+      {
+        path: "/branch-account",
+        element: <PrivateRoute element={<HomePage />} />,
       },
       {
         path: "/team-create",
@@ -110,6 +120,26 @@ const routesConfig = [
       {
         path: "/certsec",
         element: <PrivateRoute element={<CertificateSecend />} />,
+      },
+      {
+        path: "/site-settings",
+        element: <PrivateRoute element={<SiteSettingsEdit />} />,
+      },
+      {
+        path: "/how-it-works",
+        element: <PrivateRoute element={<HowItWorksManage />} />,
+      },
+      {
+        path: "/jlpt-courses",
+        element: <PrivateRoute element={<JlptCoursesManage />} />,
+      },
+      {
+        path: "/success-stories",
+        element: <PrivateRoute element={<SuccessStoriesManage />} />,
+      },
+      {
+        path: "/faqs",
+        element: <PrivateRoute element={<FaqsManage />} />,
       },
       // {
       //   name:"Contact list",

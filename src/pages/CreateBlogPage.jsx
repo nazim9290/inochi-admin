@@ -1,18 +1,29 @@
 import { useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
+import BilingualField from '../components/BilingualField';
 
 const labelClass = 'block text-sm font-semibold text-brand-navy mb-1';
-const fieldClass = 'w-full px-3 py-2 border border-brand-tealLight/60 rounded focus:outline-none focus:ring-2 focus:ring-brand-teal/40';
+const fieldClass =
+  'w-full px-3 py-2 border border-brand-tealLight/60 rounded focus:outline-none focus:ring-2 focus:ring-brand-teal/40';
+
+const empty = {
+  title: '',
+  titleEn: '',
+  content: '',
+  contentEn: '',
+  category: '',
+  categoryEn: '',
+};
 
 const CreateBlogPage = () => {
-  const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('');
+  const [form, setForm] = useState(empty);
   const [image, setImage] = useState({});
-  const [content, setContent] = useState('');
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState(null);
   const api = axiosInterceptor();
+
+  const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
@@ -26,57 +37,65 @@ const CreateBlogPage = () => {
       setImage({ url: data.url, public_id: data.public_id });
     } catch (err) {
       console.error('Upload error:', err);
-      setMessage({ kind: 'error', text: 'Failed to upload image. Please try again.' });
+      setMessage({ kind: 'error', text: 'ছবি upload হয়নি — আবার চেষ্টা করুন।' });
     } finally {
       setUploading(false);
     }
   };
 
   const handleSubmit = async () => {
-    if (!title.trim() || !category || !content.trim()) {
-      setMessage({ kind: 'error', text: 'Title, category and description are required.' });
+    if (!form.title.trim() || !form.category || !form.content.trim()) {
+      setMessage({ kind: 'error', text: 'Title (Bangla), category এবং content (Bangla) দেওয়া আবশ্যক।' });
       return;
     }
     setSubmitting(true);
     setMessage(null);
     try {
-      const { data } = await api.post('/create-blog', { image, title, content, category });
+      const { data } = await api.post('/create-blog', { image, ...form });
       if (data?.error) {
-        setMessage({ kind: 'error', text: 'Failed to create blog. Please try again.' });
+        setMessage({ kind: 'error', text: 'Blog তৈরি হয়নি — আবার চেষ্টা করুন।' });
       } else {
-        setMessage({ kind: 'ok', text: 'Blog created successfully!' });
-        setTitle('');
-        setContent('');
-        setCategory('');
+        setMessage({ kind: 'ok', text: '✓ Blog সফলভাবে তৈরি হয়েছে। Pending Blogs থেকে Approve করুন।' });
+        setForm(empty);
         setImage({});
       }
     } catch (err) {
       console.error('Error:', err);
-      setMessage({ kind: 'error', text: 'Failed to create blog. Please try again.' });
+      setMessage({ kind: 'error', text: 'Blog তৈরি হয়নি।' });
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-sm border border-brand-tealLight/40 p-6 sm:p-8">
-      <h1 className="text-2xl font-extrabold text-brand-navy text-center mb-6">Create a Blog</h1>
+    <div className="max-w-4xl bg-white rounded-xl shadow-sm border border-brand-tealLight/40 p-6">
+      <h1 className="text-2xl font-extrabold text-brand-navy mb-1">নতুন Blog তৈরি করুন</h1>
+      <p className="text-xs text-brand-slate mb-6">
+        Title ও Description দুই ভাষাতেই দিন। Cover image upload করুন। তৈরি হলে &quot;Pending Blogs&quot; এ যাবে — সেখান থেকে Approve করুন।
+      </p>
 
       {message && (
-        <p className={`text-sm rounded px-3 py-2 mb-4 ${
-          message.kind === 'ok'
-            ? 'bg-brand-tealLight/30 text-brand-navy border border-brand-teal/40'
-            : 'bg-red-50 text-red-700 border border-red-200'
-        }`}>
+        <p
+          className={`text-sm rounded px-3 py-2 mb-4 ${
+            message.kind === 'ok'
+              ? 'bg-brand-tealLight/30 text-brand-navy border border-brand-teal/40'
+              : 'bg-red-50 text-red-700 border border-red-200'
+          }`}
+        >
           {message.text}
         </p>
       )}
 
       <div className="space-y-4">
-        <div>
-          <label className={labelClass}>Title</label>
-          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" className={fieldClass} />
-        </div>
+        <BilingualField
+          label="শিরোনাম / Title"
+          name="title"
+          value={form.title}
+          valueEn={form.titleEn}
+          onChange={onChange}
+          placeholderBn="জাপানে স্কলারশিপ পাবার গাইড"
+          placeholderEn="A guide to scholarships in Japan"
+        />
 
         <div>
           <label className={labelClass}>Cover Image (optional)</label>
@@ -92,28 +111,42 @@ const CreateBlogPage = () => {
           )}
         </div>
 
-        <div>
-          <label className={labelClass}>Category</label>
-          <select value={category} onChange={(e) => setCategory(e.target.value)} className={fieldClass}>
-            <option value="" disabled>Select a category</option>
-            <option value="study">Study in Japan</option>
-            <option value="service">Services</option>
-            <option value="blogs">Blogs</option>
-            <option value="culture">Culture</option>
-            <option value="news">News</option>
-          </select>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <label>
+            <span className={labelClass}>Category (Bangla)</span>
+            <select name="category" value={form.category} onChange={onChange} className={fieldClass}>
+              <option value="" disabled>Category বেছে নিন</option>
+              <option value="study">জাপানে পড়াশোনা</option>
+              <option value="service">সেবা</option>
+              <option value="blogs">ব্লগ</option>
+              <option value="culture">সংস্কৃতি</option>
+              <option value="news">সংবাদ</option>
+            </select>
+          </label>
+          <label>
+            <span className={labelClass}>Category (English)</span>
+            <select name="categoryEn" value={form.categoryEn} onChange={onChange} className={fieldClass}>
+              <option value="">Select category</option>
+              <option value="Study in Japan">Study in Japan</option>
+              <option value="Services">Services</option>
+              <option value="Blog">Blog</option>
+              <option value="Culture">Culture</option>
+              <option value="News">News</option>
+            </select>
+          </label>
         </div>
 
-        <div>
-          <label className={labelClass}>Description</label>
-          <textarea
-            rows={8}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Write the article content here. HTML is supported."
-            className={fieldClass}
-          />
-        </div>
+        <BilingualField
+          label="বিষয়বস্তু / Content"
+          name="content"
+          value={form.content}
+          valueEn={form.contentEn}
+          onChange={onChange}
+          type="textarea"
+          rows={10}
+          placeholderBn="পুরো লেখা এখানে লিখুন। HTML tag (<p>, <strong>, <h2>) ব্যবহার করতে পারেন।"
+          placeholderEn="Write the full article here. HTML tags supported."
+        />
 
         <div className="flex gap-3 pt-2">
           <button
@@ -122,7 +155,7 @@ const CreateBlogPage = () => {
             disabled={submitting}
             className="bg-brand-teal hover:bg-brand-navy text-white font-semibold px-6 py-2 rounded transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {submitting ? 'Submitting…' : 'Publish Blog'}
+            {submitting ? 'Saving…' : 'Blog তৈরি করুন'}
           </button>
         </div>
       </div>

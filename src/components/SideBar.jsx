@@ -1,22 +1,58 @@
 import NavigationLink from './NavigationLink';
 
-const routes = [
-  { name: 'Home', path: '/' },
-  { name: 'Students', path: '/students' },
-  { name: 'Create Blog', path: '/create-blog' },
-  { name: 'Account', path: '/accounts' },
-  { name: 'Student Certificate', path: '/certsec' },
-  { name: 'Question', path: '/create-question' },
-  { name: 'Branch', path: '/branch' },
-  { name: 'Video Create', path: '/create-video' },
-  { name: 'Create Certificate', path: '/create-certificate' },
-  { name: 'Update Session', path: '/update-session' },
-  { name: 'Team Create', path: '/team-create' },
-  { name: 'Create Service', path: '/create-service' },
-  { name: 'Create Carousel', path: '/create-crusel' },
-  { name: 'Booking List', path: '/semmenr-booklist' },
-  { name: 'Contact List', path: '/contact-list' },
-  { name: 'Subscriber List', path: '/subscriber-list' },
+const groups = [
+  {
+    title: 'Dashboard',
+    routes: [
+      { name: 'হোম', path: '/' },
+    ],
+  },
+  {
+    title: 'Site Content',
+    routes: [
+      { name: 'Site Settings', path: '/site-settings' },
+      { name: 'How It Works', path: '/how-it-works' },
+      { name: 'JLPT Courses', path: '/jlpt-courses' },
+      { name: 'Success Stories', path: '/success-stories' },
+      { name: 'FAQs', path: '/faqs' },
+    ],
+  },
+  {
+    title: 'Pages',
+    routes: [
+      { name: 'Home Carousel', path: '/create-crusel' },
+      { name: 'Team', path: '/team-create' },
+      { name: 'Services', path: '/create-service' },
+      { name: 'Blog', path: '/create-blog' },
+      { name: 'Brands', path: '/create-brand' },
+      { name: 'Sessions', path: '/update-session' },
+      { name: 'Videos', path: '/create-video' },
+      { name: 'Quizzes', path: '/create-question' },
+    ],
+  },
+  {
+    title: 'People',
+    routes: [
+      { name: 'Students', path: '/students' },
+      { name: 'Branches', path: '/branch' },
+      { name: 'Account', path: '/accounts' },
+    ],
+  },
+  {
+    title: 'Inbox',
+    routes: [
+      { name: 'Bookings', path: '/semmenr-booklist' },
+      { name: 'Contacts', path: '/contact-list' },
+      { name: 'Subscribers', path: '/subscriber-list' },
+    ],
+  },
+  {
+    title: 'Certificates',
+    routes: [
+      { name: 'Create', path: '/create-certificate' },
+      { name: 'Issued', path: '/certsec' },
+    ],
+  },
 ];
 
 const SideBar = () => {
@@ -35,13 +71,20 @@ const SideBar = () => {
       </div>
 
       <nav className="py-2">
-        <ul className="list-none m-0 p-0">
-          {routes.map((route) => (
-            <NavigationLink key={route.path} path={route.path}>
-              {route.name}
-            </NavigationLink>
-          ))}
-        </ul>
+        {groups.map((group) => (
+          <div key={group.title} className="mb-3">
+            <p className="px-4 pt-3 pb-1 text-[10px] uppercase tracking-wider text-brand-slate/70 font-bold">
+              {group.title}
+            </p>
+            <ul className="list-none m-0 p-0">
+              {group.routes.map((route) => (
+                <NavigationLink key={route.path} path={route.path}>
+                  {route.name}
+                </NavigationLink>
+              ))}
+            </ul>
+          </div>
+        ))}
       </nav>
     </aside>
   );
