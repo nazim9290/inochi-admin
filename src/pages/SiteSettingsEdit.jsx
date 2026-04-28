@@ -387,6 +387,56 @@ const SiteSettingsEdit = () => {
         </div>
       </div>
 
+      {/* ========= SEO / META ========= */}
+      <div className={sectionClass}>
+        <h2 className={sectionHead}>SEO &amp; Meta Tags</h2>
+        <p className="text-xs text-brand-slate mb-4 leading-relaxed bg-amber-50 border border-amber-200 rounded p-3">
+          🌐 <strong>সার্চ ইঞ্জিন ও Social share-এ যা দেখাবে:</strong>
+          <br />
+          1. <strong>Site title</strong> — Browser tab-এ ও Google search result-এ এটাই দেখাবে।
+          <br />
+          2. <strong>Site description</strong> — Google search result-এ title-এর নিচে যে ১-২ লাইন আসে।
+          <br />
+          3. <strong>Keywords</strong> — কমা দিয়ে আলাদা করে লিখুন (যেমন: <em>Japan study, JLPT, COE</em>)।
+          <br />
+          4. <strong>OG image</strong> — Facebook/WhatsApp-এ link share করলে যে preview ছবিটা আসবে।
+          আদর্শ size: ১২০০×৬৩০ px।
+          <br />
+          5. খালি রাখলে built-in default value কাজ করবে।
+        </p>
+        <div className="space-y-4">
+          <BilingualField
+            label="Site title (browser tab + search result)"
+            name="siteTitle"
+            value={data.siteTitle}
+            valueEn={data.siteTitleEn}
+            onChange={onChange}
+          />
+          <BilingualField
+            label="Site description (search result snippet)"
+            name="siteDescription"
+            value={data.siteDescription}
+            valueEn={data.siteDescriptionEn}
+            onChange={onChange}
+            type="textarea"
+            rows={3}
+          />
+          <SinglePlain
+            label="Meta keywords (comma-separated)"
+            name="metaKeywords"
+            value={data.metaKeywords}
+            onChange={onChange}
+            placeholder="Japan study Bangladesh, JLPT Dhaka, COE Japan"
+          />
+          <ImageUploadField
+            label="Social share image (Open Graph)"
+            value={data.ogImageUrl}
+            onChange={(url) => setData({ ...data, ogImageUrl: url })}
+            hint="Facebook, WhatsApp, Twitter-এ link share করলে এই ছবি preview-তে আসবে। আদর্শ size 1200×630 px।"
+          />
+        </div>
+      </div>
+
       {/* ========= GOOGLE ========= */}
       <div className={sectionClass}>
         <h2 className={sectionHead}>Google Integration</h2>
