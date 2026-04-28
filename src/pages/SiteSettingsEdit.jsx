@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import BilingualField from '../components/BilingualField';
 import ImageUploadField from '../components/ImageUploadField';
+import MapEmbedField from '../components/MapEmbedField';
 
 // EN: Shared input/label classes — kept consistent so all fields look the same.
 // BN: Shared input/label class — সব field-এর look একরকম রাখতে।
@@ -263,7 +264,12 @@ const SiteSettingsEdit = () => {
           <BilingualField label="Japan address" name="addressJp" value={data.addressJp} valueEn={data.addressJpEn} onChange={onChange} type="textarea" rows={2} />
           <BilingualField label="Office hours (Bangladesh)" name="officeHoursBd" value={data.officeHoursBd} valueEn={data.officeHoursBdEn} onChange={onChange} />
           <BilingualField label="Office hours (Japan)" name="officeHoursJp" value={data.officeHoursJp} valueEn={data.officeHoursJpEn} onChange={onChange} />
-          <SinglePlain label="Google Maps embed URL" name="mapEmbedUrl" value={data.mapEmbedUrl} onChange={onChange} />
+          <MapEmbedField
+            name="mapEmbedUrl"
+            label="Google Maps embed URL"
+            value={data.mapEmbedUrl}
+            onChange={onChange}
+          />
         </div>
       </div>
 

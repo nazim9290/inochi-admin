@@ -12,6 +12,7 @@
 
 import { useEffect, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
+import MapEmbedField from '../components/MapEmbedField';
 
 const inputClass =
   'w-full px-3 py-2 text-sm border border-brand-tealLight/60 rounded focus:outline-none focus:ring-2 focus:ring-brand-teal/40';
@@ -283,10 +284,14 @@ function BranchForm({ form, editingId, busy, onChange, setPhones, onSubmit, onRe
           <PhonesEditor phones={form.phones} onChange={setPhones} />
         </div>
 
-        <label className="md:col-span-2">
-          <span className={labelClass}>Google Map embed URL <span className="font-normal text-brand-slate">(optional)</span></span>
-          <input name="mapEmbedUrl" value={form.mapEmbedUrl} onChange={onChange} className={inputClass} placeholder="https://www.google.com/maps/embed?..." />
-        </label>
+        <div className="md:col-span-2">
+          <MapEmbedField
+            name="mapEmbedUrl"
+            label="Google Map embed URL (optional)"
+            value={form.mapEmbedUrl}
+            onChange={onChange}
+          />
+        </div>
 
         <label>
           <span className={labelClass}>Sort order</span>
