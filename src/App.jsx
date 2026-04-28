@@ -1,5 +1,17 @@
+/**
+ * EN: Top-level admin app shell. Vertical layout: TopNav (sticky) → SubNav
+ *     (contextual section tabs) → main content via React Router Outlet.
+ *     Sidebar removed in favour of a cleaner two-tier tab structure that
+ *     scales better when there are many sub-pages.
+ * BN: Admin app-এর top-level shell। Vertical layout: TopNav (sticky) → SubNav
+ *     (contextual section tab) → main content (React Router Outlet দিয়ে)।
+ *     Sidebar বাদ — পরিবর্তে cleaner two-tier tab structure যা অনেক sub-page
+ *     থাকলেও ভালভাবে handle করে।
+ */
+
 import { Outlet } from 'react-router-dom';
-import SideBar from './components/SideBar';
+import TopNav from './components/TopNav';
+import SubNav from './components/SubNav';
 import useCurrentUser from './useCurrentUser';
 
 const App = () => {
@@ -24,9 +36,10 @@ const App = () => {
   }
 
   return (
-    <div className="min-h-screen flex bg-brand-tealLight/10">
-      <SideBar />
-      <main className="flex-1 p-6 overflow-x-hidden">
+    <div className="min-h-screen bg-brand-tealLight/10">
+      <TopNav />
+      <SubNav />
+      <main className="mx-auto max-w-7xl px-4 py-6 md:px-6 md:py-8">
         <Outlet />
       </main>
     </div>

@@ -1,0 +1,114 @@
+/**
+ * EN: Main top navigation bar — logo + brand name on the left, six section
+ *     tabs in the centre, user info + logout on the right. On mobile the
+ *     tabs collapse into a hamburger button that toggles a drawer.
+ * BN: প্রধান top nav bar — বাঁয়ে logo + brand name, মাঝে ছয়টা section tab,
+ *     ডানে user info + logout। Mobile-এ tab গুলো hamburger button-এ collapse
+ *     হয়, যেটা একটা drawer toggle করে।
+ */
+
+import { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { NAV_SECTIONS, findActiveSection } from '../lib/navConfig';
+import MobileMenu from './MobileMenu';
+
+export default function TopNav() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { logout, state } = useAuth();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const active = findActiveSection(location.pathname);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  return (
+    <>
+      <header className="sticky top-0 z-30 border-b border-brand-tealLight/40 bg-white shadow-sm">
+        <div className="flex h-14 items-center justify-between gap-4 px-4 md:h-16 md:px-6">
+          <BrandLogo />
+
+          {/* EN: Desktop tab strip — hidden under md breakpoint. */}
+          {/* BN: Desktop tab strip — md breakpoint-এর নিচে hidden। */}
+          <nav className="hidden flex-1 items-center justify-center gap-1 md:flex">
+            {NAV_SECTIONS.map((section) => (
+              <NavTab key={section.key} section={section} isActive={section.key === active.key} />
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-3">
+            <UserBadge name={state?.user?.fullname || state?.user?.email} />
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="hidden rounded-md border border-brand-tealLight/60 px-3 py-1.5 text-xs font-semibold text-brand-slate transition-colors hover:bg-brand-tealLight/20 hover:text-brand-navy md:inline-flex"
+            >
+              Logout
+            </button>
+            <button
+              type="button"
+              onClick={() => setMobileOpen(true)}
+              aria-label="Open menu"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-md text-brand-navy hover:bg-brand-tealLight/20 md:hidden"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5">
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} activeKey={active.key} onLogout={handleLogout} />
+    </>
+  );
+}
+
+// EN: Logo + brand text. Logo links to dashboard.
+// BN: Logo + brand text। Logo দিয়ে dashboard-এ যায়।
+function BrandLogo() {
+  return (
+    <Link to="/" className="flex flex-shrink-0 items-center gap-2 no-underline">
+      <img src="/Inochi_logo.png" alt="Inochi" className="h-9 w-9 object-contain md:h-10 md:w-10" />
+      <div className="hidden flex-col leading-tight sm:flex">
+        <span className="text-sm font-bold text-brand-navy">Inochi Admin</span>
+        <span className="text-[10px] text-brand-slate">Dhaka · Saitama</span>
+      </div>
+    </Link>
+  );
+}
+
+// EN: Single top tab with icon + Bangla label. Active state gets brand-teal underline + bg.
+// BN: একটা top tab — icon + Bangla label। Active হলে brand-teal underline + bg পায়।
+function NavTab({ section, isActive }) {
+  const base =
+    'inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-semibold transition-colors no-underline';
+  const activeCls = 'bg-brand-teal/15 text-brand-navy';
+  const inactiveCls = 'text-brand-slate hover:bg-brand-tealLight/20 hover:text-brand-navy';
+  return (
+    <Link to={section.home} className={`${base} ${isActive ? activeCls : inactiveCls}`}>
+      <span className={isActive ? 'text-brand-teal' : 'text-brand-slate/60'}>{section.icon}</span>
+      <span>{section.label}</span>
+    </Link>
+  );
+}
+
+// EN: Compact "user" chip — shows initial in a coloured circle + name on wider screens.
+// BN: Compact "user" chip — coloured circle-এ initial + বড় screen-এ নাম।
+function UserBadge({ name }) {
+  const initial = (name || 'A').trim()[0]?.toUpperCase() || 'A';
+  return (
+    <div className="flex items-center gap-2">
+      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-navy text-xs font-bold text-white">
+        {initial}
+      </div>
+      {name && <span className="hidden text-xs font-medium text-brand-slate lg:inline">{name}</span>}
+    </div>
+  );
+}

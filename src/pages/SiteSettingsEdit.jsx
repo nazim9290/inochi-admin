@@ -85,34 +85,44 @@ const SiteSettingsEdit = () => {
   }
 
   return (
-    <form onSubmit={submit} className="space-y-6 max-w-6xl">
-      {/* EN: Sticky save bar — high contrast so the user always knows where to save. */}
-      {/* BN: Sticky save bar — high contrast, user যাতে সবসময় কোথায় save করবে তা বোঝে। */}
-      <div className="sticky top-0 z-20 -mx-6 mb-2 flex items-center justify-between border-b border-brand-tealLight/40 bg-white/95 px-6 py-4 shadow-sm backdrop-blur">
+    <form onSubmit={submit} className="space-y-6 max-w-6xl pb-24">
+      {/* EN: Page header — non-sticky; the floating save button at the bottom-right
+              is what stays visible while scrolling. */}
+      {/* BN: Page header — sticky না; নিচে-ডানে floating save button scroll-এর সময়
+              দেখা যায়। */}
+      <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold text-brand-navy">Site Settings</h1>
-          <p className="text-xs text-brand-slate">
+          <p className="mt-1 text-sm text-brand-slate">
             Hero, stats, contact info — সাইটের সব setting এখানে। Bangla + English পাশাপাশি edit করুন।
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          {msg && (
-            <span
-              className={`text-sm font-semibold ${
-                msg.startsWith('✓') ? 'text-brand-teal' : 'text-red-600'
-              }`}
-            >
-              {msg}
-            </span>
-          )}
-          <button
-            type="submit"
-            disabled={saving}
-            className="rounded-md bg-brand-teal px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-navy disabled:cursor-not-allowed disabled:opacity-50"
+      </div>
+
+      {/* EN: Floating save button — fixed bottom-right, always reachable. */}
+      {/* BN: Floating save button — সবসময় নিচে-ডানে fixed, scroll-এর সময়ও পৌঁছানো যায়। */}
+      <div className="fixed bottom-6 right-6 z-30 flex items-center gap-3">
+        {msg && (
+          <span
+            className={`rounded-full bg-white px-4 py-2 text-sm font-semibold shadow-md ${
+              msg.startsWith('✓') ? 'text-brand-teal' : 'text-red-600'
+            }`}
           >
-            {saving ? 'Saving…' : 'Save Changes'}
-          </button>
-        </div>
+            {msg}
+          </span>
+        )}
+        <button
+          type="submit"
+          disabled={saving}
+          className="inline-flex items-center gap-2 rounded-full bg-brand-teal px-6 py-3 text-sm font-bold text-white shadow-lg transition-all hover:bg-brand-navy hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
+            <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
+            <polyline points="17 21 17 13 7 13 7 21" />
+            <polyline points="7 3 7 8 15 8" />
+          </svg>
+          {saving ? 'Saving…' : 'Save Changes'}
+        </button>
       </div>
 
       <div className={sectionClass}>
