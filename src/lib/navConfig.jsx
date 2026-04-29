@@ -122,6 +122,7 @@ export const NAV_SECTIONS = [
     home: '/applications',
     routes: [
       { path: '/applications', label: 'আবেদন', labelEn: 'Applications' },
+      { path: '/reviews', label: 'রিভিউ', labelEn: 'Reviews' },
       { path: '/contact-list', label: 'যোগাযোগ', labelEn: 'Contacts' },
       { path: '/semmenr-booklist', label: 'বুকিং', labelEn: 'Bookings' },
       { path: '/subscriber-list', label: 'সাবস্ক্রাইবার', labelEn: 'Subscribers' },

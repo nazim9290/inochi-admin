@@ -35,14 +35,16 @@ export default function TopNav() {
     let alive = true;
     const refresh = async () => {
       try {
-        const [contacts, apps] = await Promise.all([
+        const [contacts, apps, reviews] = await Promise.all([
           api.get('/all-contact-request').catch(() => ({ data: { contacts: [] } })),
           api.get('/applications?status=new').catch(() => ({ data: { applications: [] } })),
+          api.get('/reviews?status=pending').catch(() => ({ data: { reviews: [] } })),
         ]);
         if (!alive) return;
         const pendingContacts = (contacts.data?.contacts || []).filter((c) => (c.status || 'Pending') === 'Pending').length;
         const newApps = (apps.data?.applications || []).length;
-        setPendingCount(pendingContacts + newApps);
+        const pendingReviews = (reviews.data?.reviews || []).length;
+        setPendingCount(pendingContacts + newApps + pendingReviews);
       } catch {
         // EN: Silently ignore — badge just stays at last known value.
         // BN: Silently ignore — badge সর্বশেষ value-তেই থাকবে।

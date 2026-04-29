@@ -29,6 +29,7 @@ import JlptCoursesManage from "../pages/JlptCoursesManage";
 import SuccessStoriesManage from "../pages/SuccessStoriesManage";
 import FaqsManage from "../pages/FaqsManage";
 import Applications from "../pages/Applications";
+import Reviews from "../pages/Reviews";
 const PrivateRoute = ({ element }) => {
   const { state } = useAuth();
   return state.isAuthenticated ? element : <Navigate to="/login" replace />;
@@ -117,6 +118,10 @@ const routesConfig = [
       {
         path: "/applications",
         element: <PrivateRoute element={<Applications />} />,
+      },
+      {
+        path: "/reviews",
+        element: <PrivateRoute element={<Reviews />} />,
       },
       {
         path: "/subscriber-list",
