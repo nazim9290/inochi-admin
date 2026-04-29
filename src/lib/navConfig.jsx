@@ -110,8 +110,9 @@ export const NAV_SECTIONS = [
     home: '/students',
     routes: [
       { path: '/students', label: 'ছাত্র-ছাত্রী', labelEn: 'Students' },
+      { path: '/users', label: 'একাউন্ট', labelEn: 'Users' },
       { path: '/branch', label: 'ব্রাঞ্চ', labelEn: 'Branches' },
-      { path: '/accounts', label: 'একাউন্ট', labelEn: 'Accounts' },
+      { path: '/accounts', label: 'পুরাতন একাউন্ট', labelEn: 'Old Accounts' },
     ],
   },
   {
