@@ -126,6 +126,7 @@ export const NAV_SECTIONS = [
       { path: '/contact-list', label: 'যোগাযোগ', labelEn: 'Contacts' },
       { path: '/semmenr-booklist', label: 'বুকিং', labelEn: 'Bookings' },
       { path: '/subscriber-list', label: 'সাবস্ক্রাইবার', labelEn: 'Subscribers' },
+      { path: '/newsletter', label: 'নিউজলেটার', labelEn: 'Newsletter' },
     ],
   },
   {

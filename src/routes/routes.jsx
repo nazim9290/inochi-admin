@@ -30,6 +30,7 @@ import SuccessStoriesManage from "../pages/SuccessStoriesManage";
 import FaqsManage from "../pages/FaqsManage";
 import Applications from "../pages/Applications";
 import Reviews from "../pages/Reviews";
+import Newsletter from "../pages/Newsletter";
 const PrivateRoute = ({ element }) => {
   const { state } = useAuth();
   return state.isAuthenticated ? element : <Navigate to="/login" replace />;
@@ -122,6 +123,10 @@ const routesConfig = [
       {
         path: "/reviews",
         element: <PrivateRoute element={<Reviews />} />,
+      },
+      {
+        path: "/newsletter",
+        element: <PrivateRoute element={<Newsletter />} />,
       },
       {
         path: "/subscriber-list",
