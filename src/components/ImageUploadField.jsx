@@ -17,12 +17,14 @@
 
 import { useRef, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
+import ImageLibraryPicker from './ImageLibraryPicker';
 
 export default function ImageUploadField({ label, value, onChange, hint }) {
   const api = axiosInterceptor();
   const fileRef = useRef(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
+  const [libraryOpen, setLibraryOpen] = useState(false);
 
   // EN: Upload selected file to backend; on success bubble the URL up via onChange.
   // BN: Selected file backend-এ upload করে; success-এ onChange দিয়ে URL parent-কে পাঠায়।
@@ -64,14 +66,25 @@ export default function ImageUploadField({ label, value, onChange, hint }) {
         <ImagePreview url={value} />
 
         <div className="flex-1 space-y-2">
-          <input
-            ref={fileRef}
-            type="file"
-            accept="image/*"
-            onChange={handleFile}
-            disabled={uploading}
-            className="block w-full text-sm text-brand-slate file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-brand-teal file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white file:transition-colors hover:file:bg-brand-navy"
-          />
+          <div className="flex flex-wrap items-center gap-2">
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFile}
+              disabled={uploading}
+              className="block flex-1 min-w-[200px] text-sm text-brand-slate file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-brand-teal file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white file:transition-colors hover:file:bg-brand-navy"
+            />
+            <button
+              type="button"
+              onClick={() => setLibraryOpen(true)}
+              disabled={uploading}
+              className="inline-flex items-center gap-1.5 rounded-md border border-brand-navy bg-white px-3 py-2 text-xs font-semibold text-brand-navy hover:bg-brand-tealLight/10 disabled:opacity-50"
+              title="আগে upload করা ছবি থেকে বাছাই"
+            >
+              📚 Library
+            </button>
+          </div>
 
           {uploading && (
             <p className="text-xs text-brand-teal">Uploading… কয়েক সেকেন্ড অপেক্ষা করুন।</p>
@@ -95,9 +108,19 @@ export default function ImageUploadField({ label, value, onChange, hint }) {
 
           <p className="text-[11px] text-brand-slate/80">
             JPG / PNG / WebP — সর্বোচ্চ ৫ MB। ছবি upload হলে নিচে preview দেখাবে।
+            অথবা <strong>Library</strong> থেকে আগের upload করা ছবি বাছাই করুন।
           </p>
         </div>
       </div>
+
+      <ImageLibraryPicker
+        open={libraryOpen}
+        onClose={() => setLibraryOpen(false)}
+        onPick={(url) => {
+          onChange(url);
+          setError('');
+        }}
+      />
     </div>
   );
 }
