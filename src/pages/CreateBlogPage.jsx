@@ -1,7 +1,16 @@
+// EN: Blog creation page — bilingual rich-text content (TipTap) with image
+//     crop on cover and inside the body, plus auto-translate buttons. Output
+//     is saved as HTML so the public PostBody renders it directly.
+// BN: Blog তৈরির পেজ — bilingual rich-text content (TipTap), cover ও body-র
+//     image crop সহ, এবং auto-translate button। Output HTML হিসেবে save হয়
+//     যাতে public PostBody সরাসরি render করতে পারে।
+
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import BilingualField from '../components/BilingualField';
+import BilingualRichEditor from '../components/editor/BilingualRichEditor';
+import ImageCropModal from '../components/editor/ImageCropModal';
 
 const labelClass = 'block text-sm font-semibold text-brand-navy mb-1';
 const fieldClass =
@@ -19,34 +28,31 @@ const empty = {
 const CreateBlogPage = () => {
   const [form, setForm] = useState(empty);
   const [image, setImage] = useState({});
-  const [uploading, setUploading] = useState(false);
+  const [coverFile, setCoverFile] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState(null);
   const api = axiosInterceptor();
 
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const setContent = (html) => setForm((f) => ({ ...f, content: html }));
+  const setContentEn = (html) => setForm((f) => ({ ...f, contentEn: html }));
 
-  const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const formData = new FormData();
-    formData.append('image', file);
-    setUploading(true);
-    setMessage(null);
-    try {
-      const { data } = await api.post('/upload-image-file', formData);
-      setImage({ url: data.url, public_id: data.public_id });
-    } catch (err) {
-      console.error('Upload error:', err);
-      setMessage({ kind: 'error', text: 'ছবি upload হয়নি — আবার চেষ্টা করুন।' });
-    } finally {
-      setUploading(false);
-    }
+  // EN: Cover image goes through the same crop modal as in-body images so the
+  //     admin can frame it properly before upload.
+  // BN: Cover image-ও body-র image-এর মতো crop modal-এ যায় — upload-এর
+  //     আগে admin ঠিকঠাক frame করতে পারে।
+  const onCoverPicked = (e) => {
+    const f = e.target.files?.[0];
+    if (f) setCoverFile(f);
+    e.target.value = '';
   };
 
   const handleSubmit = async () => {
     if (!form.title.trim() || !form.category || !form.content.trim()) {
-      setMessage({ kind: 'error', text: 'Title (Bangla), category এবং content (Bangla) দেওয়া আবশ্যক।' });
+      setMessage({
+        kind: 'error',
+        text: 'Title (Bangla), category এবং content (Bangla) দেওয়া আবশ্যক।',
+      });
       return;
     }
     setSubmitting(true);
@@ -54,7 +60,10 @@ const CreateBlogPage = () => {
     try {
       const { data } = await api.post('/create-blog', { image, ...form });
       if (data?.error) {
-        setMessage({ kind: 'error', text: 'Blog তৈরি হয়নি — আবার চেষ্টা করুন।' });
+        setMessage({
+          kind: 'error',
+          text: 'Blog তৈরি হয়নি — আবার চেষ্টা করুন।',
+        });
       } else {
         setMessage({
           kind: 'ok',
@@ -73,7 +82,7 @@ const CreateBlogPage = () => {
   };
 
   return (
-    <div className="max-w-4xl bg-white rounded-xl shadow-sm border border-brand-tealLight/40 p-6">
+    <div className="max-w-5xl bg-white rounded-xl shadow-sm border border-brand-tealLight/40 p-6">
       <h1 className="text-2xl font-extrabold text-brand-navy mb-1">নতুন Blog তৈরি করুন</h1>
       <p className="text-xs text-brand-slate mb-6">
         Title ও Description দুই ভাষাতেই দিন। Cover image upload করুন। তৈরি হলে &quot;Pending Blogs&quot; এ যাবে — সেখান থেকে Approve করুন।
@@ -115,12 +124,18 @@ const CreateBlogPage = () => {
           <input
             type="file"
             accept="image/*"
-            onChange={handleImageChange}
+            onChange={onCoverPicked}
             className="block w-full text-sm text-brand-slate file:mr-3 file:py-2 file:px-4 file:rounded file:border-0 file:bg-brand-tealLight/30 file:text-brand-navy file:font-semibold hover:file:bg-brand-tealLight/50"
           />
-          {uploading && <p className="text-xs text-brand-slate mt-1">Uploading…</p>}
+          <p className="text-[11px] text-brand-slate mt-1">
+            ছবি বেছে নিলে crop করার window আসবে।
+          </p>
           {image.url && (
-            <img src={image.url} alt="Preview" className="mt-2 max-h-40 rounded border border-brand-tealLight/30" />
+            <img
+              src={image.url}
+              alt="Preview"
+              className="mt-2 max-h-40 rounded border border-brand-tealLight/30"
+            />
           )}
         </div>
 
@@ -149,16 +164,15 @@ const CreateBlogPage = () => {
           </label>
         </div>
 
-        <BilingualField
+        <BilingualRichEditor
           label="বিষয়বস্তু / Content"
-          name="content"
+          hint="Toolbar থেকে formatting, ছবি ও link বসাতে পারবেন। উপরের অনুবাদ button দিয়ে অপর ভাষায় draft বানিয়ে নিতে পারেন।"
           value={form.content}
           valueEn={form.contentEn}
-          onChange={onChange}
-          type="textarea"
-          rows={10}
-          placeholderBn="পুরো লেখা এখানে লিখুন। HTML tag (<p>, <strong>, <h2>) ব্যবহার করতে পারেন।"
-          placeholderEn="Write the full article here. HTML tags supported."
+          onChange={setContent}
+          onChangeEn={setContentEn}
+          placeholderBn="পুরো লেখা এখানে লিখুন…"
+          placeholderEn="Write the full article here…"
         />
 
         <div className="flex gap-3 pt-2">
@@ -172,6 +186,17 @@ const CreateBlogPage = () => {
           </button>
         </div>
       </div>
+
+      {coverFile && (
+        <ImageCropModal
+          file={coverFile}
+          onCancel={() => setCoverFile(null)}
+          onUploaded={(uploaded) => {
+            setImage(uploaded);
+            setCoverFile(null);
+          }}
+        />
+      )}
     </div>
   );
 };

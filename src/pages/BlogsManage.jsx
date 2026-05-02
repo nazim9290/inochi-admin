@@ -12,6 +12,8 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import BilingualField from '../components/BilingualField';
+import BilingualRichEditor from '../components/editor/BilingualRichEditor';
+import ImageCropModal from '../components/editor/ImageCropModal';
 import PendingBlogs from '../components/PendingBlogs';
 
 const labelClass = 'block text-sm font-semibold text-brand-navy mb-1';
@@ -48,7 +50,7 @@ const BlogsManage = () => {
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState(emptyForm);
   const [image, setImage] = useState({});
-  const [uploading, setUploading] = useState(false);
+  const [coverFile, setCoverFile] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
   // EN: Single fetch for both lists — keeps tab counts honest after every action.
@@ -74,25 +76,17 @@ const BlogsManage = () => {
   }, []);
 
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const setContent = (html) => setForm((f) => ({ ...f, content: html }));
+  const setContentEn = (html) => setForm((f) => ({ ...f, contentEn: html }));
 
-  // EN: Reused upload endpoint — same as CreateBlogPage so cloudinary path stays uniform.
-  // BN: একই upload endpoint — CreateBlogPage-এর সাথে cloudinary path একরকম।
-  const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const formData = new FormData();
-    formData.append('image', file);
-    setUploading(true);
-    setMessage(null);
-    try {
-      const { data } = await api.post('/upload-image-file', formData);
-      setImage({ url: data.url, public_id: data.public_id });
-    } catch (err) {
-      console.error('Upload error:', err);
-      setMessage({ kind: 'error', text: 'ছবি upload হয়নি — আবার চেষ্টা করুন।' });
-    } finally {
-      setUploading(false);
-    }
+  // EN: Cover image picker — pushes the chosen file into the crop modal; the
+  //     modal handles the actual upload via /upload-image-file.
+  // BN: Cover image picker — selected file crop modal-এ পাঠায়; modal-ই
+  //     /upload-image-file-এ upload করে।
+  const onCoverPicked = (e) => {
+    const f = e.target.files?.[0];
+    if (f) setCoverFile(f);
+    e.target.value = '';
   };
 
   const startEdit = (b) => {
@@ -256,12 +250,12 @@ const BlogsManage = () => {
               <input
                 type="file"
                 accept="image/*"
-                onChange={handleImageChange}
+                onChange={onCoverPicked}
                 className="block w-full text-sm text-brand-slate file:mr-3 file:py-2 file:px-4 file:rounded file:border-0 file:bg-brand-tealLight/30 file:text-brand-navy file:font-semibold hover:file:bg-brand-tealLight/50"
               />
-              {uploading && (
-                <p className="text-xs text-brand-slate mt-1">Uploading…</p>
-              )}
+              <p className="text-[11px] text-brand-slate mt-1">
+                ছবি বেছে নিলে crop করার window আসবে।
+              </p>
               {image?.url && (
                 <img
                   src={image.url}
@@ -308,16 +302,15 @@ const BlogsManage = () => {
               </label>
             </div>
 
-            <BilingualField
+            <BilingualRichEditor
               label="বিষয়বস্তু / Content"
-              name="content"
+              hint="Toolbar থেকে formatting, ছবি ও link বসাতে পারবেন। উপরের অনুবাদ button দিয়ে অপর ভাষায় draft বানিয়ে নিতে পারেন।"
               value={form.content}
               valueEn={form.contentEn}
-              onChange={onChange}
-              type="textarea"
-              rows={10}
-              placeholderBn="পুরো লেখা এখানে লিখুন। HTML tag (<p>, <strong>, <h2>) ব্যবহার করতে পারেন।"
-              placeholderEn="Write the full article here. HTML tags supported."
+              onChange={setContent}
+              onChangeEn={setContentEn}
+              placeholderBn="পুরো লেখা এখানে লিখুন…"
+              placeholderEn="Write the full article here…"
             />
 
             <div className="flex gap-3 pt-2">
@@ -399,6 +392,17 @@ const BlogsManage = () => {
           )}
         </div>
       </div>
+
+      {coverFile && (
+        <ImageCropModal
+          file={coverFile}
+          onCancel={() => setCoverFile(null)}
+          onUploaded={(uploaded) => {
+            setImage(uploaded);
+            setCoverFile(null);
+          }}
+        />
+      )}
     </div>
   );
 };
