@@ -5,6 +5,7 @@ import App from "../App";
 import HomePage from "../pages/HomePage";
 import AdminDashboard from "../pages/AdminDashboard";
 import CreateBlogPage from "../pages/CreateBlogPage"; // Assuming you have an AdminPanel component
+import BlogsManage from "../pages/BlogsManage";
 import LoginComponent from "../components/LoginComponent";
 import StudentList from "../pages/StudentList";
 import Documen from "../pages/Documen";
@@ -32,6 +33,7 @@ import Applications from "../pages/Applications";
 import Reviews from "../pages/Reviews";
 import Newsletter from "../pages/Newsletter";
 import Users from "../pages/Users";
+import AuditLog from "../pages/AuditLog";
 const PrivateRoute = ({ element }) => {
   const { state } = useAuth();
   return state.isAuthenticated ? element : <Navigate to="/login" replace />;
@@ -101,6 +103,10 @@ const routesConfig = [
         element: <PrivateRoute element={<CreateBlogPage />} />,
       },
       {
+        path: "/blogs-manage",
+        element: <PrivateRoute element={<BlogsManage />} />,
+      },
+      {
         path: "/accounts",
         element: <PrivateRoute element={<div>Account Page</div>} />,
       },
@@ -132,6 +138,10 @@ const routesConfig = [
       {
         path: "/users",
         element: <PrivateRoute element={<Users />} />,
+      },
+      {
+        path: "/audit-log",
+        element: <PrivateRoute element={<AuditLog />} />,
       },
       {
         path: "/subscriber-list",

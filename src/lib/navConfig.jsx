@@ -93,7 +93,8 @@ export const NAV_SECTIONS = [
     home: '/team-create',
     routes: [
       { path: '/team-create', label: 'টিম', labelEn: 'Team' },
-      { path: '/create-blog', label: 'ব্লগ', labelEn: 'Blog' },
+      { path: '/blogs-manage', label: 'ব্লগ ম্যানেজ', labelEn: 'Blog — Manage' },
+      { path: '/create-blog', label: 'নতুন ব্লগ', labelEn: 'Blog — New' },
       { path: '/create-crusel', label: 'হোম ক্যারোসেল', labelEn: 'Home Carousel' },
       { path: '/create-service', label: 'সার্ভিস', labelEn: 'Services' },
       { path: '/create-brand', label: 'ব্র্যান্ড', labelEn: 'Brands' },
@@ -112,6 +113,7 @@ export const NAV_SECTIONS = [
       { path: '/students', label: 'ছাত্র-ছাত্রী', labelEn: 'Students' },
       { path: '/users', label: 'একাউন্ট', labelEn: 'Users' },
       { path: '/branch', label: 'ব্রাঞ্চ', labelEn: 'Branches' },
+      { path: '/audit-log', label: 'লগ', labelEn: 'Audit Log' },
       { path: '/accounts', label: 'পুরাতন একাউন্ট', labelEn: 'Old Accounts' },
     ],
   },

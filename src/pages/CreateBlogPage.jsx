@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import BilingualField from '../components/BilingualField';
 
@@ -55,7 +56,11 @@ const CreateBlogPage = () => {
       if (data?.error) {
         setMessage({ kind: 'error', text: 'Blog তৈরি হয়নি — আবার চেষ্টা করুন।' });
       } else {
-        setMessage({ kind: 'ok', text: '✓ Blog সফলভাবে তৈরি হয়েছে। Pending Blogs থেকে Approve করুন।' });
+        setMessage({
+          kind: 'ok',
+          text: '✓ Blog সফলভাবে তৈরি হয়েছে। এখন Pending থেকে Approve করতে হবে।',
+          link: { to: '/blogs-manage', label: 'Pending Blogs দেখুন →' },
+        });
         setForm(empty);
         setImage({});
       }
@@ -75,15 +80,23 @@ const CreateBlogPage = () => {
       </p>
 
       {message && (
-        <p
-          className={`text-sm rounded px-3 py-2 mb-4 ${
+        <div
+          className={`text-sm rounded px-3 py-2 mb-4 flex items-center justify-between gap-3 flex-wrap ${
             message.kind === 'ok'
               ? 'bg-brand-tealLight/30 text-brand-navy border border-brand-teal/40'
               : 'bg-red-50 text-red-700 border border-red-200'
           }`}
         >
-          {message.text}
-        </p>
+          <span>{message.text}</span>
+          {message.link && (
+            <Link
+              to={message.link.to}
+              className="font-bold text-brand-teal hover:text-brand-navy underline whitespace-nowrap"
+            >
+              {message.link.label}
+            </Link>
+          )}
+        </div>
       )}
 
       <div className="space-y-4">

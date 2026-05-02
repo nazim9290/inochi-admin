@@ -130,7 +130,7 @@ const AdminDashboard = () => {
       <div>
         <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wide mb-3">সাইট পরিসংখ্যান</h2>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <Card title="Blog Posts" value={stats.blogs} hint="প্রকাশিত" to="/create-blog" />
+          <Card title="Blog Posts" value={stats.blogs} hint="প্রকাশিত" to="/blogs-manage" />
           <Card title="Team Members" value={stats.team} hint="সাইটে দৃশ্যমান" to="/team-create" />
           <Card title="JLPT Courses" value={stats.courses} hint="N5 / N4 / N3 / N2" to="/jlpt-courses" />
           <Card title="Success Stories" value={stats.stories} hint="শিক্ষার্থীদের গল্প" to="/success-stories" />
