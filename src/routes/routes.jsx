@@ -29,6 +29,7 @@ import HowItWorksManage from "../pages/HowItWorksManage";
 import JlptCoursesManage from "../pages/JlptCoursesManage";
 import SuccessStoriesManage from "../pages/SuccessStoriesManage";
 import FaqsManage from "../pages/FaqsManage";
+import AchievementsManage from "../pages/AchievementsManage";
 import Applications from "../pages/Applications";
 import Reviews from "../pages/Reviews";
 import Newsletter from "../pages/Newsletter";
@@ -170,6 +171,10 @@ const routesConfig = [
       {
         path: "/faqs",
         element: <PrivateRoute element={<FaqsManage />} />,
+      },
+      {
+        path: "/achievements",
+        element: <PrivateRoute element={<AchievementsManage />} />,
       },
       // {
       //   name:"Contact list",

@@ -14,6 +14,7 @@ const groups = [
       { name: 'How It Works', path: '/how-it-works' },
       { name: 'JLPT Courses', path: '/jlpt-courses' },
       { name: 'Success Stories', path: '/success-stories' },
+      { name: 'Achievements / অর্জন', path: '/achievements' },
       { name: 'FAQs', path: '/faqs' },
     ],
   },
