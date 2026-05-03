@@ -14,13 +14,17 @@
  *     overlap bug ঘটাত।
  */
 
-import {
-  FacebookOutlined,
-  GoogleOutlined,
-  LinkedinOutlined,
-  TwitterOutlined,
-  YoutubeOutlined,
-} from '@ant-design/icons';
+import { Facebook, Linkedin, Twitter, Youtube, Mail } from 'lucide-react';
+
+// EN: Lightweight aliases keep the JSX below unchanged after migrating off
+//     @ant-design/icons (size 24 by default for visual parity).
+// BN: @ant-design/icons থেকে সরানোর পর JSX অপরিবর্তিত রাখতে lightweight alias।
+const iconCls = 'h-4 w-4';
+const FacebookOutlined = (p) => <Facebook className={iconCls} {...p} />;
+const GoogleOutlined = (p) => <Mail className={iconCls} {...p} />;
+const LinkedinOutlined = (p) => <Linkedin className={iconCls} {...p} />;
+const TwitterOutlined = (p) => <Twitter className={iconCls} {...p} />;
+const YoutubeOutlined = (p) => <Youtube className={iconCls} {...p} />;
 
 export default function TeamCard({ data, onEdit, onDelete }) {
   return (

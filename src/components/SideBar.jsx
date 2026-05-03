@@ -21,15 +21,10 @@ const groups = [
   {
     title: 'Pages',
     routes: [
-      { name: 'Home Carousel', path: '/create-crusel' },
       { name: 'Team', path: '/team-create' },
-      { name: 'Services', path: '/create-service' },
       { name: 'Blog — Manage', path: '/blogs-manage' },
       { name: 'Blog — New', path: '/create-blog' },
       { name: 'Brands', path: '/create-brand' },
-      { name: 'Sessions', path: '/update-session' },
-      { name: 'Videos', path: '/create-video' },
-      { name: 'Quizzes', path: '/create-question' },
     ],
   },
   {
