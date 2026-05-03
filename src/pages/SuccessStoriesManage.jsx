@@ -7,6 +7,24 @@ const inputClass =
   'w-full px-3 py-2 text-sm border border-brand-tealLight/60 rounded focus:outline-none focus:ring-2 focus:ring-brand-teal/40';
 const labelClass = 'block text-xs font-semibold text-brand-navy mb-1';
 
+// EN: 5-phase journey definition — admin sees these as upload sections in order.
+//     Each phase carries a Bangla + English label so the form is bilingual.
+//     Adding a 6th phase later: just append here + add the same key to the
+//     PHASE_ORDER array on the frontend adapter.
+// BN: 5-phase journey — admin form-এ এই অর্ডারেই upload section দেখাবে।
+//     প্রতিটা phase-এর Bangla+English label আছে — bilingual form। ভবিষ্যতে
+//     ৬ষ্ঠ phase = এখানে append + adapter-এর PHASE_ORDER-এ একই key যোগ।
+const JOURNEY_PHASES = [
+  { key: 'class',    labelBn: 'ক্লাস টাইম',         labelEn: 'Class time at Inochi' },
+  { key: 'coe',      labelBn: 'COE প্রাপ্তি',        labelEn: 'COE received' },
+  { key: 'visa',     labelBn: 'ভিসা প্রাপ্তি',       labelEn: 'Visa stamped' },
+  { key: 'arrival',  labelBn: 'জাপান পৌঁছানো',     labelEn: 'Arrival in Japan' },
+  { key: 'firstDay', labelBn: 'জাপানে প্রথম দিন',   labelEn: 'First day in Japan' },
+];
+
+const blankJourney = () =>
+  JOURNEY_PHASES.reduce((acc, p) => ({ ...acc, [p.key]: { photoUrl: '', date: '' } }), {});
+
 const empty = {
   studentName: '',
   university: '',
@@ -19,6 +37,7 @@ const empty = {
   jlptLevel: '',
   sortOrder: 0,
   published: true,
+  journey: blankJourney(),
 };
 
 const SuccessStoriesManage = () => {
@@ -53,6 +72,22 @@ const SuccessStoriesManage = () => {
   // BN: ImageUploadField থেকে photo URL plain string হিসেবে আসে।
   const setPhotoUrl = (url) => setForm((prev) => ({ ...prev, photoUrl: url }));
 
+  // EN: Update a single journey-phase field (photoUrl or date) immutably so
+  //     React picks up the nested change.
+  // BN: একটা journey-phase field (photoUrl বা date) immutably update —
+  //     nested change React যাতে detect করতে পারে।
+  const setPhase = (phaseKey, field, value) =>
+    setForm((prev) => ({
+      ...prev,
+      journey: {
+        ...(prev.journey || {}),
+        [phaseKey]: {
+          ...((prev.journey || {})[phaseKey] || {}),
+          [field]: value,
+        },
+      },
+    }));
+
   const reset = () => {
     setForm(empty);
     setEditingId(null);
@@ -72,7 +107,12 @@ const SuccessStoriesManage = () => {
 
   const edit = (s) => {
     setEditingId(s.id);
-    setForm({ ...empty, ...s });
+    // EN: Merge backend journey with blank scaffold so missing phases still
+    //     have controlled inputs (avoids React "uncontrolled → controlled" warnings).
+    // BN: Backend journey-কে blank scaffold-এর সাথে merge — missing phase-ও
+    //     controlled input পাবে (React-এর uncontrolled→controlled warning এড়ানো)।
+    const journey = { ...blankJourney(), ...(s.journey || {}) };
+    setForm({ ...empty, ...s, journey });
   };
 
   const remove = async (id) => {
@@ -129,6 +169,58 @@ const SuccessStoriesManage = () => {
           </div>
           <BilingualField label="Location" name="location" value={form.location} valueEn={form.locationEn} onChange={onChange} placeholderBn="টোকিও, জাপান" placeholderEn="Tokyo, Japan" />
           <BilingualField label="Story / quote" name="story" value={form.story} valueEn={form.storyEn} onChange={onChange} type="textarea" rows={3} />
+
+          {/* EN: 5-phase journey gallery — admin uploads photos as the student
+              progresses. Each phase optional; only filled phases render publicly.
+              BN: 5-phase journey gallery — student-এর progress অনুযায়ী admin
+              ছবি upload করে। প্রতিটা phase optional; ভরা phase-গুলোই public-এ
+              দেখাবে। */}
+          <div className="border-t border-brand-tealLight/40 pt-5">
+            <h3 className="text-sm font-bold text-brand-navy uppercase tracking-wide mb-1">
+              Journey (৫টি ধাপ — যা যা পেয়েছেন উপলোড করুন)
+            </h3>
+            <p className="text-xs text-brand-slate mb-4">
+              পাঁচটা মুহূর্ত পাশাপাশি দেখলে student-এর সম্পূর্ণ যাত্রা প্রমাণিত হবে।
+              যেকোনোটা skip করতে পারেন — শুধু upload করা photo public site-এ দেখাবে।
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {JOURNEY_PHASES.map((phase) => {
+                const data = (form.journey && form.journey[phase.key]) || {};
+                return (
+                  <div
+                    key={phase.key}
+                    className="rounded-lg border border-brand-tealLight/50 bg-brand-tealLight/5 p-3"
+                  >
+                    <div className="flex items-baseline justify-between mb-2">
+                      <span className="text-sm font-semibold text-brand-navy">
+                        {phase.labelBn}
+                      </span>
+                      <span className="text-[10px] text-brand-slate uppercase tracking-wider">
+                        {phase.labelEn}
+                      </span>
+                    </div>
+                    <ImageUploadField
+                      label=""
+                      value={data.photoUrl || ''}
+                      onChange={(url) => setPhase(phase.key, 'photoUrl', url)}
+                      hint="ছবি upload করলে auto-save। JPG/PNG, max 5MB।"
+                    />
+                    <label className="block mt-2">
+                      <span className="block text-[11px] text-brand-slate mb-1">
+                        তারিখ (optional)
+                      </span>
+                      <input
+                        type="date"
+                        value={data.date || ''}
+                        onChange={(e) => setPhase(phase.key, 'date', e.target.value)}
+                        className={inputClass}
+                      />
+                    </label>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
         <div className="flex gap-2 mt-4">
           <button type="submit" className="bg-brand-teal hover:bg-brand-navy text-white font-semibold px-5 py-2 rounded text-sm">
@@ -161,6 +253,27 @@ const SuccessStoriesManage = () => {
                   <p className="font-semibold text-brand-navy text-sm">
                     {s.studentName}
                     {!s.published && <span className="ml-2 text-[10px] bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded uppercase">Draft</span>}
+                    {/* EN: Tiny journey badge — at-a-glance count of phases admin
+                         has photos for. Helps spot stories that need more uploads. */}
+                    {/* BN: ছোট journey badge — কয়টা phase-এর photo upload হয়েছে
+                         দেখায়। কোন story-তে আরো ছবি দরকার দ্রুত বুঝতে পারবেন। */}
+                    {(() => {
+                      const filled = JOURNEY_PHASES.filter(
+                        (p) => s.journey && s.journey[p.key] && s.journey[p.key].photoUrl
+                      ).length;
+                      return (
+                        <span className={
+                          'ml-2 text-[10px] px-1.5 py-0.5 rounded uppercase ' +
+                          (filled === 5
+                            ? 'bg-brand-teal text-white'
+                            : filled > 0
+                              ? 'bg-brand-tealLight/40 text-brand-navy'
+                              : 'bg-gray-100 text-gray-500')
+                        }>
+                          Journey {filled}/5
+                        </span>
+                      );
+                    })()}
                   </p>
                   <p className="text-xs text-brand-slate">{s.university} · {s.batchYear}</p>
                   <p className="text-xs text-brand-slate mt-1 line-clamp-2">{s.story}</p>
