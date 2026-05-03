@@ -189,7 +189,7 @@ const SuccessStoriesManage = () => {
                 return (
                   <div
                     key={phase.key}
-                    className="rounded-lg border border-brand-tealLight/50 bg-brand-tealLight/5 p-3"
+                    className="min-w-0 rounded-lg border border-brand-tealLight/50 bg-brand-tealLight/5 p-3"
                   >
                     <div className="flex items-baseline justify-between mb-2">
                       <span className="text-sm font-semibold text-brand-navy">
@@ -200,10 +200,9 @@ const SuccessStoriesManage = () => {
                       </span>
                     </div>
                     <ImageUploadField
-                      label=""
+                      compact
                       value={data.photoUrl || ''}
                       onChange={(url) => setPhase(phase.key, 'photoUrl', url)}
-                      hint="ছবি upload করলে auto-save। JPG/PNG, max 5MB।"
                     />
                     <label className="block mt-2">
                       <span className="block text-[11px] text-brand-slate mb-1">
