@@ -281,6 +281,9 @@ const SiteSettingsEdit = () => {
           <SinglePlain label="YouTube URL" name="youtubeUrl" value={data.youtubeUrl} onChange={onChange} />
           <SinglePlain label="Instagram URL" name="instagramUrl" value={data.instagramUrl} onChange={onChange} />
           <SinglePlain label="TikTok URL" name="tiktokUrl" value={data.tiktokUrl} onChange={onChange} />
+          <SinglePlain label="LinkedIn URL" name="linkedinUrl" value={data.linkedinUrl} onChange={onChange} />
+          <SinglePlain label="Twitter / X URL" name="twitterUrl" value={data.twitterUrl} onChange={onChange} />
+          <SinglePlain label="Google Business URL" name="googleBusinessUrl" value={data.googleBusinessUrl} onChange={onChange} />
         </div>
       </div>
 
