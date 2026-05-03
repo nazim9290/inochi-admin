@@ -25,6 +25,7 @@ import JlptCoursesManage from "../pages/JlptCoursesManage";
 import SuccessStoriesManage from "../pages/SuccessStoriesManage";
 import FaqsManage from "../pages/FaqsManage";
 import AchievementsManage from "../pages/AchievementsManage";
+import HomeVideosManage from "../pages/HomeVideosManage";
 import Applications from "../pages/Applications";
 import Reviews from "../pages/Reviews";
 import Newsletter from "../pages/Newsletter";
@@ -75,6 +76,7 @@ const routesConfig = [
       { path: "/success-stories", element: <PrivateRoute element={<SuccessStoriesManage />} /> },
       { path: "/faqs", element: <PrivateRoute element={<FaqsManage />} /> },
       { path: "/achievements", element: <PrivateRoute element={<AchievementsManage />} /> },
+      { path: "/home-videos", element: <PrivateRoute element={<HomeVideosManage />} /> },
     ],
   },
   { path: "/login", element: <LoginComponent /> },
