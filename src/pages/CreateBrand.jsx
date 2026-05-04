@@ -12,6 +12,7 @@
 import { useEffect, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import ImageUploadField from '../components/ImageUploadField';
+import { confirmDialog } from '../components/ConfirmDialog';
 
 const inputClass =
   'w-full px-3 py-2 text-sm border border-brand-tealLight/60 rounded focus:outline-none focus:ring-2 focus:ring-brand-teal/40';
@@ -115,7 +116,14 @@ export default function CreateBrand() {
   };
 
   const remove = async (id) => {
-    if (!confirm('এই brand delete করতে চান?')) return;
+    const ok = await confirmDialog({
+      title: 'Brand delete করবেন?',
+      message: 'এই brand / partner school delete করতে চান?',
+      confirmText: 'হ্যাঁ, delete',
+      cancelText: 'বাতিল',
+      danger: true,
+    });
+    if (!ok) return;
     try {
       await api.delete(`/brand/${id}`);
       await load();

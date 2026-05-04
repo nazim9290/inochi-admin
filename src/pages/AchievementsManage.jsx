@@ -10,6 +10,7 @@ import { useEffect, useMemo, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import BilingualField from '../components/BilingualField';
 import ImageUploadField from '../components/ImageUploadField';
+import { confirmDialog } from '../components/ConfirmDialog';
 
 const inputClass =
   'w-full px-3 py-2 text-sm border border-brand-tealLight/60 rounded focus:outline-none focus:ring-2 focus:ring-brand-teal/40';
@@ -123,7 +124,14 @@ const AchievementsManage = () => {
   };
 
   const remove = async (id) => {
-    if (!confirm('এই অর্জন delete করবেন?')) return;
+    const ok = await confirmDialog({
+      title: 'অর্জন delete করবেন?',
+      message: 'এই অর্জন এন্ট্রি delete করবেন? এটা public site থেকেও সরে যাবে।',
+      confirmText: 'হ্যাঁ, delete',
+      cancelText: 'বাতিল',
+      danger: true,
+    });
+    if (!ok) return;
     await api.delete(`/achievements/${id}`);
     load();
   };

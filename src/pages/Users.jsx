@@ -16,6 +16,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@context/AuthContext';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import { relativeTimeBn, formatFullDateBn } from '../lib/inboxUtils';
+import { confirmDialog } from '../components/ConfirmDialog';
 
 const ROLES = [
   { key: 'all', label: 'সব', tone: 'navy' },
@@ -96,7 +97,14 @@ export default function Users() {
   }, [users, filter, search]);
 
   const remove = async (id) => {
-    if (!confirm('এই user permanently delete করবেন?')) return;
+    const ok = await confirmDialog({
+      title: 'User permanently delete?',
+      message: 'এই user permanently delete করবেন?\nএই কাজ undo করা যাবে না।',
+      confirmText: 'হ্যাঁ, delete',
+      cancelText: 'বাতিল',
+      danger: true,
+    });
+    if (!ok) return;
     try {
       await api.delete(`/users/${id}`);
       load();

@@ -3,6 +3,19 @@
 @tailwind utilities;
 
 /*
+  EN: Keyframes used by the global ConfirmDialog popup (fade backdrop + scale card).
+  BN: Global ConfirmDialog popup-এর জন্য keyframes (backdrop fade + card scale)।
+*/
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.92) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/*
   Legacy CSS below — kept during the Tailwind migration so existing pages
   continue to work. Each rule is removed when its component is rewritten.
 */

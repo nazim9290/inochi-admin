@@ -13,6 +13,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import { relativeTimeBn, formatFullDateBn, downloadCsv, phoneDigits, waLink } from '../lib/inboxUtils';
+import { confirmDialog } from './ConfirmDialog';
 
 // EN: Shared button style — kept inline so the file remains self-contained.
 // BN: Shared button style — file self-contained রাখার জন্য inline।
@@ -85,7 +86,14 @@ const Contac = () => {
   };
 
   const remove = async (id) => {
-    if (!confirm('এই enquiry টি delete করতে চান? এটা আর ফেরত পাবেন না।')) return;
+    const ok = await confirmDialog({
+      title: 'Enquiry delete করবেন?',
+      message: 'এই enquiry টি delete করতে চান? এটা আর ফেরত পাবেন না।',
+      confirmText: 'হ্যাঁ, delete',
+      cancelText: 'বাতিল',
+      danger: true,
+    });
+    if (!ok) return;
     setBusyId(id);
     try {
       await api.delete(`/contact/${id}`);

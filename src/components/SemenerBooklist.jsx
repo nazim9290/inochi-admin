@@ -12,6 +12,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import { relativeTimeBn, downloadCsv, phoneDigits, waLink } from '../lib/inboxUtils';
+import { confirmDialog } from './ConfirmDialog';
 
 const SeminerBookList = () => {
   const api = axiosInterceptor();
@@ -49,7 +50,14 @@ const SeminerBookList = () => {
   }, [rows, search]);
 
   const remove = async (id) => {
-    if (!confirm('এই booking টি delete করতে চান?')) return;
+    const ok = await confirmDialog({
+      title: 'Booking delete করবেন?',
+      message: 'এই booking টি delete করতে চান?',
+      confirmText: 'হ্যাঁ, delete',
+      cancelText: 'বাতিল',
+      danger: true,
+    });
+    if (!ok) return;
     setBusyId(id);
     try {
       await api.delete(`/seminer-book/${id}`);

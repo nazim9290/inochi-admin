@@ -15,6 +15,7 @@ import BilingualField from '../components/BilingualField';
 import BilingualRichEditor from '../components/editor/BilingualRichEditor';
 import ImageCropModal from '../components/editor/ImageCropModal';
 import PendingBlogs from '../components/PendingBlogs';
+import { confirmDialog } from '../components/ConfirmDialog';
 
 const labelClass = 'block text-sm font-semibold text-brand-navy mb-1';
 const fieldClass =
@@ -135,7 +136,14 @@ const BlogsManage = () => {
   };
 
   const removeBlog = async (id) => {
-    if (!confirm('এই blog post-টি delete করবেন? এটা undo করা যাবে না।')) return;
+    const ok = await confirmDialog({
+      title: 'Blog post delete করবেন?',
+      message: 'এই blog post-টি delete করবেন?\nএটা undo করা যাবে না।',
+      confirmText: 'হ্যাঁ, delete',
+      cancelText: 'বাতিল',
+      danger: true,
+    });
+    if (!ok) return;
     try {
       await api.delete(`/blog/${id}`);
       setMessage({ kind: 'ok', text: '✓ Blog delete হয়েছে।' });
@@ -151,7 +159,15 @@ const BlogsManage = () => {
   // BN: Unpublish — status আবার 'draft' করে দেয়। Publish করার পর typo দেখলে
   //     edit করার সময় public site থেকে hide রাখার জন্য কাজে লাগে।
   const unpublish = async (id) => {
-    if (!confirm('এই blog public site থেকে hide করবেন (Draft-এ ফেরত)?')) return;
+    const ok = await confirmDialog({
+      title: 'Public site থেকে hide?',
+      message: 'এই blog public site থেকে hide করবেন (Draft-এ ফেরত পাঠাবেন)?',
+      confirmText: 'হ্যাঁ, hide',
+      cancelText: 'বাতিল',
+      danger: false,
+      icon: '👁️',
+    });
+    if (!ok) return;
     try {
       await api.put(`/update-blog/${id}`, { status: 'draft' });
       setMessage({ kind: 'ok', text: '✓ Draft-এ ফেরত পাঠানো হয়েছে।' });
@@ -167,7 +183,14 @@ const BlogsManage = () => {
   // BN: Pending tab existing <PendingBlogs/> ব্যবহার করে — approve নিজের state।
   //     আমরা শুধু delete inject করি, তারপর refresh।
   const handlePendingDelete = async (id) => {
-    if (!confirm('এই pending blog delete করবেন?')) return;
+    const ok = await confirmDialog({
+      title: 'Pending blog delete?',
+      message: 'এই pending blog delete করবেন?',
+      confirmText: 'হ্যাঁ, delete',
+      cancelText: 'বাতিল',
+      danger: true,
+    });
+    if (!ok) return;
     try {
       await api.delete(`/blog/${id}`);
       await refresh();

@@ -14,6 +14,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import { relativeTimeBn, formatFullDateBn, downloadCsv, phoneDigits, waLink } from '../lib/inboxUtils';
+import { confirmDialog } from '../components/ConfirmDialog';
 
 const STATUSES = [
   { key: 'all', label: 'সব', tone: 'navy' },
@@ -138,7 +139,14 @@ export default function Applications() {
   };
 
   const remove = async (id) => {
-    if (!confirm('এই application টি delete করতে চান? এটা আর ফেরত পাবেন না।')) return;
+    const ok = await confirmDialog({
+      title: 'Application delete করবেন?',
+      message: 'এই application টি delete করতে চান?\nএটা আর ফেরত পাবেন না।',
+      confirmText: 'হ্যাঁ, delete',
+      cancelText: 'বাতিল',
+      danger: true,
+    });
+    if (!ok) return;
     setBusyId(id);
     try {
       await api.delete(`/applications/${id}`);

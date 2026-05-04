@@ -10,6 +10,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import { relativeTimeBn, downloadCsv } from '../lib/inboxUtils';
+import { confirmDialog } from './ConfirmDialog';
 
 const Subscriberlist = () => {
   const api = axiosInterceptor();
@@ -43,7 +44,14 @@ const Subscriberlist = () => {
   }, [rows, search]);
 
   const remove = async (id) => {
-    if (!confirm('এই subscriber টি list থেকে remove করতে চান?')) return;
+    const ok = await confirmDialog({
+      title: 'Subscriber remove করবেন?',
+      message: 'এই subscriber টি list থেকে remove করতে চান?',
+      confirmText: 'হ্যাঁ, remove',
+      cancelText: 'বাতিল',
+      danger: true,
+    });
+    if (!ok) return;
     setBusyId(id);
     try {
       await api.delete(`/subscriber/${id}`);

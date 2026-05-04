@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import BilingualField from '../components/BilingualField';
+import { confirmDialog } from '../components/ConfirmDialog';
 
 const inputClass =
   'w-full px-3 py-2 text-sm border border-brand-tealLight/60 rounded focus:outline-none focus:ring-2 focus:ring-brand-teal/40';
@@ -93,7 +94,14 @@ const JlptCoursesManage = () => {
   };
 
   const remove = async (id) => {
-    if (!confirm('Delete this course?')) return;
+    const ok = await confirmDialog({
+      title: 'Course delete করবেন?',
+      message: 'এই JLPT course delete করতে চান?',
+      confirmText: 'হ্যাঁ, delete',
+      cancelText: 'বাতিল',
+      danger: true,
+    });
+    if (!ok) return;
     await api.delete(`/jlpt-courses/${id}`);
     load();
   };

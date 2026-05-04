@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import BilingualField from '../components/BilingualField';
+import { confirmDialog } from '../components/ConfirmDialog';
 
 // EN: Curated icon set — must match the ICON_MAP in
 //     Inochi-global-new/src/components/sections/PathwaySteps.jsx so any icon
@@ -221,7 +222,14 @@ const HowItWorksManage = () => {
   };
 
   const remove = async (id) => {
-    if (!confirm('এই step delete করবেন?')) return;
+    const ok = await confirmDialog({
+      title: 'Step delete করবেন?',
+      message: 'এই step delete করতে চান?',
+      confirmText: 'হ্যাঁ, delete',
+      cancelText: 'বাতিল',
+      danger: true,
+    });
+    if (!ok) return;
     try {
       await api.delete(`/how-it-works/${id}`);
       load();
@@ -258,7 +266,15 @@ const HowItWorksManage = () => {
   };
 
   const seedAll = async () => {
-    if (!confirm(`${SEED_STEPS.length}টা default step import করবেন?`)) return;
+    const ok = await confirmDialog({
+      title: 'Default steps import?',
+      message: `${SEED_STEPS.length}টা default step import করবেন?`,
+      confirmText: 'হ্যাঁ, import',
+      cancelText: 'বাতিল',
+      danger: false,
+      icon: '📥',
+    });
+    if (!ok) return;
     setSeeding(true);
     try {
       for (const seed of SEED_STEPS) {

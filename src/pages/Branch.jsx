@@ -13,6 +13,7 @@
 import { useEffect, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import MapEmbedField from '../components/MapEmbedField';
+import { confirmDialog } from '../components/ConfirmDialog';
 
 const inputClass =
   'w-full px-3 py-2 text-sm border border-brand-tealLight/60 rounded focus:outline-none focus:ring-2 focus:ring-brand-teal/40';
@@ -159,7 +160,14 @@ export default function Branch() {
   };
 
   const remove = async (id) => {
-    if (!confirm('এই branch delete করতে চান?')) return;
+    const ok = await confirmDialog({
+      title: 'Branch delete করবেন?',
+      message: 'এই branch delete করতে চান? এটা public site থেকেও সরে যাবে।',
+      confirmText: 'হ্যাঁ, delete',
+      cancelText: 'বাতিল',
+      danger: true,
+    });
+    if (!ok) return;
     try {
       await api.delete(`/branches/${id}`);
       await load();
@@ -169,7 +177,15 @@ export default function Branch() {
   };
 
   const importSeed = async () => {
-    if (!confirm('চারটা default office (Dhaka, Narayanganj, Barishal, Japan) import করব। চালাবো?')) return;
+    const ok = await confirmDialog({
+      title: 'Default office import?',
+      message: 'চারটা default office (Dhaka, Narayanganj, Barishal, Japan) import করব। চালাবো?',
+      confirmText: 'হ্যাঁ, import',
+      cancelText: 'বাতিল',
+      danger: false,
+      icon: '📥',
+    });
+    if (!ok) return;
     setBusy(true);
     try {
       for (const b of SEED_BRANCHES) {

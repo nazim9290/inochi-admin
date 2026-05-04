@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import TeamCard from '../components/TeamCard.jsx';
 import BilingualField from '../components/BilingualField';
+import { confirmDialog } from '../components/ConfirmDialog';
 
 const labelClass = 'block text-sm font-semibold text-brand-navy mb-1';
 const fieldClass =
@@ -130,7 +131,14 @@ const TeamCreate = () => {
   };
 
   const remove = async (id) => {
-    if (!confirm('এই টিম মেম্বার delete করবেন?')) return;
+    const ok = await confirmDialog({
+      title: 'Team member delete?',
+      message: 'এই টিম মেম্বার delete করতে চান?',
+      confirmText: 'হ্যাঁ, delete',
+      cancelText: 'বাতিল',
+      danger: true,
+    });
+    if (!ok) return;
     try {
       await api.delete(`/team-member-delete/${id}`);
       fetchTeam();

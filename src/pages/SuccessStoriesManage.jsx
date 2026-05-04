@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import BilingualField from '../components/BilingualField';
 import ImageUploadField from '../components/ImageUploadField';
+import { confirmDialog } from '../components/ConfirmDialog';
 
 const inputClass =
   'w-full px-3 py-2 text-sm border border-brand-tealLight/60 rounded focus:outline-none focus:ring-2 focus:ring-brand-teal/40';
@@ -116,7 +117,14 @@ const SuccessStoriesManage = () => {
   };
 
   const remove = async (id) => {
-    if (!confirm('Delete this story?')) return;
+    const ok = await confirmDialog({
+      title: 'Story delete করবেন?',
+      message: 'এই success story delete করতে চান? Public site থেকেও সরে যাবে।',
+      confirmText: 'হ্যাঁ, delete',
+      cancelText: 'বাতিল',
+      danger: true,
+    });
+    if (!ok) return;
     await api.delete(`/success-stories/${id}`);
     load();
   };

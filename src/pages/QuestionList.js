@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
+import { confirmDialog } from '../components/ConfirmDialog';
 
 const QuestionList = () => {
   const api = axiosInterceptor();
@@ -20,7 +21,14 @@ const QuestionList = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Delete this question?')) return;
+    const ok = await confirmDialog({
+      title: 'Question delete করবেন?',
+      message: 'এই quiz question delete করতে চান?',
+      confirmText: 'হ্যাঁ, delete',
+      cancelText: 'বাতিল',
+      danger: true,
+    });
+    if (!ok) return;
     try {
       await api.delete(`/delete-question/${id}`);
       fetchPosts();

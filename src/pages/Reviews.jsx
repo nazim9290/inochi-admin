@@ -15,6 +15,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import { relativeTimeBn, formatFullDateBn, downloadCsv, phoneDigits, waLink } from '../lib/inboxUtils';
+import { confirmDialog } from '../components/ConfirmDialog';
 
 const STATUSES = [
   { key: 'all', label: 'সব', tone: 'navy' },
@@ -120,7 +121,14 @@ export default function Reviews() {
   };
 
   const remove = async (id) => {
-    if (!confirm('এই review delete করবেন?')) return;
+    const ok = await confirmDialog({
+      title: 'Review delete করবেন?',
+      message: 'এই review delete করতে চান?',
+      confirmText: 'হ্যাঁ, delete',
+      cancelText: 'বাতিল',
+      danger: true,
+    });
+    if (!ok) return;
     try {
       await api.delete(`/reviews/${id}`);
       if (active?.id === id) setActive(null);
