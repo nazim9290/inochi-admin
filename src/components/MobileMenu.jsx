@@ -7,9 +7,11 @@
 
 import { Link, useLocation } from 'react-router-dom';
 import { NAV_SECTIONS } from '../lib/navConfig';
+import { useInbox } from '../context/InboxContext';
 
 export default function MobileMenu({ open, onClose, activeKey, onLogout, badges = {} }) {
   const location = useLocation();
+  const { counts } = useInbox();
   if (!open) return null;
 
   return (
@@ -49,6 +51,7 @@ export default function MobileMenu({ open, onClose, activeKey, onLogout, badges 
               currentPath={location.pathname}
               onSelect={onClose}
               badge={badges[section.key]}
+              subCounts={counts}
             />
           ))}
         </nav>
@@ -74,7 +77,7 @@ export default function MobileMenu({ open, onClose, activeKey, onLogout, badges 
 //     if the section has no sub-routes, like the dashboard).
 // BN: একটা mobile section block — header + sub-route list (বা শুধু home link যদি
 //     section-এ sub-route না থাকে, যেমন dashboard)।
-function SectionBlock({ section, isActive, currentPath, onSelect, badge }) {
+function SectionBlock({ section, isActive, currentPath, onSelect, badge, subCounts = {} }) {
   return (
     <div className="mb-2">
       <Link
@@ -99,18 +102,24 @@ function SectionBlock({ section, isActive, currentPath, onSelect, badge }) {
         <ul className="ml-7 mt-1 space-y-0.5 border-l border-brand-tealLight/40 pl-3">
           {section.routes.map((r) => {
             const sub = currentPath === r.path;
+            const subBadge = r.badgeKey ? subCounts[r.badgeKey] || 0 : 0;
             return (
               <li key={r.path}>
                 <Link
                   to={r.path}
                   onClick={onSelect}
-                  className={`block rounded px-3 py-1.5 text-xs font-semibold no-underline ${
+                  className={`flex items-center justify-between gap-2 rounded px-3 py-1.5 text-xs font-semibold no-underline ${
                     sub
                       ? 'bg-brand-teal/10 text-brand-teal'
                       : 'text-brand-slate hover:bg-brand-tealLight/15 hover:text-brand-navy'
                   }`}
                 >
-                  {r.label}
+                  <span>{r.label}</span>
+                  {subBadge > 0 && (
+                    <span className="inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+                      {subBadge > 99 ? '99+' : subBadge}
+                    </span>
+                  )}
                 </Link>
               </li>
             );

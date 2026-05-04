@@ -9,10 +9,12 @@
 
 import { Link, useLocation } from 'react-router-dom';
 import { findActiveSection } from '../lib/navConfig';
+import { useInbox } from '../context/InboxContext';
 
 export default function SubNav() {
   const location = useLocation();
   const active = findActiveSection(location.pathname);
+  const { counts } = useInbox();
 
   // EN: Dashboard / sections without subroutes show no secondary nav.
   // BN: Dashboard / sub-route-হীন section-এ secondary nav দেখায় না।
@@ -23,7 +25,14 @@ export default function SubNav() {
       <div className="flex items-center gap-1 overflow-x-auto px-4 py-2 md:px-6">
         {active.routes.map((route) => {
           const isActive = location.pathname === route.path;
-          return <SubTab key={route.path} route={route} isActive={isActive} />;
+          // EN: Look up the count if the route advertises a badgeKey; the lookup
+          //     stays 0 (and therefore hidden) when InboxContext doesn't have
+          //     the key, so non-inbox sections never accidentally show a badge.
+          // BN: route-এর badgeKey থাকলে count lookup; InboxContext-এ key না
+          //     থাকলে 0 (ও hidden) থাকে — non-inbox section-এ ভুল করে badge
+          //     দেখাবে না।
+          const badge = route.badgeKey ? counts[route.badgeKey] || 0 : 0;
+          return <SubTab key={route.path} route={route} isActive={isActive} badge={badge} />;
         })}
       </div>
     </nav>
@@ -31,15 +40,26 @@ export default function SubNav() {
 }
 
 // EN: A single sub-tab pill. Active gets filled brand-teal background + white text.
+//     When `badge` > 0 a small red count chip sits to the right of the label.
 // BN: একটা sub-tab pill। Active হলে filled brand-teal background + white text।
-function SubTab({ route, isActive }) {
+//     `badge` > 0 হলে label-এর ডানে ছোট লাল count chip দেখায়।
+function SubTab({ route, isActive, badge }) {
   const base =
-    'inline-flex flex-shrink-0 items-center rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors no-underline whitespace-nowrap';
+    'inline-flex flex-shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors no-underline whitespace-nowrap';
   const activeCls = 'bg-brand-teal text-white shadow-sm';
   const inactiveCls = 'text-brand-slate hover:bg-brand-tealLight/30 hover:text-brand-navy';
   return (
     <Link to={route.path} className={`${base} ${isActive ? activeCls : inactiveCls}`}>
-      {route.label}
+      <span>{route.label}</span>
+      {badge > 0 && (
+        <span
+          className={`inline-flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[10px] font-bold ${
+            isActive ? 'bg-white text-brand-teal' : 'bg-red-500 text-white'
+          }`}
+        >
+          {badge > 99 ? '99+' : badge}
+        </span>
+      )}
     </Link>
   );
 }

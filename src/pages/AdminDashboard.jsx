@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axiosInterceptor from '../axios/axiosInterceptor';
+import { useInbox } from '../context/InboxContext';
 
 const ICONS = {
   edit: (
@@ -58,7 +59,12 @@ const Card = ({ title, value, hint, to, accent = 'teal' }) => (
   </Link>
 );
 
-const QuickAction = ({ to, icon, title, description }) => (
+// EN: Quick-action card. Optional `badge` shows a small red count on the
+//     right (used for pending inbox items so admin sees attention-needed
+//     numbers right on the dashboard).
+// BN: Quick-action card। Optional `badge` ডানে ছোট লাল count দেখায় —
+//     pending inbox item-এর সংখ্যা dashboard-এই admin দেখতে পায়।
+const QuickAction = ({ to, icon, title, description, badge }) => (
   <Link
     to={to}
     className="flex items-start gap-4 bg-white border border-brand-tealLight/40 rounded-xl p-4 hover:border-brand-teal/60 hover:shadow-md transition-all group"
@@ -67,7 +73,14 @@ const QuickAction = ({ to, icon, title, description }) => (
       {icon}
     </div>
     <div className="flex-1 min-w-0">
-      <p className="font-bold text-brand-navy text-sm">{title}</p>
+      <div className="flex items-center gap-2">
+        <p className="font-bold text-brand-navy text-sm">{title}</p>
+        {badge > 0 && (
+          <span className="inline-flex h-4 min-w-[18px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+            {badge > 99 ? '99+' : badge}
+          </span>
+        )}
+      </div>
       <p className="text-xs text-brand-slate mt-0.5 leading-relaxed">{description}</p>
     </div>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-brand-slate flex-shrink-0 self-center">
@@ -78,15 +91,8 @@ const QuickAction = ({ to, icon, title, description }) => (
 
 const AdminDashboard = () => {
   const api = axiosInterceptor();
-  const [stats, setStats] = useState({
-    blogs: 0,
-    team: 0,
-    courses: 0,
-    stories: 0,
-    contacts: 0,
-    bookings: 0,
-    subscribers: 0,
-  });
+  const { counts } = useInbox();
+  const [stats, setStats] = useState({ blogs: 0, team: 0, courses: 0, stories: 0 });
 
   useEffect(() => {
     let alive = true;
@@ -104,9 +110,6 @@ const AdminDashboard = () => {
           team: (team.data?.team || []).length,
           courses: (courses.data?.courses || []).length,
           stories: (stories.data?.stories || []).length,
-          contacts: 0,
-          bookings: 0,
-          subscribers: 0,
         });
       } catch {}
     };
@@ -184,29 +187,47 @@ const AdminDashboard = () => {
             description="ব্লগ পোস্ট তৈরি করুন — দুই ভাষায় বিষয়বস্তু লিখুন।"
           />
           <QuickAction
-            to="/create-crusel"
-            icon={ICONS.edit}
-            title="Home Carousel"
-            description="হোম পেজের carousel slide গুলো ম্যানেজ করুন।"
+            to="/achievements"
+            icon={ICONS.story}
+            title="Achievements"
+            description="ভিসা প্রাপ্তি, জাপান অভ্যর্থনা, ইভেন্ট — অর্জন আপডেট করুন।"
           />
           <QuickAction
-            to="/create-service"
+            to="/home-videos"
             icon={ICONS.edit}
-            title="Services"
-            description="আমরা যা যা সেবা দিই — সেগুলো এডিট করুন।"
+            title="Home Videos"
+            description="হোমপেজে দেখানো YouTube ভিডিও যোগ/সরান।"
           />
         </div>
       </div>
 
-      {/* Inbox */}
+      {/* EN: Inbox quick-actions — every sub-tab represented, with live pending
+          counts pulled from InboxContext so the dashboard agrees with TopNav.
+          BN: Inbox quick-action — সব sub-tab আছে, live pending count
+          InboxContext থেকে — TopNav-এর সাথে dashboard সবসময় মিল রাখে। */}
       <div>
         <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wide mb-3">ইনবক্স</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          <QuickAction
+            to="/applications"
+            icon={ICONS.inbox}
+            title="Applications"
+            description="যারা /apply ফর্ম পূরণ করেছেন — status update করুন।"
+            badge={counts.applications}
+          />
+          <QuickAction
+            to="/reviews"
+            icon={ICONS.story}
+            title="Reviews"
+            description="ছাত্রদের রিভিউ — approve বা reject করুন।"
+            badge={counts.reviews}
+          />
           <QuickAction
             to="/contact-list"
             icon={ICONS.inbox}
             title="Contacts"
             description="যারা contact form-এ message দিয়েছেন তাদের list।"
+            badge={counts.contacts}
           />
           <QuickAction
             to="/semmenr-booklist"
@@ -219,6 +240,12 @@ const AdminDashboard = () => {
             icon={ICONS.inbox}
             title="Subscribers"
             description="যারা newsletter subscribe করেছেন তাদের list।"
+          />
+          <QuickAction
+            to="/newsletter"
+            icon={ICONS.blog}
+            title="Newsletter"
+            description="Subscriber-দের email পাঠানোর জন্য newsletter compose।"
           />
         </div>
       </div>

@@ -77,11 +77,19 @@ export const NAV_SECTIONS = [
     labelEn: 'Content',
     icon: ICONS.content,
     home: '/site-settings',
+    // EN: Content tabs cover everything the home page renders. Achievements +
+    //     home-videos were added in the renovation; carousel/services/quizzes
+    //     etc. were retired with the public-site rebuild and dropped here.
+    // BN: Content tab home page-এর সব render কাভার করে। Achievements +
+    //     home-videos renovation-এ যোগ; carousel/services/quiz ইত্যাদি
+    //     public-site rebuild-এর সাথে retire — এখান থেকেও বাদ।
     routes: [
       { path: '/site-settings', label: 'সাইট সেটিংস', labelEn: 'Site Settings' },
       { path: '/how-it-works', label: 'কীভাবে কাজ করে', labelEn: 'How It Works' },
       { path: '/jlpt-courses', label: 'JLPT কোর্স', labelEn: 'JLPT Courses' },
       { path: '/success-stories', label: 'সফলতার গল্প', labelEn: 'Success Stories' },
+      { path: '/achievements', label: 'অর্জন', labelEn: 'Achievements' },
+      { path: '/home-videos', label: 'হোম ভিডিও', labelEn: 'Home Videos' },
       { path: '/faqs', label: 'প্রশ্নোত্তর', labelEn: 'FAQs' },
     ],
   },
@@ -95,12 +103,7 @@ export const NAV_SECTIONS = [
       { path: '/team-create', label: 'টিম', labelEn: 'Team' },
       { path: '/blogs-manage', label: 'ব্লগ ম্যানেজ', labelEn: 'Blog — Manage' },
       { path: '/create-blog', label: 'নতুন ব্লগ', labelEn: 'Blog — New' },
-      { path: '/create-crusel', label: 'হোম ক্যারোসেল', labelEn: 'Home Carousel' },
-      { path: '/create-service', label: 'সার্ভিস', labelEn: 'Services' },
       { path: '/create-brand', label: 'ব্র্যান্ড', labelEn: 'Brands' },
-      { path: '/update-session', label: 'সেমিনার', labelEn: 'Sessions' },
-      { path: '/create-video', label: 'ভিডিও', labelEn: 'Videos' },
-      { path: '/create-question', label: 'কুইজ', labelEn: 'Quizzes' },
     ],
   },
   {
@@ -123,10 +126,16 @@ export const NAV_SECTIONS = [
     labelEn: 'Inbox',
     icon: ICONS.inbox,
     home: '/applications',
+    // EN: badgeKey on a route maps to a key in InboxContext.counts so SubNav
+    //     can show a per-tab pending number that matches the inbox total.
+    //     Routes without a badgeKey simply render no badge.
+    // BN: route-এর badgeKey InboxContext.counts-এর key-এর সাথে map হয় — SubNav
+    //     প্রতি tab-এ pending number দেখায় যা inbox total-এর সাথে মেলে।
+    //     badgeKey না থাকলে সেই tab-এ কোনো badge দেখায় না।
     routes: [
-      { path: '/applications', label: 'আবেদন', labelEn: 'Applications' },
-      { path: '/reviews', label: 'রিভিউ', labelEn: 'Reviews' },
-      { path: '/contact-list', label: 'যোগাযোগ', labelEn: 'Contacts' },
+      { path: '/applications', label: 'আবেদন', labelEn: 'Applications', badgeKey: 'applications' },
+      { path: '/reviews', label: 'রিভিউ', labelEn: 'Reviews', badgeKey: 'reviews' },
+      { path: '/contact-list', label: 'যোগাযোগ', labelEn: 'Contacts', badgeKey: 'contacts' },
       { path: '/semmenr-booklist', label: 'বুকিং', labelEn: 'Bookings' },
       { path: '/subscriber-list', label: 'সাবস্ক্রাইবার', labelEn: 'Subscribers' },
       { path: '/newsletter', label: 'নিউজলেটার', labelEn: 'Newsletter' },

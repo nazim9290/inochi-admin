@@ -13,6 +13,7 @@ import { Outlet } from 'react-router-dom';
 import TopNav from './components/TopNav';
 import SubNav from './components/SubNav';
 import useCurrentUser from './useCurrentUser';
+import { InboxProvider } from './context/InboxContext';
 
 const App = () => {
   const { currentUser, loading } = useCurrentUser();
@@ -36,13 +37,15 @@ const App = () => {
   }
 
   return (
-    <div className="min-h-screen bg-brand-tealLight/10">
-      <TopNav />
-      <SubNav />
-      <main className="mx-auto max-w-7xl px-4 py-6 md:px-6 md:py-8">
-        <Outlet />
-      </main>
-    </div>
+    <InboxProvider>
+      <div className="min-h-screen bg-brand-tealLight/10">
+        <TopNav />
+        <SubNav />
+        <main className="mx-auto max-w-7xl px-4 py-6 md:px-6 md:py-8">
+          <Outlet />
+        </main>
+      </div>
+    </InboxProvider>
   );
 };
 

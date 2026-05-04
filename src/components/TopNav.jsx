@@ -7,11 +7,11 @@
  *     হয়, যেটা একটা drawer toggle করে।
  */
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { NAV_SECTIONS, findActiveSection } from '../lib/navConfig';
-import axiosInterceptor from '../axios/axiosInterceptor';
+import { useInbox } from '../context/InboxContext';
 import MobileMenu from './MobileMenu';
 
 export default function TopNav() {
@@ -19,48 +19,13 @@ export default function TopNav() {
   const navigate = useNavigate();
   const { logout, state } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [pendingCount, setPendingCount] = useState(0);
-  const api = axiosInterceptor();
+  // EN: Total inbox count comes from shared context; SubNav uses the same
+  //     numbers per-tab, so the totals always agree.
+  // BN: Total inbox count shared context থেকে; SubNav-ও একই data per-tab
+  //     ব্যবহার করে — তাই badge সবসময় মিল থাকে।
+  const { total: pendingCount } = useInbox();
 
   const active = findActiveSection(location.pathname);
-
-  // EN: Poll the inbox unread count so admins notice fresh items even while
-  //     sitting on a different tab. Sums pending contact requests + new
-  //     applications. Both endpoints fire in parallel; failures fall through
-  //     silently so a transient backend hiccup doesn't reset the badge to 0.
-  // BN: Inbox-এর unread count poll করি — admin অন্য tab-এ থাকলেও নতুন item-এর
-  //     খবর পাবে। Pending contact + new application sum করে। দুই endpoint
-  //     parallel; failure silently ignore — transient hiccup-এ badge 0 হয় না।
-  useEffect(() => {
-    let alive = true;
-    const refresh = async () => {
-      try {
-        const [contacts, apps, reviews] = await Promise.all([
-          api.get('/all-contact-request').catch(() => ({ data: { contacts: [] } })),
-          api.get('/applications?status=new').catch(() => ({ data: { applications: [] } })),
-          api.get('/reviews?status=pending').catch(() => ({ data: { reviews: [] } })),
-        ]);
-        if (!alive) return;
-        const pendingContacts = (contacts.data?.contacts || []).filter((c) => (c.status || 'Pending') === 'Pending').length;
-        const newApps = (apps.data?.applications || []).length;
-        const pendingReviews = (reviews.data?.reviews || []).length;
-        setPendingCount(pendingContacts + newApps + pendingReviews);
-      } catch {
-        // EN: Silently ignore — badge just stays at last known value.
-        // BN: Silently ignore — badge সর্বশেষ value-তেই থাকবে।
-      }
-    };
-    refresh();
-    const interval = setInterval(refresh, 60_000);
-    const onFocus = () => refresh();
-    window.addEventListener('focus', onFocus);
-    return () => {
-      alive = false;
-      clearInterval(interval);
-      window.removeEventListener('focus', onFocus);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const handleLogout = () => {
     logout();
