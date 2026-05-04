@@ -446,6 +446,138 @@ const SiteSettingsEdit = () => {
         </div>
       </div>
 
+      {/* ========= BLOG OG PROMO BAND ========= */}
+      <div className={sectionClass}>
+        <h2 className={sectionHead}>Blog Share Image — Promo Banner</h2>
+        <p className="text-xs text-brand-slate mb-4 leading-relaxed bg-emerald-50 border border-emerald-200 rounded p-3">
+          🎨 <strong>প্রতিটা blog Facebook/WhatsApp/LinkedIn-এ share করলে cover image-এর নিচে এই promo banner দেখাবে।</strong>
+          <br />
+          1. <strong>Enable</strong> — checkbox বন্ধ করলে promo banner সরে যাবে, শুধু পরিষ্কার cover দেখাবে।
+          <br />
+          2. <strong>Text</strong> — যা banner-এ লিখা থাকবে। Comma এড়িয়ে চলুন (em-dash —, dot · বা hyphen - ব্যবহার করুন)।
+          <br />
+          3. <strong>Color</strong> — Hex code দিন (যেমন <code className="bg-white px-1 rounded">#0F2D52</code> Inochi navy)।
+          <br />
+          4. <strong>Font size + height</strong> — বড় text চাইলে font size বাড়ান, সাথে band height-ও বাড়ান যাতে কাটে না।
+          <br />
+          ✅ পরিবর্তন save করার পর Facebook share debugger-এ "Scrape Again" করলে নতুন banner আসবে।
+        </p>
+        <div className="space-y-4">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={data.blogOgPromoEnabled !== false}
+              onChange={(e) =>
+                setData({ ...data, blogOgPromoEnabled: e.target.checked })
+              }
+              className="h-4 w-4 rounded border-brand-tealLight/60 text-brand-teal focus:ring-brand-teal/40"
+            />
+            <span className="text-sm font-semibold text-brand-navy">
+              Promo banner enable করুন
+            </span>
+          </label>
+
+          <SinglePlain
+            label="Banner text"
+            name="blogOgPromoText"
+            value={data.blogOgPromoText}
+            onChange={onChange}
+            placeholder="inochieducation.com — Japan Study Consultancy"
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <label className="block">
+              <span className={labelClass}>Band background color</span>
+              <div className="flex items-center gap-2">
+                <input
+                  type="color"
+                  value={data.blogOgPromoBandColor || '#0F2D52'}
+                  onChange={(e) =>
+                    setData({ ...data, blogOgPromoBandColor: e.target.value })
+                  }
+                  className="h-10 w-14 rounded border border-brand-tealLight/60 cursor-pointer"
+                />
+                <input
+                  type="text"
+                  name="blogOgPromoBandColor"
+                  value={data.blogOgPromoBandColor || ''}
+                  onChange={onChange}
+                  placeholder="#0F2D52"
+                  className={inputClass}
+                />
+              </div>
+            </label>
+
+            <label className="block">
+              <span className={labelClass}>Text color</span>
+              <div className="flex items-center gap-2">
+                <input
+                  type="color"
+                  value={data.blogOgPromoTextColor || '#FFFFFF'}
+                  onChange={(e) =>
+                    setData({ ...data, blogOgPromoTextColor: e.target.value })
+                  }
+                  className="h-10 w-14 rounded border border-brand-tealLight/60 cursor-pointer"
+                />
+                <input
+                  type="text"
+                  name="blogOgPromoTextColor"
+                  value={data.blogOgPromoTextColor || ''}
+                  onChange={onChange}
+                  placeholder="#FFFFFF"
+                  className={inputClass}
+                />
+              </div>
+            </label>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <label className="block">
+              <span className={labelClass}>Font</span>
+              <select
+                name="blogOgPromoFont"
+                value={data.blogOgPromoFont || 'Roboto'}
+                onChange={onChange}
+                className={inputClass}
+              >
+                <option value="Roboto">Roboto (modern, sans-serif)</option>
+                <option value="Arial">Arial (system default)</option>
+                <option value="Verdana">Verdana (wider)</option>
+                <option value="Georgia">Georgia (serif)</option>
+                <option value="Times">Times (classic serif)</option>
+                <option value="Impact">Impact (bold display)</option>
+              </select>
+            </label>
+
+            <label className="block">
+              <span className={labelClass}>Font size (px)</span>
+              <input
+                type="number"
+                name="blogOgPromoFontSize"
+                value={data.blogOgPromoFontSize ?? 40}
+                onChange={onChange}
+                min="20"
+                max="80"
+                className={inputClass}
+              />
+            </label>
+
+            <label className="block">
+              <span className={labelClass}>Band height (px)</span>
+              <input
+                type="number"
+                name="blogOgPromoBandHeight"
+                value={data.blogOgPromoBandHeight ?? 80}
+                onChange={onChange}
+                min="40"
+                max="200"
+                className={inputClass}
+              />
+            </label>
+          </div>
+        </div>
+      </div>
+
       {/* ========= GOOGLE ========= */}
       <div className={sectionClass}>
         <h2 className={sectionHead}>Google Integration</h2>
