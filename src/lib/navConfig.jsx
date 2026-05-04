@@ -135,6 +135,7 @@ export const NAV_SECTIONS = [
     routes: [
       { path: '/applications', label: 'আবেদন', labelEn: 'Applications', badgeKey: 'applications' },
       { path: '/reviews', label: 'রিভিউ', labelEn: 'Reviews', badgeKey: 'reviews' },
+      { path: '/comments-moderation', label: 'কমেন্ট', labelEn: 'Comments', badgeKey: 'comments' },
       { path: '/contact-list', label: 'যোগাযোগ', labelEn: 'Contacts', badgeKey: 'contacts' },
       { path: '/semmenr-booklist', label: 'বুকিং', labelEn: 'Bookings' },
       { path: '/subscriber-list', label: 'সাবস্ক্রাইবার', labelEn: 'Subscribers' },

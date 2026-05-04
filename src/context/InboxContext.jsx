@@ -15,7 +15,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
 
 const InboxContext = createContext({
-  counts: { applications: 0, contacts: 0, reviews: 0 },
+  counts: { applications: 0, contacts: 0, reviews: 0, comments: 0 },
   total: 0,
   refresh: () => {},
 });
@@ -23,28 +23,40 @@ const InboxContext = createContext({
 const POLL_MS = 60_000;
 
 export function InboxProvider({ children }) {
-  const [counts, setCounts] = useState({ applications: 0, contacts: 0, reviews: 0 });
+  const [counts, setCounts] = useState({
+    applications: 0,
+    contacts: 0,
+    reviews: 0,
+    comments: 0,
+  });
   const api = axiosInterceptor();
 
-  // EN: Fetch all three pending pools in parallel. Failures fall through silently
+  // EN: Fetch all four pending pools in parallel. Failures fall through silently
   //     so a transient hiccup doesn't reset everything to 0; the previous count
   //     stays visible until the next successful poll.
-  // BN: তিনটি pending pool parallel-এ fetch। Failure-এ silently — transient
+  // BN: চারটি pending pool parallel-এ fetch। Failure-এ silently — transient
   //     hiccup-এ count 0 হয় না; পরবর্তী successful poll না হওয়া পর্যন্ত আগের
   //     count visible থাকে।
   const refresh = async () => {
     try {
-      const [contactsRes, appsRes, reviewsRes] = await Promise.all([
+      const [contactsRes, appsRes, reviewsRes, commentsRes] = await Promise.all([
         api.get('/all-contact-request').catch(() => ({ data: { contacts: [] } })),
         api.get('/applications?status=new').catch(() => ({ data: { applications: [] } })),
         api.get('/reviews?status=pending').catch(() => ({ data: { reviews: [] } })),
+        api.get('/admin/comments/counts').catch(() => ({ data: { pending: 0 } })),
       ]);
       const pendingContacts = (contactsRes.data?.contacts || []).filter(
         (c) => (c.status || 'Pending') === 'Pending',
       ).length;
       const newApps = (appsRes.data?.applications || []).length;
       const pendingReviews = (reviewsRes.data?.reviews || []).length;
-      setCounts({ applications: newApps, contacts: pendingContacts, reviews: pendingReviews });
+      const pendingComments = commentsRes.data?.pending || 0;
+      setCounts({
+        applications: newApps,
+        contacts: pendingContacts,
+        reviews: pendingReviews,
+        comments: pendingComments,
+      });
     } catch {
       // EN: ignore — keep last known counts
       // BN: ignore — সর্বশেষ count রেখে দেই
@@ -66,7 +78,8 @@ export function InboxProvider({ children }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const total = counts.applications + counts.contacts + counts.reviews;
+  const total =
+    counts.applications + counts.contacts + counts.reviews + counts.comments;
 
   return (
     <InboxContext.Provider value={{ counts, total, refresh }}>

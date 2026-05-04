@@ -28,6 +28,7 @@ import AchievementsManage from "../pages/AchievementsManage";
 import HomeVideosManage from "../pages/HomeVideosManage";
 import Applications from "../pages/Applications";
 import Reviews from "../pages/Reviews";
+import CommentsModeration from "../pages/CommentsModeration";
 import Newsletter from "../pages/Newsletter";
 import Users from "../pages/Users";
 import AuditLog from "../pages/AuditLog";
@@ -65,6 +66,7 @@ const routesConfig = [
       { path: "/contact-list", element: <PrivateRoute element={<ContactList />} /> },
       { path: "/applications", element: <PrivateRoute element={<Applications />} /> },
       { path: "/reviews", element: <PrivateRoute element={<Reviews />} /> },
+      { path: "/comments-moderation", element: <PrivateRoute element={<CommentsModeration />} /> },
       { path: "/newsletter", element: <PrivateRoute element={<Newsletter />} /> },
       { path: "/users", element: <PrivateRoute element={<Users />} /> },
       { path: "/audit-log", element: <PrivateRoute element={<AuditLog />} /> },
