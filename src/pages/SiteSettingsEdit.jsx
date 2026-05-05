@@ -14,15 +14,32 @@ const sectionHead =
   'text-lg font-bold text-brand-navy mb-1';
 const sectionSub = 'text-xs text-brand-slate mb-5 pb-4 border-b border-brand-tealLight/30';
 
-const SinglePlain = ({ label, name, value, onChange, placeholder = '' }) => (
+// EN: Generic single-line text input. `type` defaults to 'text' but accepts
+//     'number' / 'email' / etc; `step|min|max` flow through for numeric.
+// BN: সাধারণ single-line text input। `type` default 'text', তবে 'number' /
+//     'email' ইত্যাদি accept করে; numeric-এর জন্য `step|min|max` pass-through।
+const SinglePlain = ({
+  label,
+  name,
+  value,
+  onChange,
+  placeholder = '',
+  type = 'text',
+  step,
+  min,
+  max,
+}) => (
   <label className="block">
     <span className={labelClass}>{label}</span>
     <input
-      type="text"
+      type={type}
       name={name}
-      value={value || ''}
+      value={value ?? ''}
       onChange={onChange}
       placeholder={placeholder}
+      step={step}
+      min={min}
+      max={max}
       className={inputClass}
     />
   </label>
@@ -611,6 +628,75 @@ const SiteSettingsEdit = () => {
             value={data.googleTagManagerId}
             onChange={onChange}
             placeholder="GTM-XXXXXX"
+          />
+          <SinglePlain
+            label="Google rating (e.g. 4.8)"
+            name="googleRating"
+            type="number"
+            step="0.1"
+            min="0"
+            max="5"
+            value={data.googleRating}
+            onChange={onChange}
+            placeholder="4.8"
+          />
+          <SinglePlain
+            label="Google review count (e.g. 50)"
+            name="googleReviewCount"
+            type="number"
+            min="0"
+            value={data.googleReviewCount}
+            onChange={onChange}
+            placeholder="50"
+          />
+        </div>
+        <p className="mt-2 text-[11px] text-brand-slate/80">
+          💡 rating + count দু'টোই সেট করলে Google search snippet-এ ⭐ দেখাবে (AggregateRating schema fire হবে)।
+        </p>
+      </div>
+
+      {/* ========= OTHER SEARCH CONSOLES & DOMAIN VERIFICATION ========= */}
+      <div className={sectionClass}>
+        <h2 className={sectionHead}>Other Search Engines & Domain Verification</h2>
+        <p className="text-xs text-brand-slate mb-4 leading-relaxed bg-blue-50 border border-blue-200 rounded p-3">
+          🔐 <strong>Domain ownership tags:</strong> প্রতিটা platform-এ verify করতে গেলে একটা meta tag দেয় — সেটার <strong>content value</strong> এখানে paste করুন। Site root layout-এ auto inject হবে।
+          <br />
+          • <strong>Bing</strong>: bing.com/webmasters → Add Site → HTML Meta Tag → content value
+          <br />
+          • <strong>Yandex</strong>: webmaster.yandex.com → Add site → Meta tag → content value
+          <br />
+          • <strong>Facebook Domain</strong>: business.facebook.com → Brand Safety → Domains → Verify with Meta-tag
+          <br />
+          • <strong>Pinterest</strong>: pinterest.com/business → Claim website → Add HTML tag
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <SinglePlain
+            label="Bing Webmaster verification"
+            name="bingSiteVerification"
+            value={data.bingSiteVerification}
+            onChange={onChange}
+            placeholder="abc123... (content value only)"
+          />
+          <SinglePlain
+            label="Yandex Webmaster verification"
+            name="yandexSiteVerification"
+            value={data.yandexSiteVerification}
+            onChange={onChange}
+            placeholder="abc123..."
+          />
+          <SinglePlain
+            label="Facebook domain verification"
+            name="fbDomainVerification"
+            value={data.fbDomainVerification}
+            onChange={onChange}
+            placeholder="abc123..."
+          />
+          <SinglePlain
+            label="Pinterest verification"
+            name="pinterestSiteVerification"
+            value={data.pinterestSiteVerification}
+            onChange={onChange}
+            placeholder="abc123..."
           />
         </div>
       </div>
