@@ -46,6 +46,32 @@ function renderBody(raw) {
     .join('\n');
 }
 
+// EN: Templates are admin-local (localStorage) — fast, no backend round-trip,
+//     and no DB schema change. Each template = { id, name, subject, body }.
+//     Used to store recurring layouts (monthly digest, intake reminder etc.)
+//     so the admin doesn't retype them.
+// BN: Template admin-local (localStorage) — দ্রুত, backend round-trip নেই,
+//     DB schema বদলায় না। প্রতি template = { id, name, subject, body }।
+//     পুনরাবৃত্ত layout (monthly digest, intake reminder ইত্যাদি) save —
+//     admin বার বার লিখতে হয় না।
+const TEMPLATE_STORAGE_KEY = 'inochi.newsletter.templates';
+
+function loadTemplates() {
+  try {
+    const raw = window.localStorage.getItem(TEMPLATE_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+function saveTemplates(list) {
+  try {
+    window.localStorage.setItem(TEMPLATE_STORAGE_KEY, JSON.stringify(list));
+  } catch {}
+}
+
 export default function Newsletter() {
   const api = axiosInterceptor();
   const [subscribers, setSubscribers] = useState(0);
@@ -54,14 +80,45 @@ export default function Newsletter() {
   const [confirming, setConfirming] = useState(false);
   const [sending, setSending] = useState(false);
   const [result, setResult] = useState(null);
+  const [templates, setTemplates] = useState([]);
+  const [savingAs, setSavingAs] = useState(false);
+  const [templateName, setTemplateName] = useState('');
 
   useEffect(() => {
     api
       .get('/subscriber')
       .then((res) => setSubscribers((res.data?.subscribers || []).length))
       .catch(() => setSubscribers(0));
+    setTemplates(loadTemplates());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const applyTemplate = (id) => {
+    if (!id) return;
+    const tpl = templates.find((t) => t.id === id);
+    if (!tpl) return;
+    setSubject(tpl.subject || '');
+    setBody(tpl.body || '');
+  };
+
+  const saveCurrentAsTemplate = () => {
+    const name = templateName.trim();
+    if (!name) return;
+    const next = [
+      ...templates.filter((t) => t.name !== name),
+      { id: `${Date.now()}`, name, subject, body, savedAt: new Date().toISOString() },
+    ];
+    setTemplates(next);
+    saveTemplates(next);
+    setSavingAs(false);
+    setTemplateName('');
+  };
+
+  const removeTemplate = (id) => {
+    const next = templates.filter((t) => t.id !== id);
+    setTemplates(next);
+    saveTemplates(next);
+  };
 
   const renderedBody = useMemo(() => renderBody(body), [body]);
   const hasContent = subject.trim() && body.trim();
@@ -110,7 +167,55 @@ export default function Newsletter() {
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <div className="space-y-4 rounded-xl border border-brand-tealLight/40 bg-white p-5 shadow-sm">
-          <h2 className="text-sm font-bold uppercase tracking-wide text-brand-navy">Compose</h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-bold uppercase tracking-wide text-brand-navy">Compose</h2>
+            <div className="flex items-center gap-2">
+              {templates.length > 0 && (
+                <select
+                  defaultValue=""
+                  onChange={(e) => {
+                    applyTemplate(e.target.value);
+                    e.target.value = '';
+                  }}
+                  className="rounded-md border border-brand-tealLight/60 bg-white px-2 py-1 text-xs text-brand-navy focus:border-brand-teal focus:outline-none"
+                >
+                  <option value="">📂 Load template…</option>
+                  {templates.map((t) => (
+                    <option key={t.id} value={t.id}>{t.name}</option>
+                  ))}
+                </select>
+              )}
+              <button
+                type="button"
+                onClick={() => setSavingAs(true)}
+                disabled={!subject.trim() && !body.trim()}
+                className="rounded-md border border-brand-navy bg-white px-2 py-1 text-xs font-semibold text-brand-navy hover:bg-brand-tealLight/10 disabled:opacity-40"
+              >
+                💾 Save as template
+              </button>
+            </div>
+          </div>
+          {templates.length > 0 && (
+            <details className="rounded-md bg-brand-tealLight/5 p-2">
+              <summary className="cursor-pointer text-xs font-semibold text-brand-slate">
+                Saved templates ({templates.length})
+              </summary>
+              <ul className="mt-2 space-y-1">
+                {templates.map((t) => (
+                  <li key={t.id} className="flex items-center justify-between gap-2 rounded bg-white px-2 py-1 text-xs">
+                    <span className="truncate font-medium text-brand-navy">{t.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeTemplate(t.id)}
+                      className="text-red-600 hover:text-red-800"
+                    >
+                      ✕
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          )}
           <div>
             <label className={labelClass}>Subject</label>
             <input
@@ -167,6 +272,18 @@ export default function Newsletter() {
         </div>
       </div>
 
+      {savingAs && (
+        <SaveTemplateModal
+          name={templateName}
+          setName={setTemplateName}
+          onCancel={() => {
+            setSavingAs(false);
+            setTemplateName('');
+          }}
+          onSave={saveCurrentAsTemplate}
+        />
+      )}
+
       {confirming && (
         <ConfirmModal
           subscribers={subscribers}
@@ -210,6 +327,51 @@ export default function Newsletter() {
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+// EN: Save-template prompt — reuses the same modal shell as the send confirm.
+//     Pre-fills name with current subject so admin doesn't have to re-type.
+// BN: Save-template prompt — send confirm-এর মতই modal shell। Current subject
+//     দিয়ে name pre-fill — admin আবার লিখতে হয় না।
+function SaveTemplateModal({ name, setName, onCancel, onSave }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onCancel}>
+      <div
+        className="max-w-md w-full rounded-2xl bg-white p-6 shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h2 className="text-lg font-bold text-brand-navy">Template-এর নাম দিন</h2>
+        <p className="mt-2 text-sm text-brand-slate">
+          এই subject + body next time-এ load করতে পারবেন। একই নামে save করলে আগেরটা overwrite হবে।
+        </p>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="যেমন: Monthly digest"
+          autoFocus
+          className="mt-4 w-full rounded-md border border-brand-tealLight/60 bg-white px-3 py-2 text-sm focus:border-brand-teal focus:outline-none focus:ring-2 focus:ring-brand-teal/40"
+        />
+        <div className="mt-5 flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="rounded-md border border-brand-navy px-4 py-2 text-sm font-semibold text-brand-navy hover:bg-brand-tealLight/10"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={onSave}
+            disabled={!name.trim()}
+            className="rounded-md bg-brand-teal px-5 py-2 text-sm font-bold text-white hover:bg-brand-navy disabled:opacity-50"
+          >
+            💾 Save
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

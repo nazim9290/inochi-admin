@@ -32,6 +32,7 @@ import CommentsModeration from "../pages/CommentsModeration";
 import Newsletter from "../pages/Newsletter";
 import Users from "../pages/Users";
 import AuditLog from "../pages/AuditLog";
+import BulkImageUpload from "../pages/BulkImageUpload";
 
 // EN: Removed orphan admin routes 2026-05-03 — pages with no public consumer
 //     on the rebuilt site: /create-crusel, /create-video, /create-question,
@@ -70,6 +71,7 @@ const routesConfig = [
       { path: "/newsletter", element: <PrivateRoute element={<Newsletter />} /> },
       { path: "/users", element: <PrivateRoute element={<Users />} /> },
       { path: "/audit-log", element: <PrivateRoute element={<AuditLog />} /> },
+      { path: "/bulk-image-upload", element: <PrivateRoute element={<BulkImageUpload />} /> },
       { path: "/subscriber-list", element: <PrivateRoute element={<Subscriber />} /> },
       { path: "/certsec", element: <PrivateRoute element={<CertificateSecend />} /> },
       { path: "/site-settings", element: <PrivateRoute element={<SiteSettingsEdit />} /> },

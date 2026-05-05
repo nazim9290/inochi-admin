@@ -17,6 +17,7 @@ const groups = [
       { name: 'Achievements / অর্জন', path: '/achievements' },
       { name: 'Home Videos / ভিডিও', path: '/home-videos' },
       { name: 'FAQs', path: '/faqs' },
+      { name: 'Bulk image upload / একসাথে ছবি', path: '/bulk-image-upload' },
     ],
   },
   {
