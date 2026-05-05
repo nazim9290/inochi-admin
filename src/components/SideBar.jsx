@@ -16,6 +16,7 @@ const groups = [
       { name: 'Success Stories', path: '/success-stories' },
       { name: 'Achievements / অর্জন', path: '/achievements' },
       { name: 'Home Videos / ভিডিও', path: '/home-videos' },
+      { name: 'Inochi Moments / মুহূর্ত', path: '/moments' },
       { name: 'FAQs', path: '/faqs' },
       { name: 'Bulk image upload / একসাথে ছবি', path: '/bulk-image-upload' },
     ],

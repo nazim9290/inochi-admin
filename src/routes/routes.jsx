@@ -26,6 +26,7 @@ import SuccessStoriesManage from "../pages/SuccessStoriesManage";
 import FaqsManage from "../pages/FaqsManage";
 import AchievementsManage from "../pages/AchievementsManage";
 import HomeVideosManage from "../pages/HomeVideosManage";
+import MomentsManage from "../pages/MomentsManage";
 import Applications from "../pages/Applications";
 import Reviews from "../pages/Reviews";
 import CommentsModeration from "../pages/CommentsModeration";
@@ -81,6 +82,7 @@ const routesConfig = [
       { path: "/faqs", element: <PrivateRoute element={<FaqsManage />} /> },
       { path: "/achievements", element: <PrivateRoute element={<AchievementsManage />} /> },
       { path: "/home-videos", element: <PrivateRoute element={<HomeVideosManage />} /> },
+      { path: "/moments", element: <PrivateRoute element={<MomentsManage />} /> },
     ],
   },
   { path: "/login", element: <LoginComponent /> },
