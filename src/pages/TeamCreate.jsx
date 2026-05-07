@@ -3,6 +3,7 @@ import axiosInterceptor from '../axios/axiosInterceptor';
 import TeamCard from '../components/TeamCard.jsx';
 import BilingualField from '../components/BilingualField';
 import { confirmDialog } from '../components/ConfirmDialog';
+import HelpTooltip from '../components/HelpTooltip';
 
 const labelClass = 'block text-sm font-semibold text-brand-navy mb-1';
 const fieldClass =
@@ -204,7 +205,10 @@ const TeamCreate = () => {
               <input type="email" name="email" value={form.email} onChange={onChange} className={fieldClass} placeholder="name@example.com" />
             </label>
             <label>
-              <span className={labelClass}>Position (sort order)</span>
+              <span className={labelClass}>
+                Position (sort order)
+                <HelpTooltip>ছোট সংখ্যা = সাইটে আগে দেখাবে। CEO/Director-কে 0 বা 1 দিন; junior member-দের বেশি সংখ্যা।</HelpTooltip>
+              </span>
               <input type="number" name="position" value={form.position} onChange={onChange} className={fieldClass} />
               <span className="text-[10px] text-brand-slate/70">ছোট সংখ্যা = সাইটে আগে দেখাবে</span>
             </label>

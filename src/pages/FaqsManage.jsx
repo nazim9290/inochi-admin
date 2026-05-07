@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import BilingualField from '../components/BilingualField';
 import { confirmDialog } from '../components/ConfirmDialog';
+import HelpTooltip from '../components/HelpTooltip';
 
 const inputClass =
   'w-full px-3 py-2 text-sm border border-brand-tealLight/60 rounded focus:outline-none focus:ring-2 focus:ring-brand-teal/40';
@@ -84,7 +85,9 @@ const FaqsManage = () => {
     <div className="space-y-6 max-w-5xl">
       <div>
         <h1 className="text-xl font-extrabold text-brand-navy">FAQs</h1>
-        <p className="text-xs text-brand-slate">Frequently asked questions. Bilingual.</p>
+        <p className="text-xs text-brand-slate">
+          সাধারণ জিজ্ঞাসা। দুই ভাষায় (Bangla + English) — public site-এর /faq page-এ এবং বিভিন্ন landing page-এ accordion-এ দেখাবে।
+        </p>
       </div>
 
       <form onSubmit={submit} className="bg-white rounded-xl border border-brand-tealLight/40 shadow-sm p-5">
@@ -96,16 +99,23 @@ const FaqsManage = () => {
           <BilingualField label="Answer" name="answer" value={form.answer} valueEn={form.answerEn} onChange={onChange} type="textarea" rows={4} />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <label>
-              <span className={labelClass}>Category</span>
+              <span className={labelClass}>
+                Category
+                <HelpTooltip>FAQ গ্রুপ — e.g. "general", "visa", "fees", "scholarship"। একই category-র সবাই একসাথে দেখাবে।</HelpTooltip>
+              </span>
               <input name="category" value={form.category} onChange={onChange} className={inputClass} placeholder="general" />
             </label>
             <label>
-              <span className={labelClass}>Sort order</span>
+              <span className={labelClass}>
+                Sort order
+                <HelpTooltip>ছোট সংখ্যা = list-এ আগে দেখাবে। গুরুত্বপূর্ণ FAQ-গুলোয় কম সংখ্যা দিন।</HelpTooltip>
+              </span>
               <input type="number" name="sortOrder" value={form.sortOrder} onChange={onChange} className={inputClass} />
             </label>
             <label className="flex items-center gap-2 pb-2">
               <input type="checkbox" name="published" checked={form.published} onChange={onChange} />
               <span className="text-xs text-brand-navy font-semibold">Published</span>
+              <HelpTooltip>Tick থাকলে public-এ দেখাবে। Untick করলে শুধু admin-এ থাকবে।</HelpTooltip>
             </label>
           </div>
         </div>

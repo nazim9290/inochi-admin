@@ -3,6 +3,7 @@ import axiosInterceptor from '../axios/axiosInterceptor';
 import BilingualField from '../components/BilingualField';
 import ImageUploadField from '../components/ImageUploadField';
 import { confirmDialog } from '../components/ConfirmDialog';
+import HelpTooltip from '../components/HelpTooltip';
 
 const inputClass =
   'w-full px-3 py-2 text-sm border border-brand-tealLight/60 rounded focus:outline-none focus:ring-2 focus:ring-brand-teal/40';
@@ -133,7 +134,9 @@ const SuccessStoriesManage = () => {
     <div className="space-y-6 max-w-5xl">
       <div>
         <h1 className="text-xl font-extrabold text-brand-navy">Success Stories</h1>
-        <p className="text-xs text-brand-slate">Student testimonials. Edit BN + EN side by side.</p>
+        <p className="text-xs text-brand-slate">
+          সফল student-এর testimonial। দুই ভাষায় edit করুন। নিচে ৫-ধাপের journey gallery — class থেকে জাপান পর্যন্ত প্রতিটা মুহূর্তের ছবি upload করলে public site-এ animated journey strip দেখাবে।
+        </p>
       </div>
 
       <form onSubmit={submit} className="bg-white rounded-xl border border-brand-tealLight/40 shadow-sm p-5">
@@ -155,16 +158,23 @@ const SuccessStoriesManage = () => {
               <input name="batchYear" value={form.batchYear} onChange={onChange} className={inputClass} placeholder="2024" />
             </label>
             <label>
-              <span className={labelClass}>JLPT level</span>
+              <span className={labelClass}>
+                JLPT level
+                <HelpTooltip>সবচেয়ে high level যা পাশ করেছে: N5 (beginner) → N1 (advanced)। জানা না থাকলে খালি রাখুন।</HelpTooltip>
+              </span>
               <input name="jlptLevel" value={form.jlptLevel} onChange={onChange} className={inputClass} placeholder="N3" />
             </label>
             <label>
-              <span className={labelClass}>Sort order</span>
+              <span className={labelClass}>
+                Sort order
+                <HelpTooltip>ছোট সংখ্যা = সাইটে আগে দেখাবে। সবচেয়ে inspiring গল্প-গুলোয় কম সংখ্যা।</HelpTooltip>
+              </span>
               <input type="number" name="sortOrder" value={form.sortOrder} onChange={onChange} className={inputClass} />
             </label>
             <label className="flex items-center gap-2 pb-2">
               <input type="checkbox" name="published" checked={form.published} onChange={onChange} />
               <span className="text-xs text-brand-navy font-semibold">Published</span>
+              <HelpTooltip>Tick থাকলে public site-এ live। Untick করলে শুধু admin-এ draft।</HelpTooltip>
             </label>
             <div className="md:col-span-2">
               <ImageUploadField

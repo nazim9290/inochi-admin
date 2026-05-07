@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import ImageUploadField from '../components/ImageUploadField';
 import { confirmDialog } from '../components/ConfirmDialog';
+import HelpTooltip from '../components/HelpTooltip';
 
 const inputClass =
   'w-full px-3 py-2 text-sm border border-brand-tealLight/60 rounded focus:outline-none focus:ring-2 focus:ring-brand-teal/40';
@@ -232,7 +233,10 @@ function BrandForm({ form, editingId, busy, onChange, setLogo, onSubmit, onReset
           />
         </label>
         <label>
-          <span className={labelClass}>Partner since (year)</span>
+          <span className={labelClass}>
+            Partner since (year)
+            <HelpTooltip>কত সাল থেকে Inochi-র সাথে partnership? শুধু year (e.g. 2018)। খালি রাখলে public site-এ দেখাবে না।</HelpTooltip>
+          </span>
           <input
             type="number"
             name="partnerSince"
@@ -243,7 +247,10 @@ function BrandForm({ form, editingId, busy, onChange, setLogo, onSubmit, onReset
           />
         </label>
         <label>
-          <span className={labelClass}>Sort order</span>
+          <span className={labelClass}>
+            Sort order
+            <HelpTooltip>ছোট সংখ্যা = আগে দেখাবে। সবগুলো ০ রাখলে alphabetical order-এ দেখাবে।</HelpTooltip>
+          </span>
           <input
             type="number"
             name="sortOrder"
@@ -257,10 +264,12 @@ function BrandForm({ form, editingId, busy, onChange, setLogo, onSubmit, onReset
           <label className="flex items-center gap-2">
             <input type="checkbox" name="featured" checked={form.featured} onChange={onChange} />
             <span className="text-xs text-brand-navy font-semibold">⭐ Featured (home strip-এ দেখাবে)</span>
+            <HelpTooltip>Tick করলে Home page-এর "Partner Schools" strip-এ দেখাবে। Tick না করলেও /partner-schools page-এ থাকবে।</HelpTooltip>
           </label>
           <label className="flex items-center gap-2">
             <input type="checkbox" name="published" checked={form.published} onChange={onChange} />
             <span className="text-xs text-brand-navy font-semibold">Published</span>
+            <HelpTooltip>Tick করলে public site-এ live হবে। Untick করলে শুধু admin-এ draft হিসাবে থাকবে।</HelpTooltip>
           </label>
         </div>
       </div>
