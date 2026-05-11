@@ -25,8 +25,10 @@ const empty = {
   slug: '',
   city: '',
   cityBn: '',
+  cityJa: '',
   address: '',
   addressBn: '',
+  addressJa: '',
   phones: [],
   mapEmbedUrl: '',
   isHeadOffice: false,
@@ -281,6 +283,10 @@ function BranchForm({ form, editingId, busy, onChange, setPhones, onSubmit, onRe
           <input name="cityBn" value={form.cityBn} onChange={onChange} className={inputClass} placeholder="ঢাকা" />
         </label>
         <label className="md:col-span-2">
+          <span className={labelClass}>都市 (Japanese, optional)</span>
+          <input name="cityJa" value={form.cityJa} onChange={onChange} className={inputClass} placeholder="ダッカ" />
+        </label>
+        <label className="md:col-span-2">
           <span className={labelClass}>
             Slug (URL key) <span className="font-normal text-brand-slate">— ফাঁকা রাখলে city থেকে auto তৈরি হবে</span>
           </span>
@@ -293,6 +299,10 @@ function BranchForm({ form, editingId, busy, onChange, setPhones, onSubmit, onRe
         <label className="md:col-span-2">
           <span className={labelClass}>Address (English)</span>
           <textarea name="address" value={form.address} onChange={onChange} rows={2} className={inputClass} />
+        </label>
+        <label className="md:col-span-2">
+          <span className={labelClass}>住所 (Japanese, optional)</span>
+          <textarea name="addressJa" value={form.addressJa} onChange={onChange} rows={2} className={inputClass} placeholder="〒... 日本語住所" />
         </label>
 
         <div className="md:col-span-2">

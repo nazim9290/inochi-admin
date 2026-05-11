@@ -12,10 +12,13 @@ const fieldClass =
 const empty = {
   name: '',
   nameEn: '',
+  nameJa: '',
   designation: '',
   designationEn: '',
+  designationJa: '',
   bio: '',
   bioEn: '',
+  bioJa: '',
   facebook: '',
   twiter: '',
   youtube: '',
@@ -180,6 +183,10 @@ const TeamCreate = () => {
             placeholderBn="মো. মেহেদী হাসান"
             placeholderEn="Md. Mehedi Hasan"
           />
+          <label>
+            <span className={labelClass}>名前 (Japanese, optional)</span>
+            <input name="nameJa" value={form.nameJa} onChange={onChange} className={fieldClass} placeholder="メヘディ・ハサン" />
+          </label>
           <BilingualField
             label="পদবি / Designation"
             name="designation"
@@ -189,6 +196,10 @@ const TeamCreate = () => {
             placeholderBn="সিনিয়র কাউন্সেলর"
             placeholderEn="Senior Counsellor"
           />
+          <label>
+            <span className={labelClass}>役職 (Japanese, optional)</span>
+            <input name="designationJa" value={form.designationJa} onChange={onChange} className={fieldClass} placeholder="シニアカウンセラー" />
+          </label>
           <BilingualField
             label="বায়ো / Bio (optional)"
             name="bio"
@@ -198,6 +209,10 @@ const TeamCreate = () => {
             type="textarea"
             rows={3}
           />
+          <label>
+            <span className={labelClass}>自己紹介 (Japanese, optional)</span>
+            <textarea name="bioJa" value={form.bioJa} onChange={onChange} rows={3} className={fieldClass + ' min-h-[88px]'} />
+          </label>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <label>

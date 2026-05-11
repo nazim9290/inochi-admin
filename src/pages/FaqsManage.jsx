@@ -11,8 +11,10 @@ const labelClass = 'block text-xs font-semibold text-brand-navy mb-1';
 const empty = {
   question: '',
   questionEn: '',
+  questionJa: '',
   answer: '',
   answerEn: '',
+  answerJa: '',
   category: 'general',
   sortOrder: 0,
   published: true,
@@ -96,7 +98,15 @@ const FaqsManage = () => {
         </h2>
         <div className="space-y-4">
           <BilingualField label="Question" name="question" value={form.question} valueEn={form.questionEn} onChange={onChange} />
+          <label>
+            <span className={labelClass}>質問 (Japanese, optional)</span>
+            <input name="questionJa" value={form.questionJa} onChange={onChange} className={inputClass} placeholder="日本語の質問 (オプション)" />
+          </label>
           <BilingualField label="Answer" name="answer" value={form.answer} valueEn={form.answerEn} onChange={onChange} type="textarea" rows={4} />
+          <label>
+            <span className={labelClass}>回答 (Japanese, optional)</span>
+            <textarea name="answerJa" value={form.answerJa} onChange={onChange} rows={4} className={inputClass + ' min-h-[88px]'} placeholder="日本語の回答 (オプション)" />
+          </label>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <label>
               <span className={labelClass}>

@@ -148,9 +148,11 @@ const SiteSettingsEdit = () => {
         <p className={sectionSub}>হোম পেজের সবচেয়ে উপরের অংশ — title, subtitle, ছবি ও call-to-action button।</p>
         <div className="space-y-5">
           <BilingualField label="Eyebrow text" name="heroEyebrow" value={data.heroEyebrow} valueEn={data.heroEyebrowEn} onChange={onChange} />
+          <SinglePlain label="Eyebrow (日本語, optional)" name="heroEyebrowJa" value={data.heroEyebrowJa} onChange={onChange} />
           <SinglePlain label="Japanese title (日本語)" name="heroTitleJp" value={data.heroTitleJp} onChange={onChange} />
           <BilingualField label="Main title" name="heroTitle" value={data.heroTitle} valueEn={data.heroTitleEn} onChange={onChange} />
           <BilingualField label="Subtitle" name="heroSubtitle" value={data.heroSubtitle} valueEn={data.heroSubtitleEn} onChange={onChange} type="textarea" />
+          <SinglePlain label="Subtitle (日本語, optional)" name="heroSubtitleJa" value={data.heroSubtitleJa} onChange={onChange} />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <BilingualField label="Primary CTA text" name="heroCtaPrimary" value={data.heroCtaPrimary} valueEn={data.heroCtaPrimaryEn} onChange={onChange} />
             <SinglePlain label="Primary CTA link" name="heroCtaPrimaryLink" value={data.heroCtaPrimaryLink} onChange={onChange} placeholder="/bookseminer" />
@@ -265,6 +267,7 @@ const SiteSettingsEdit = () => {
             <SinglePlain label="BAIRA membership number" name="bairaNumber" value={data.bairaNumber} onChange={onChange} />
           </div>
           <BilingualField label="Trust note (italic line)" name="trustNote" value={data.trustNote} valueEn={data.trustNoteEn} onChange={onChange} />
+          <SinglePlain label="Trust note (日本語, optional)" name="trustNoteJa" value={data.trustNoteJa} onChange={onChange} />
         </div>
       </div>
 
@@ -309,7 +312,9 @@ const SiteSettingsEdit = () => {
         <p className={sectionSub}>হোম পেজের "About" সেকশন — heading, body text ও পাশের ছবি।</p>
         <div className="space-y-4">
           <BilingualField label="Heading" name="aboutHeading" value={data.aboutHeading} valueEn={data.aboutHeadingEn} onChange={onChange} />
+          <SinglePlain label="Heading (日本語, optional)" name="aboutHeadingJa" value={data.aboutHeadingJa} onChange={onChange} />
           <BilingualField label="Body" name="aboutBody" value={data.aboutBody} valueEn={data.aboutBodyEn} onChange={onChange} type="textarea" rows={5} />
+          <SinglePlain label="Body (日本語, optional, multi-line)" name="aboutBodyJa" value={data.aboutBodyJa} onChange={onChange} />
           <ImageUploadField
             label="About section image"
             value={data.aboutImageUrl}
