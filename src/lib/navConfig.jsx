@@ -91,6 +91,7 @@ export const NAV_SECTIONS = [
       { path: '/achievements', label: 'অর্জন', labelEn: 'Achievements' },
       { path: '/home-videos', label: 'হোম ভিডিও', labelEn: 'Home Videos' },
       { path: '/faqs', label: 'প্রশ্নোত্তর', labelEn: 'FAQs' },
+      { path: '/bd-cities', label: 'শহর-পেজ', labelEn: 'Study-from Cities' },
     ],
   },
   {

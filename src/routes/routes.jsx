@@ -27,6 +27,7 @@ import FaqsManage from "../pages/FaqsManage";
 import AchievementsManage from "../pages/AchievementsManage";
 import HomeVideosManage from "../pages/HomeVideosManage";
 import MomentsManage from "../pages/MomentsManage";
+import BdCitiesManage from "../pages/BdCitiesManage";
 import Applications from "../pages/Applications";
 import Reviews from "../pages/Reviews";
 import CommentsModeration from "../pages/CommentsModeration";
@@ -83,6 +84,7 @@ const routesConfig = [
       { path: "/achievements", element: <PrivateRoute element={<AchievementsManage />} /> },
       { path: "/home-videos", element: <PrivateRoute element={<HomeVideosManage />} /> },
       { path: "/moments", element: <PrivateRoute element={<MomentsManage />} /> },
+      { path: "/bd-cities", element: <PrivateRoute element={<BdCitiesManage />} /> },
     ],
   },
   { path: "/login", element: <LoginComponent /> },
