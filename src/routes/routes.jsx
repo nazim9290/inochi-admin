@@ -28,6 +28,10 @@ import AchievementsManage from "../pages/AchievementsManage";
 import HomeVideosManage from "../pages/HomeVideosManage";
 import MomentsManage from "../pages/MomentsManage";
 import BdCitiesManage from "../pages/BdCitiesManage";
+import JpCitiesManage from "../pages/JpCitiesManage";
+import EventsManage from "../pages/EventsManage";
+import ChecklistManage from "../pages/ChecklistManage";
+import ScamItemsManage from "../pages/ScamItemsManage";
 import Applications from "../pages/Applications";
 import Reviews from "../pages/Reviews";
 import CommentsModeration from "../pages/CommentsModeration";
@@ -85,6 +89,10 @@ const routesConfig = [
       { path: "/home-videos", element: <PrivateRoute element={<HomeVideosManage />} /> },
       { path: "/moments", element: <PrivateRoute element={<MomentsManage />} /> },
       { path: "/bd-cities", element: <PrivateRoute element={<BdCitiesManage />} /> },
+      { path: "/jp-cities", element: <PrivateRoute element={<JpCitiesManage />} /> },
+      { path: "/events", element: <PrivateRoute element={<EventsManage />} /> },
+      { path: "/checklist", element: <PrivateRoute element={<ChecklistManage />} /> },
+      { path: "/scam-items", element: <PrivateRoute element={<ScamItemsManage />} /> },
     ],
   },
   { path: "/login", element: <LoginComponent /> },
