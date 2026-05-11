@@ -45,6 +45,57 @@ const empty = {
   published: true,
 };
 
+// EN: Seed mirrors events-calendar.json so admins start with a populated
+//     /events page instead of an empty calendar.
+// BN: Seed events-calendar.json-এর mirror — admin খালি calendar-এর বদলে
+//     populated /events পেজ-এ শুরু করেন।
+const SEED_EVENTS = [
+  {
+    type: 'seminar',
+    title: 'ফ্রি জাপান স্টাডি সেমিনার — মে ২০২৬', titleEn: 'Free Japan Study Seminar — May 2026',
+    titleJa: '無料日本留学セミナー — 2026年5月',
+    description: 'বাংলাদেশ→জাপান path-এর overview, সাম্প্রতিক ভিসা আপডেট ও Inochi counsellor-দের সাথে Q&A।',
+    descriptionEn: 'Overview of the Bangladesh→Japan pathway, recent visa updates, and Q&A with Inochi counsellors.',
+    descriptionJa: 'バングラデシュ→日本ルートの概要、最新ビザ情報、Inochi カウンセラーによる Q&A。',
+    eventDate: '2026-05-15', time: '16:00', durationMin: 90,
+    location: 'Inochi ঢাকা অফিস (ও অনলাইন)', locationEn: 'Inochi Dhaka office (and online)', locationJa: 'Inochi ダッカ事務所 + オンライン',
+    city: 'dhaka', rsvpUrl: '/seminars', isFree: true, highlight: true, sortOrder: 0, published: true,
+  },
+  {
+    type: 'workshop',
+    title: 'JLPT N5 ক্র্যাশ ওয়ার্কশপ — ১ দিনে hiragana', titleEn: 'JLPT N5 Crash Workshop — Hiragana mastery in a day',
+    titleJa: 'JLPT N5 集中ワークショップ — 1日でひらがなマスター',
+    description: 'Hiragana পড়া ও লেখার মৌলিক বিষয়ে অর্ধ-দিনের intensive।',
+    descriptionEn: 'Half-day intensive on hiragana reading and writing fundamentals.',
+    descriptionJa: 'ひらがな読み書き基礎の半日集中講座。',
+    eventDate: '2026-05-22', time: '10:00', durationMin: 240,
+    location: 'Inochi ঢাকা অফিস', locationEn: 'Inochi Dhaka office', locationJa: 'Inochi ダッカ事務所',
+    city: 'dhaka', rsvpUrl: '/contact', fee: '৳500', sortOrder: 1, published: true,
+  },
+  {
+    type: 'meetup',
+    title: 'বাংলাদেশ × জাপান আলামনাই মিটআপ — সাইতামা', titleEn: 'Bangladesh × Japan Alumni Meetup — Saitama',
+    titleJa: 'バングラデシュ × 日本 卒業生ミートアップ — 埼玉',
+    description: 'জাপানে অবস্থানরত Inochi alumni চা-পান করতে জড়ো — কাজ-খোঁজা ও ভিসা-extension অভিজ্ঞতা share।',
+    descriptionEn: 'Inochi alumni currently in Japan gather over chai, share job-hunt and visa-extension experiences.',
+    descriptionJa: '日本在住の Inochi 卒業生がチャイを囲んで集合 — 就職活動とビザ更新の経験を共有。',
+    eventDate: '2026-06-05', time: '14:00', durationMin: 180,
+    location: 'Inochi সাইতামা অফিস', locationEn: 'Inochi Saitama office', locationJa: 'Inochi 埼玉事務所',
+    city: 'saitama', rsvpUrl: '/contact', isFree: true, sortOrder: 2, published: true,
+  },
+  {
+    type: 'festival',
+    title: 'সাকুরা উৎসব Watch Party 🌸', titleEn: 'Sakura Festival Watch Party 🌸',
+    titleJa: '桜祭りウォッチパーティー 🌸',
+    description: 'হানামি (花見) সংস্কৃতি — sakura সিজনে জাপানি পরিবারের রীতি, খাবার ও পার্কে time spend।',
+    descriptionEn: 'Hanami (flower viewing) culture — Japanese family rituals during sakura season, food, and park time.',
+    descriptionJa: '花見文化 — 桜シーズンの日本の家族の習慣、食事、公園での時間。',
+    eventDate: '2026-04-05', time: '18:00', durationMin: 120,
+    location: 'Online (Zoom)', locationEn: 'Online (Zoom)', locationJa: 'オンライン (Zoom)',
+    city: '', rsvpUrl: '/contact', isFree: true, sortOrder: 3, published: true,
+  },
+];
+
 export default function EventsManage() {
   const api = axiosInterceptor();
   const [events, setEvents] = useState([]);
@@ -100,6 +151,25 @@ export default function EventsManage() {
     try { await api.delete(`/events/${id}`); await load(); } catch (err) { alert('Delete failed'); }
   };
 
+  const importSeed = async () => {
+    const ok = await confirmDialog({
+      title: 'চারটি event import?',
+      message: 'Seminar, workshop, alumni meetup, sakura festival — পুরাতন JSON থেকে seed করব।',
+      confirmText: 'হ্যাঁ, import', cancelText: 'বাতিল', icon: '📥',
+    });
+    if (!ok) return;
+    setBusy(true);
+    try {
+      for (const e of SEED_EVENTS) {
+        // eslint-disable-next-line no-await-in-loop
+        await api.post('/events', e).catch(() => {});
+      }
+      await load();
+    } finally { setBusy(false); }
+  };
+
+  const isEmpty = !loading && events.length === 0;
+
   return (
     <div className="space-y-6 max-w-5xl">
       <div>
@@ -108,6 +178,17 @@ export default function EventsManage() {
           /events পেজে যে seminar, workshop, alumni meetup, উৎসব দেখানো হয়। নতুন event যোগ করলে ৬০ সেকেন্ডে public site-এ দেখা যাবে।
         </p>
       </div>
+
+      {isEmpty && (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+          <p className="font-semibold">📅 এখনও কোনো event যোগ করা হয়নি</p>
+          <p className="mt-1 leading-relaxed">এক click-এ পুরাতন চারটি sample event (seminar, workshop, meetup, sakura festival) import করতে পারেন।</p>
+          <button type="button" onClick={importSeed} disabled={busy}
+            className="mt-3 rounded bg-brand-teal px-4 py-2 text-xs font-semibold text-white hover:bg-brand-navy disabled:opacity-50">
+            {busy ? 'Importing…' : 'চারটা event import করুন'}
+          </button>
+        </div>
+      )}
 
       <form onSubmit={submit} className="space-y-5 rounded-xl border border-brand-tealLight/40 bg-white p-5 shadow-sm">
         <h2 className="text-sm font-bold uppercase tracking-wide text-brand-navy">{editingId ? 'Event Edit' : 'নতুন Event যোগ'}</h2>

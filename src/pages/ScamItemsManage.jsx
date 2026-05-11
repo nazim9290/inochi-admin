@@ -27,6 +27,62 @@ const empty = {
   published: true,
 };
 
+// EN: Seed mirrors anti-scam.json — 8 red flags + 8 verification check questions.
+// BN: Seed anti-scam.json-এর mirror — ৮ red flag + ৮ verification check প্রশ্ন।
+const SEED_SCAM = [
+  // red flags
+  { kind: 'redflag', itemKey: 'cash-only',
+    title: 'রসিদ ছাড়া শুধু নগদ পেমেন্ট', titleEn: 'Cash-only payments with no receipt', titleJa: '領収書なし現金のみの支払い',
+    body: 'বৈধ এজেন্সি প্রতিটি পেমেন্টে নাম্বার-যুক্ত রসিদ দেয়। যে কেউ পেপারওয়ার্ক ছাড়া নগদ চাইছে — সে অদৃশ্য হতে প্রস্তুতি নিচ্ছে।',
+    bodyEn: 'Legitimate agencies issue numbered receipts for every payment. Anyone asking for cash without paperwork is preparing to disappear.',
+    bodyJa: '正規エージェントはすべての支払いに番号付き領収書を発行。書類なしで現金を要求する者は逃亡準備中。',
+    sortOrder: 0 },
+  { kind: 'redflag', itemKey: 'guaranteed-visa',
+    title: '"১০০% ভিসা গ্যারান্টি"', titleEn: '"100% visa guarantee"', titleJa: '「ビザ100%保証」',
+    body: 'কোনো বৈধ এজেন্সি ভিসার গ্যারান্টি দিতে পারে না — চূড়ান্ত সিদ্ধান্ত এম্বাসির। যে এই প্রতিশ্রুতি দেয় — হয় মিথ্যাবাদী, না হয় ফেইল হলে refund দেওয়ার পরিকল্পনা নেই।',
+    bodyEn: 'No legitimate agency can guarantee visa approval — final decision rests with the embassy. Anyone making this promise is either lying or planning to skip refunds when it fails.',
+    sortOrder: 1 },
+  { kind: 'redflag', itemKey: 'no-physical-office',
+    title: 'ফিজিক্যাল অফিস নেই বা শুধু ফেসবুক', titleEn: 'No physical office or only Facebook presence',
+    body: 'পেমেন্টের আগে অফিসে গিয়ে কাউন্সেলরের সাথে দেখা করতে না পারলে — সমস্যা হলে কোনো recourse নেই। সাইন করার আগে সবসময় দেখা করুন।',
+    bodyEn: "If you can't walk into the office and meet a counsellor in person before paying, you have no recourse if things go wrong. Always visit before signing.",
+    sortOrder: 2 },
+  { kind: 'redflag', itemKey: 'fake-school-claims',
+    title: 'আপনি কখনো শুনেননি এমন বিশ্ববিদ্যালয়ের প্রতিশ্রুতি', titleEn: "Promises of universities you've never heard of",
+    body: 'তাদের প্রতিটি জাপানি প্রতিষ্ঠানের নাম JASSO অফিসিয়াল লিস্টে যাচাই করুন। N1 + entrance exam ছাড়া "টোকিও বিশ্ববিদ্যালয়ে সরাসরি ভর্তি" — রূপকথা।',
+    bodyEn: 'Cross-check every Japanese institution they mention against the JASSO official list. "Direct admission to Tokyo University" without N1 + entrance exam is a fairy tale.',
+    sortOrder: 3 },
+  { kind: 'redflag', itemKey: 'rushed-signing',
+    title: 'ঘণ্টা / দিনের মধ্যে সাইনের চাপ', titleEn: 'Pressure to sign within hours / days',
+    body: '"শেষ আসন", "কাল ডেডলাইন", "শুক্রবার দাম বাড়বে" — এগুলো চাপ-কৌশল। আসল intake-এ মাসের পর মাস সময় থাকে। চুক্তি পড়তে ৪৮+ ঘণ্টা নিন।',
+    bodyEn: '"Last seat", "deadline tomorrow", "price increases Friday" are pressure tactics. Real intakes have months of runway. Take 48+ hours to read the contract.',
+    sortOrder: 4 },
+  { kind: 'redflag', itemKey: 'no-japan-office',
+    title: 'জাপানে ফিজিক্যাল উপস্থিতি নেই', titleEn: 'No on-the-ground presence in Japan',
+    body: 'জাপানে নামার পর Narita-তে কে নিতে যাবে? কে ব্যাংক একাউন্ট খুলতে সাহায্য করবে? জাপানে operation নেই এমন এজেন্সি ভিসার পর আপনাকে একা ফেলে দেয়।',
+    bodyEn: 'Once you land, who picks you up at Narita? Who helps you open a bank account? An agency without Japan operations leaves you stranded after the visa.',
+    sortOrder: 5 },
+  { kind: 'redflag', itemKey: 'agent-takes-visa-process',
+    title: 'এজেন্সি আপনার ভিসা ফর্ম নিজে পূরণ করতে চায়', titleEn: 'Agency wants to fill your visa form for you',
+    body: 'এম্বাসি ইন্টারভিউ যাচাই করে আপনি সত্যিই ফর্ম পূরণ করেছেন কি না। আপনার পক্ষে ফাইল করে এজেন্সি প্রায়ই মিথ্যা তথ্য যোগ করে — যা সম্পর্কে আপনাকে প্রশ্ন করা হবে — তাত্ক্ষণিক rejection।',
+    bodyEn: "Embassy interviews check whether you actually wrote your form. Agencies that file on your behalf often add false information that you'll be questioned about — leading to instant rejection.",
+    sortOrder: 6 },
+  { kind: 'redflag', itemKey: 'no-refund-clause',
+    title: 'লিখিত refund ধারা নেই', titleEn: 'No written refund clause',
+    body: 'ভিসা reject হলে কী ফেরত আসে? সরকারি ও স্কুল ফি non-refundable, তবে এজেন্সি service fee-র জন্য স্পষ্ট, লিখিত partial-refund policy থাকা উচিত। "তখন আলোচনা করব" = জালিয়াতি।',
+    bodyEn: 'If visa is rejected, what comes back? Government and school fees are non-refundable but agency service fees should have a clear, written partial-refund policy. "We\'ll talk about it then" = scam.',
+    sortOrder: 7 },
+  // checks
+  { kind: 'check', title: 'অফিসের ঠিকানা Google Maps-এ যাচাইযোগ্য?', titleEn: 'Is the office address verifiable on Google Maps?', sortOrder: 100 },
+  { kind: 'check', title: 'পেমেন্টের আগে অফিসে গিয়ে কাউন্সেলরের সাথে দেখা করতে পারেন?', titleEn: 'Can you visit and meet a counsellor in person before paying?', sortOrder: 101 },
+  { kind: 'check', title: 'প্রতিটি পেমেন্টে নাম্বার-যুক্ত রসিদ আসে?', titleEn: 'Does each payment come with a numbered receipt?', sortOrder: 102 },
+  { kind: 'check', title: 'এজেন্সির গভর্নমেন্ট license + BAIRA membership যাচাইযোগ্য?', titleEn: "Are the agency's government license + BAIRA membership verifiable?", sortOrder: 103 },
+  { kind: 'check', title: 'লিখিত contract + refund policy দেওয়া হয়েছে?', titleEn: 'Has a written contract + refund policy been provided?', sortOrder: 104 },
+  { kind: 'check', title: 'জাপানি স্কুল-গুলো JASSO অফিসিয়াল লিস্টে আছে?', titleEn: 'Are the Japanese schools on the JASSO official list?', sortOrder: 105 },
+  { kind: 'check', title: 'এজেন্সির জাপান-পক্ষ অফিস বা partner আছে?', titleEn: 'Does the agency have a Japan-side office or partner?', sortOrder: 106 },
+  { kind: 'check', title: 'অন্তত ২ জন alumni-এর সাথে স্বাধীনভাবে কথা বলতে পারেন?', titleEn: 'Can you talk to at least 2 alumni independently?', sortOrder: 107 },
+];
+
 export default function ScamItemsManage() {
   const api = axiosInterceptor();
   const [items, setItems] = useState([]);
@@ -83,6 +139,25 @@ export default function ScamItemsManage() {
     try { await api.delete(`/scam-items/${id}`); await load(); } catch (err) { alert('Delete failed'); }
   };
 
+  const importSeed = async () => {
+    const ok = await confirmDialog({
+      title: 'Anti-scam seed import?',
+      message: '৮ red flag + ৮ verification check — পুরাতন JSON থেকে seed করব।',
+      confirmText: 'হ্যাঁ, import', cancelText: 'বাতিল', icon: '📥',
+    });
+    if (!ok) return;
+    setBusy(true);
+    try {
+      for (const it of SEED_SCAM) {
+        // eslint-disable-next-line no-await-in-loop
+        await api.post('/scam-items', { ...it, published: true }).catch(() => {});
+      }
+      await load();
+    } finally { setBusy(false); }
+  };
+
+  const isEmpty = !loading && items.length === 0;
+
   const redFlags = items.filter((i) => i.kind !== 'check');
   const checks = items.filter((i) => i.kind === 'check');
 
@@ -94,6 +169,17 @@ export default function ScamItemsManage() {
           /anti-scam পেজে যে red-flag সতর্কতা ও যাচাই-চেকলিস্ট দেখা যায়। নতুন scam pattern পেলে এখান থেকে যোগ করুন — দেব ছাড়াই ৬০ সেকেন্ডে live।
         </p>
       </div>
+
+      {isEmpty && (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+          <p className="font-semibold">🛡️ এখনও কোনো scam item যোগ করা হয়নি</p>
+          <p className="mt-1 leading-relaxed">এক click-এ পুরাতন ৮ red flag + ৮ verification check seed করতে পারেন।</p>
+          <button type="button" onClick={importSeed} disabled={busy}
+            className="mt-3 rounded bg-brand-teal px-4 py-2 text-xs font-semibold text-white hover:bg-brand-navy disabled:opacity-50">
+            {busy ? 'Importing…' : 'Anti-scam seed import করুন'}
+          </button>
+        </div>
+      )}
 
       <form onSubmit={submit} className="space-y-5 rounded-xl border border-brand-tealLight/40 bg-white p-5 shadow-sm">
         <h2 className="text-sm font-bold uppercase tracking-wide text-brand-navy">{editingId ? 'Item Edit' : 'নতুন Item'}</h2>

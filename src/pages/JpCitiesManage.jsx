@@ -34,6 +34,82 @@ const empty = {
   published: true,
 };
 
+// EN: Three-city seed mirrors japan-city-guides.json so admins can bootstrap
+//     the public site in one click instead of typing every cost figure.
+// BN: তিন-শহর seed japan-city-guides.json-এর mirror — admin এক click-এ
+//     public site bootstrap করতে পারে, প্রতিটা খরচ টাইপ করতে হয় না।
+const SEED_JP_CITIES = [
+  {
+    slug: 'tokyo', kanji: '東京',
+    name: 'টোকিও', nameEn: 'Tokyo', nameJa: '東京',
+    tagline: 'রাজধানী — সবচেয়ে বড় জব মার্কেট, সবচেয়ে বড় বাংলাদেশি কমিউনিটি, সর্বোচ্চ খরচ।',
+    taglineEn: 'The capital — biggest job market, biggest Bangladeshi community, highest cost.',
+    taglineJa: '首都 — 最大の雇用市場、最大のバングラデシュ人コミュニティ、最高の生活費。',
+    monthlyLiving: '৳1,30,000 – 1,80,000', monthlyRent: '৳45,000 – 70,000',
+    partTimeWage: '৳700 – 950 / hour', transportPass: '৳12,000 – 18,000 / month',
+    climate: 'মৃদু শীত (৫–১০°C), গরম আর্দ্র গ্রীষ্ম (২৮–৩৫°C), জুনে ভারী বৃষ্টি।',
+    climateEn: 'Mild winter (5–10°C), hot humid summer (28–35°C), heavy rain in June.',
+    climateJa: '冬は穏やか (5–10°C)、夏は高温多湿 (28–35°C)、6月は梅雨。',
+    topSchools: ['Akamonkai', 'ARC Tokyo', 'Sendagaya', 'ABK College'],
+    highlights: [
+      { bn: 'সবচেয়ে বড় part-time job pool', en: 'Largest part-time job pool — convenience stores, restaurants, IT support, factory shifts' },
+      { bn: 'অসাধারণ ট্রেন নেটওয়ার্ক — Yamanote + ১৩ মেট্রো লাইন', en: 'Excellent train network — Yamanote Line + 13 metro lines' },
+      { bn: '৬৪ জন Inochi alumni এখানে অধ্যয়নরত', en: '64 Inochi alumni currently studying here' },
+    ],
+    tradeOffs: [
+      { bn: 'সর্বোচ্চ accommodation খরচ — সিঙ্গেল রুম ৪৫k/মাস থেকে', en: 'Highest accommodation cost — single rooms from ৳45k/month upward' },
+      { bn: 'ভিড়পূর্ণ commute, বিশেষত সকালের rush hour-এ', en: 'Crowded commute, especially during morning rush hour' },
+    ],
+    sortOrder: 0, published: true,
+  },
+  {
+    slug: 'osaka', kanji: '大阪',
+    name: 'ওসাকা', nameEn: 'Osaka', nameJa: '大阪',
+    tagline: 'বন্ধুসুলভ wallet, বন্ধুসুলভ মানুষ। শক্তিশালী food ও manufacturing job market।',
+    taglineEn: 'Friendlier wallets, friendlier people. Strong food and manufacturing job market.',
+    taglineJa: '財布にも人にもやさしい。食品・製造業の就職市場が強い。',
+    monthlyLiving: '৳1,00,000 – 1,40,000', monthlyRent: '৳32,000 – 50,000',
+    partTimeWage: '৳650 – 850 / hour', transportPass: '৳9,000 – 14,000 / month',
+    climate: 'টোকিওর মতো — গ্রীষ্ম একটু গরম, শীত একটু মৃদু।',
+    climateEn: 'Similar to Tokyo but slightly hotter summers and milder winters.',
+    climateJa: '東京と同様だが夏はやや暑く冬はやや穏やか。',
+    topSchools: ['ECC Kokusai', 'Osaka Academy of Japanese Language', 'I.C. Nagoya Osaka'],
+    highlights: [
+      { bn: 'একই মানের জন্য টোকিওর চেয়ে ৩০% সস্তা ভাড়া', en: '30% cheaper rent than Tokyo for similar quality' },
+      { bn: 'বিখ্যাত food scene — takoyaki, okonomiyaki, ramen', en: 'Famous food scene — takoyaki, okonomiyaki, ramen' },
+      { bn: 'Kansai অঞ্চলে ৩৮ Inochi alumni', en: '38 Inochi alumni currently in the Kansai region' },
+    ],
+    tradeOffs: [
+      { bn: 'টোকিওর চেয়ে কম English-speaker', en: 'Smaller English-speaker pool than Tokyo' },
+      { bn: 'Kansai উপভাষা N5/N4 শিক্ষার্থীদের প্রথমে বিভ্রান্ত করতে পারে', en: 'Kansai dialect can confuse N5/N4 learners initially' },
+    ],
+    sortOrder: 1, published: true,
+  },
+  {
+    slug: 'kyoto', kanji: '京都',
+    name: 'কিয়োটো', nameEn: 'Kyoto', nameJa: '京都',
+    tagline: 'শান্ত, ঐতিহ্যবাহী, ইউনিভার্সিটি-শক্তিশালী। গভীর academic-দের জন্য সেরা।',
+    taglineEn: 'Quieter, traditional, university-strong. Best for serious academics with smaller social circles.',
+    taglineJa: '静かで伝統的、大学に強い。本格的学究志向者に最適。',
+    monthlyLiving: '৳90,000 – 1,30,000', monthlyRent: '৳28,000 – 45,000',
+    partTimeWage: '৳620 – 800 / hour', transportPass: '৳6,000 – 10,000 / month',
+    climate: 'ঠাণ্ডা শীত (০–৫°C), গরম আর্দ্র গ্রীষ্ম (৩০–৩৫°C)। বিখ্যাত শরৎ পত্র।',
+    climateEn: 'Cold winters (0–5°C), hot humid summers (30–35°C). Famous autumn foliage.',
+    climateJa: '寒い冬 (0–5°C)、高温多湿の夏 (30–35°C)。有名な紅葉。',
+    topSchools: ['Kyoto Computer Gakuin', 'Kyoto Minsai'],
+    highlights: [
+      { bn: '৩৭টি বিশ্ববিদ্যালয় — Kyoto University, Doshisha, Ritsumeikan বিশেষভাবে', en: '37 universities — Kyoto University, Doshisha, Ritsumeikan in particular' },
+      { bn: 'জাপানের প্রধান শহরগুলোর মধ্যে সর্বনিম্ন crime rate', en: "Lowest crime rate among Japan's major cities" },
+      { bn: 'হাঁটা/সাইকেল-বান্ধব — অনেক ছাত্রের ট্রেন pass লাগে না', en: "Walkable / bikeable — many students don't need a train pass" },
+    ],
+    tradeOffs: [
+      { bn: 'ছোট part-time job market — কম late-night shift', en: 'Smaller part-time job market — fewer late-night shifts' },
+      { bn: 'বসন্ত/শরতে পর্যটকদের ভিড় commute affect করে', en: 'Tourist crowds in spring/autumn can affect commute' },
+    ],
+    sortOrder: 2, published: true,
+  },
+];
+
 export default function JpCitiesManage() {
   const api = axiosInterceptor();
   const [cities, setCities] = useState([]);
@@ -108,6 +184,30 @@ export default function JpCitiesManage() {
     catch (err) { alert('Delete failed'); }
   };
 
+  // EN: One-click bootstrap of the three legacy cities so admins don't start
+  //     from a blank page. Uses .catch(() => {}) per row so a duplicate slug
+  //     doesn't abort the rest of the import.
+  // BN: তিন legacy শহরের এক-click bootstrap — admin খালি পেজ থেকে শুরু করে
+  //     না। প্রতি row-এ .catch(() => {}) — duplicate slug পুরো import ভাঙে না।
+  const importSeed = async () => {
+    const ok = await confirmDialog({
+      title: 'তিনটি জাপান-শহর import?',
+      message: 'Tokyo, Osaka, Kyoto — পুরাতন JSON থেকে নিয়ে DB-তে seed করব। চালাবো?',
+      confirmText: 'হ্যাঁ, import', cancelText: 'বাতিল', icon: '📥',
+    });
+    if (!ok) return;
+    setBusy(true);
+    try {
+      for (const c of SEED_JP_CITIES) {
+        // eslint-disable-next-line no-await-in-loop
+        await api.post('/jp-cities', c).catch(() => {});
+      }
+      await load();
+    } finally { setBusy(false); }
+  };
+
+  const isEmpty = !loading && cities.length === 0;
+
   return (
     <div className="space-y-6 max-w-5xl">
       <div>
@@ -117,6 +217,20 @@ export default function JpCitiesManage() {
           খরচ, স্কুল, climate ইত্যাদি এখান থেকে edit করুন। ৬০ সেকেন্ডে public site-এ আপডেট।
         </p>
       </div>
+
+      {isEmpty && (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+          <p className="font-semibold">📍 এখনও কোনো জাপান-শহর যোগ করা হয়নি</p>
+          <p className="mt-1 leading-relaxed">
+            নিচের ফর্ম দিয়ে নিজে যোগ করতে পারেন, অথবা এক click-এ পুরাতন তিন-শহর seed
+            (Tokyo, Osaka, Kyoto) import করতে পারেন।
+          </p>
+          <button type="button" onClick={importSeed} disabled={busy}
+            className="mt-3 rounded bg-brand-teal px-4 py-2 text-xs font-semibold text-white hover:bg-brand-navy disabled:opacity-50">
+            {busy ? 'Importing…' : 'তিনটা শহর import করুন'}
+          </button>
+        </div>
+      )}
 
       <form onSubmit={submit} className="space-y-5 rounded-xl border border-brand-tealLight/40 bg-white p-5 shadow-sm">
         <h2 className="text-sm font-bold uppercase tracking-wide text-brand-navy">{editingId ? 'শহর Edit' : 'নতুন শহর যোগ'}</h2>

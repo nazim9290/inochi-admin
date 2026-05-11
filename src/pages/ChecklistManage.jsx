@@ -27,6 +27,69 @@ const empty = {
   published: true,
 };
 
+// EN: Seed mirrors document-checklist.json — 4 categories, ~20 items total.
+// BN: Seed document-checklist.json-এর mirror — ৪ category, মোট ~২০ item।
+const SEED_CHECKLIST = [
+  // personal
+  { categoryKey: 'personal', categoryLabel: 'ব্যক্তিগত ডকুমেন্ট', categoryLabelEn: 'Personal documents', categoryLabelJa: '個人書類',
+    label: 'পাসপোর্ট (ন্যূনতম ১৮ মাস validity, ৪+ খালি পাতা)', labelEn: 'Passport (min. 18 months validity, 4+ blank pages)', labelJa: 'パスポート (有効期限18ヶ月以上、空白4ページ以上)',
+    groupOrder: 0, sortOrder: 0 },
+  { categoryKey: 'personal', categoryLabel: 'ব্যক্তিগত ডকুমেন্ট', categoryLabelEn: 'Personal documents',
+    label: 'জন্ম সনদ (ইংরেজি অনুবাদ, notarised)', labelEn: 'Birth certificate (English translation, notarised)',
+    groupOrder: 0, sortOrder: 1 },
+  { categoryKey: 'personal', categoryLabel: 'ব্যক্তিগত ডকুমেন্ট', categoryLabelEn: 'Personal documents',
+    label: 'জাতীয় পরিচয়পত্র (NID) — উভয় পাশ', labelEn: 'National ID card (NID) — both sides',
+    groupOrder: 0, sortOrder: 2 },
+  { categoryKey: 'personal', categoryLabel: 'ব্যক্তিগত ডকুমেন্ট', categoryLabelEn: 'Personal documents',
+    label: '৪টি পাসপোর্ট-সাইজ ছবি (সাদা ব্যাকগ্রাউন্ড, ৪.৫ × ৪.৫ cm)', labelEn: '4 passport-size photos (white background, 4.5 × 4.5 cm)',
+    groupOrder: 0, sortOrder: 3 },
+  // academic
+  { categoryKey: 'academic', categoryLabel: 'শিক্ষা সংক্রান্ত', categoryLabelEn: 'Academic documents', categoryLabelJa: '学歴書類',
+    label: 'SSC সার্টিফিকেট + ট্রান্সক্রিপ্ট (notarised ইংরেজি কপি)', labelEn: 'SSC certificate + transcript (notarised English copy)',
+    groupOrder: 1, sortOrder: 0 },
+  { categoryKey: 'academic', categoryLabel: 'শিক্ষা সংক্রান্ত', categoryLabelEn: 'Academic documents',
+    label: 'HSC সার্টিফিকেট + ট্রান্সক্রিপ্ট', labelEn: 'HSC certificate + transcript',
+    groupOrder: 1, sortOrder: 1 },
+  { categoryKey: 'academic', categoryLabel: 'শিক্ষা সংক্রান্ত', categoryLabelEn: 'Academic documents',
+    label: "Bachelor's সার্টিফিকেট + ট্রান্সক্রিপ্ট (যদি প্রযোজ্য)", labelEn: "Bachelor's certificate + transcript (if applicable)",
+    groupOrder: 1, sortOrder: 2 },
+  { categoryKey: 'academic', categoryLabel: 'শিক্ষা সংক্রান্ত', categoryLabelEn: 'Academic documents',
+    label: 'JLPT সার্টিফিকেট (N5 / N4 / উপরে)', labelEn: 'JLPT certificate (N5 / N4 / higher)',
+    groupOrder: 1, sortOrder: 3 },
+  { categoryKey: 'academic', categoryLabel: 'শিক্ষা সংক্রান্ত', categoryLabelEn: 'Academic documents',
+    label: 'Statement of purpose (জাপানি + ইংরেজি)', labelEn: 'Statement of purpose (Japanese + English)',
+    groupOrder: 1, sortOrder: 4 },
+  // financial
+  { categoryKey: 'financial', categoryLabel: 'আর্থিক / sponsor ডকুমেন্ট', categoryLabelEn: 'Financial / sponsor documents', categoryLabelJa: '経費・支弁者書類',
+    label: 'Sponsor-এর ব্যাংক স্টেটমেন্ট (গত ১২ মাস, ব্যাংক সিল সহ)', labelEn: "Sponsor's bank statement (last 12 months, with bank seal)",
+    groupOrder: 2, sortOrder: 0 },
+  { categoryKey: 'financial', categoryLabel: 'আর্থিক / sponsor ডকুমেন্ট', categoryLabelEn: 'Financial / sponsor documents',
+    label: 'Sponsor-এর ব্যাংক ব্যালেন্স সার্টিফিকেট (সর্বশেষ)', labelEn: "Sponsor's bank balance certificate (latest)",
+    groupOrder: 2, sortOrder: 1 },
+  { categoryKey: 'financial', categoryLabel: 'আর্থিক / sponsor ডকুমেন্ট', categoryLabelEn: 'Financial / sponsor documents',
+    label: 'Sponsor-এর tax return (গত ২ বছর)', labelEn: "Sponsor's tax return (last 2 years)",
+    groupOrder: 2, sortOrder: 2 },
+  { categoryKey: 'financial', categoryLabel: 'আর্থিক / sponsor ডকুমেন্ট', categoryLabelEn: 'Financial / sponsor documents',
+    label: 'Sponsor-এর NID + employment letter / ব্যবসার ডকুমেন্ট', labelEn: "Sponsor's NID + employment letter / business documents",
+    groupOrder: 2, sortOrder: 3 },
+  { categoryKey: 'financial', categoryLabel: 'আর্থিক / sponsor ডকুমেন্ট', categoryLabelEn: 'Financial / sponsor documents',
+    label: 'আর্থিক সহায়তার affidavit (notarised)', labelEn: 'Affidavit of financial support (notarised)',
+    groupOrder: 2, sortOrder: 4 },
+  // japan
+  { categoryKey: 'japan', categoryLabel: 'জাপান-পক্ষ ডকুমেন্ট (CoE-এর পর)', categoryLabelEn: 'Japan-side documents (after CoE)', categoryLabelJa: '日本側書類 (CoE後)',
+    label: 'Certificate of Eligibility (CoE) — জাপানি স্কুল থেকে original', labelEn: 'Certificate of Eligibility (CoE) — original from Japanese school',
+    groupOrder: 3, sortOrder: 0 },
+  { categoryKey: 'japan', categoryLabel: 'জাপান-পক্ষ ডকুমেন্ট (CoE-এর পর)', categoryLabelEn: 'Japan-side documents (after CoE)',
+    label: 'জাপানি স্কুল থেকে acceptance letter', labelEn: 'Acceptance letter from Japanese school',
+    groupOrder: 3, sortOrder: 1 },
+  { categoryKey: 'japan', categoryLabel: 'জাপান-পক্ষ ডকুমেন্ট (CoE-এর পর)', categoryLabelEn: 'Japan-side documents (after CoE)',
+    label: 'ভিসা আবেদন ফর্ম (আবেদনকারীর হাতে লেখা)', labelEn: 'Visa application form (handwritten by applicant)',
+    groupOrder: 3, sortOrder: 2 },
+  { categoryKey: 'japan', categoryLabel: 'জাপান-পক্ষ ডকুমেন্ট (CoE-এর পর)', categoryLabelEn: 'Japan-side documents (after CoE)',
+    label: 'Round-trip flight booking (hold-এ, paid নয়)', labelEn: 'Round-trip flight booking (held, not paid)',
+    groupOrder: 3, sortOrder: 3 },
+];
+
 export default function ChecklistManage() {
   const api = axiosInterceptor();
   const [items, setItems] = useState([]);
@@ -116,6 +179,25 @@ export default function ChecklistManage() {
     try { await api.delete(`/checklist/${id}`); await load(); } catch (err) { alert('Delete failed'); }
   };
 
+  const importSeed = async () => {
+    const ok = await confirmDialog({
+      title: 'Checklist seed import?',
+      message: '৪ category, ~১৯টা item — পুরাতন JSON থেকে seed করব। বিদ্যমান item-গুলো ছাড়া নতুন যোগ হবে।',
+      confirmText: 'হ্যাঁ, import', cancelText: 'বাতিল', icon: '📥',
+    });
+    if (!ok) return;
+    setBusy(true);
+    try {
+      for (const it of SEED_CHECKLIST) {
+        // eslint-disable-next-line no-await-in-loop
+        await api.post('/checklist', { ...it, published: true }).catch(() => {});
+      }
+      await load();
+    } finally { setBusy(false); }
+  };
+
+  const isEmpty = !loading && items.length === 0;
+
   // EN: Group items for display — same logic the public renderer uses.
   // BN: Display-এর জন্য item group — public renderer-এর মত logic।
   const grouped = useMemo(() => {
@@ -137,6 +219,17 @@ export default function ChecklistManage() {
           /document-checklist পেজে যে চেকলিস্ট দেখা যায়। প্রতিটা item এক row। একই category-র item একসাথে group হয়ে public-এ দেখাবে।
         </p>
       </div>
+
+      {isEmpty && (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+          <p className="font-semibold">📑 এখনও কোনো checklist item যোগ করা হয়নি</p>
+          <p className="mt-1 leading-relaxed">এক click-এ পুরাতন ৪ category, ~১৯ item (পাসপোর্ট, NID, sponsor docs, CoE …) seed করতে পারেন।</p>
+          <button type="button" onClick={importSeed} disabled={busy}
+            className="mt-3 rounded bg-brand-teal px-4 py-2 text-xs font-semibold text-white hover:bg-brand-navy disabled:opacity-50">
+            {busy ? 'Importing…' : 'Checklist seed import করুন'}
+          </button>
+        </div>
+      )}
 
       <form onSubmit={submit} className="space-y-5 rounded-xl border border-brand-tealLight/40 bg-white p-5 shadow-sm">
         <h2 className="text-sm font-bold uppercase tracking-wide text-brand-navy">{editingId ? 'Item Edit' : 'নতুন Item'}</h2>

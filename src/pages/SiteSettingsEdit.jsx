@@ -148,11 +148,17 @@ const SiteSettingsEdit = () => {
         <p className={sectionSub}>হোম পেজের সবচেয়ে উপরের অংশ — title, subtitle, ছবি ও call-to-action button।</p>
         <div className="space-y-5">
           <BilingualField label="Eyebrow text" name="heroEyebrow" value={data.heroEyebrow} valueEn={data.heroEyebrowEn} onChange={onChange} />
-          <SinglePlain label="Eyebrow (日本語, optional)" name="heroEyebrowJa" value={data.heroEyebrowJa} onChange={onChange} />
-          <SinglePlain label="Japanese title (日本語)" name="heroTitleJp" value={data.heroTitleJp} onChange={onChange} />
+          <SinglePlain label="Eyebrow — ja locale-এ দেখানো (日本語, optional)" name="heroEyebrowJa" value={data.heroEyebrowJa} onChange={onChange} />
+          <SinglePlain
+            label="Decorative kanji headline (সব locale-এ overlay হিসেবে — যেমন 「夢を叶える」)"
+            name="heroTitleJp"
+            value={data.heroTitleJp}
+            onChange={onChange}
+            placeholder="夢を叶える"
+          />
           <BilingualField label="Main title" name="heroTitle" value={data.heroTitle} valueEn={data.heroTitleEn} onChange={onChange} />
           <BilingualField label="Subtitle" name="heroSubtitle" value={data.heroSubtitle} valueEn={data.heroSubtitleEn} onChange={onChange} type="textarea" />
-          <SinglePlain label="Subtitle (日本語, optional)" name="heroSubtitleJa" value={data.heroSubtitleJa} onChange={onChange} />
+          <SinglePlain label="Subtitle — ja locale-এ দেখানো (日本語, optional)" name="heroSubtitleJa" value={data.heroSubtitleJa} onChange={onChange} />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <BilingualField label="Primary CTA text" name="heroCtaPrimary" value={data.heroCtaPrimary} valueEn={data.heroCtaPrimaryEn} onChange={onChange} />
             <SinglePlain label="Primary CTA link" name="heroCtaPrimaryLink" value={data.heroCtaPrimaryLink} onChange={onChange} placeholder="/bookseminer" />
