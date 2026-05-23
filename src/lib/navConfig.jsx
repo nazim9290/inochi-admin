@@ -56,6 +56,12 @@ const ICONS = {
       <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11" />
     </Icon>
   ),
+  mail: (
+    <Icon>
+      <rect x="2" y="4" width="20" height="16" rx="2" />
+      <path d="M22 7l-10 6L2 7" />
+    </Icon>
+  ),
 };
 
 // EN: Each section has a key, label (Bangla + English), an icon, and sub-routes.
@@ -145,6 +151,21 @@ export const NAV_SECTIONS = [
       { path: '/semmenr-booklist', label: 'বুকিং', labelEn: 'Bookings' },
       { path: '/subscriber-list', label: 'সাবস্ক্রাইবার', labelEn: 'Subscribers' },
       { path: '/newsletter', label: 'নিউজলেটার', labelEn: 'Newsletter' },
+    ],
+  },
+  {
+    key: 'email',
+    label: 'ইমেইল',
+    labelEn: 'Email',
+    icon: ICONS.mail,
+    home: '/email-directory',
+    // EN: School outreach — a contact directory + a composer that sends an
+    //     individual, personalized mail to each recipient (test-before-send).
+    // BN: স্কুল outreach — contact directory + composer যা প্রতি প্রাপকে
+    //     আলাদা personalized মেইল পাঠায় (পাঠানোর আগে test)।
+    routes: [
+      { path: '/email-directory', label: 'ডিরেক্টরি', labelEn: 'Directory' },
+      { path: '/send-email', label: 'মেইল পাঠান', labelEn: 'Send Email' },
     ],
   },
   {

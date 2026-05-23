@@ -36,6 +36,8 @@ import Applications from "../pages/Applications";
 import Reviews from "../pages/Reviews";
 import CommentsModeration from "../pages/CommentsModeration";
 import Newsletter from "../pages/Newsletter";
+import EmailDirectoryManage from "../pages/EmailDirectoryManage";
+import EmailCompose from "../pages/EmailCompose";
 import Users from "../pages/Users";
 import AuditLog from "../pages/AuditLog";
 import BulkImageUpload from "../pages/BulkImageUpload";
@@ -75,6 +77,8 @@ const routesConfig = [
       { path: "/reviews", element: <PrivateRoute element={<Reviews />} /> },
       { path: "/comments-moderation", element: <PrivateRoute element={<CommentsModeration />} /> },
       { path: "/newsletter", element: <PrivateRoute element={<Newsletter />} /> },
+      { path: "/email-directory", element: <PrivateRoute element={<EmailDirectoryManage />} /> },
+      { path: "/send-email", element: <PrivateRoute element={<EmailCompose />} /> },
       { path: "/users", element: <PrivateRoute element={<Users />} /> },
       { path: "/audit-log", element: <PrivateRoute element={<AuditLog />} /> },
       { path: "/bulk-image-upload", element: <PrivateRoute element={<BulkImageUpload />} /> },
