@@ -61,6 +61,11 @@ export default function EmailDirectoryManage() {
   const [bulkGroup, setBulkGroup] = useState('');
   const [bulkBusy, setBulkBusy] = useState(false);
 
+  // Import from existing in-system lists (subscribers / contacts)
+  const [importPreview, setImportPreview] = useState({ subscribers: 0, contacts: 0 });
+  const [importGroup, setImportGroup] = useState('');
+  const [importBusy, setImportBusy] = useState(null); // 'subscribers' | 'contacts' | null
+
   // Filter
   const [filterGroup, setFilterGroup] = useState('');
   const [search, setSearch] = useState('');
@@ -73,13 +78,33 @@ export default function EmailDirectoryManage() {
   const load = async () => {
     setLoading(true);
     try {
-      const [g, c] = await Promise.all([api.get('/email-groups'), api.get('/school-contacts')]);
+      const [g, c, p] = await Promise.all([
+        api.get('/email-groups'),
+        api.get('/school-contacts'),
+        api.get('/email-outreach/import-preview').catch(() => ({ data: { subscribers: 0, contacts: 0 } })),
+      ]);
       setGroups(g.data?.groups || []);
       setContacts(c.data?.contacts || []);
+      setImportPreview(p.data || { subscribers: 0, contacts: 0 });
     } catch (err) {
       flash(false, err.response?.data?.error || 'লোড করা যায়নি');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // EN: One-click import of an existing in-system list into the directory.
+  // BN: সিস্টেমের পুরোনো লিস্ট এক ক্লিকে directory-তে import।
+  const runImport = async (source) => {
+    setImportBusy(source);
+    try {
+      const res = await api.post('/email-outreach/import', { source, group: importGroup || undefined });
+      flash(true, `${res.data.created} টি যোগ হয়েছে, ${res.data.skipped} টি বাদ (আগে থেকেই আছে)`);
+      load();
+    } catch (err) {
+      flash(false, err.response?.data?.error || 'Import করা যায়নি');
+    } finally {
+      setImportBusy(null);
     }
   };
 
@@ -297,6 +322,51 @@ export default function EmailDirectoryManage() {
           <button type="button" onClick={addGroup} className="rounded-md bg-brand-teal px-4 py-2 text-sm font-bold text-white hover:bg-brand-navy">
             + গ্রুপ
           </button>
+        </div>
+      </section>
+
+      {/* Import from existing in-system lists */}
+      <section className="rounded-xl border border-brand-tealLight/40 bg-white p-5 shadow-sm">
+        <h2 className="text-sm font-bold uppercase tracking-wide text-brand-navy">পুরোনো লিস্ট থেকে যোগ করুন</h2>
+        <p className="mt-1 text-sm text-brand-slate">
+          সাইটে আগে থেকে থাকা ইমেইল এক ক্লিকে এই directory-তে আনুন। (ইতিমধ্যে যোগ করা ঠিকানা বাদ পড়বে।)
+        </p>
+        <div className="mt-3 flex items-center gap-2">
+          <label className="text-xs font-semibold text-brand-slate">যোগ করার সময় গ্রুপ:</label>
+          <select value={importGroup} onChange={(e) => setImportGroup(e.target.value)} className="rounded-md border border-brand-tealLight/60 bg-white px-2 py-1.5 text-xs">
+            <option value="">কোনো গ্রুপ ছাড়া</option>
+            {groups.map((g) => <option key={g.id} value={g.name}>{g.name}</option>)}
+          </select>
+        </div>
+        <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="flex items-center justify-between rounded-lg border border-brand-tealLight/40 bg-brand-tealLight/5 px-4 py-3">
+            <div>
+              <p className="text-sm font-semibold text-brand-navy">নিউজলেটার Subscriber</p>
+              <p className="text-xs text-brand-slate">{importPreview.subscribers} টি নতুন (confirmed)</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => runImport('subscribers')}
+              disabled={importBusy !== null || importPreview.subscribers === 0}
+              className="rounded-md bg-brand-teal px-3 py-1.5 text-xs font-bold text-white hover:bg-brand-navy disabled:opacity-40"
+            >
+              {importBusy === 'subscribers' ? 'হচ্ছে…' : 'যোগ করুন'}
+            </button>
+          </div>
+          <div className="flex items-center justify-between rounded-lg border border-brand-tealLight/40 bg-brand-tealLight/5 px-4 py-3">
+            <div>
+              <p className="text-sm font-semibold text-brand-navy">যোগাযোগ ফর্মের Lead</p>
+              <p className="text-xs text-brand-slate">{importPreview.contacts} টি নতুন</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => runImport('contacts')}
+              disabled={importBusy !== null || importPreview.contacts === 0}
+              className="rounded-md bg-brand-teal px-3 py-1.5 text-xs font-bold text-white hover:bg-brand-navy disabled:opacity-40"
+            >
+              {importBusy === 'contacts' ? 'হচ্ছে…' : 'যোগ করুন'}
+            </button>
+          </div>
         </div>
       </section>
 
