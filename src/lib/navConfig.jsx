@@ -102,6 +102,10 @@ export const NAV_SECTIONS = [
       { path: '/events', label: 'ইভেন্ট', labelEn: 'Events' },
       { path: '/checklist', label: 'ডকু-চেকলিস্ট', labelEn: 'Doc Checklist' },
       { path: '/scam-items', label: 'Anti-Scam', labelEn: 'Anti-Scam' },
+      { path: '/glossary', label: 'শব্দকোষ', labelEn: 'Glossary' },
+      { path: '/university-rankings', label: 'ইউনি র‍্যাংকিং', labelEn: 'Uni Rankings' },
+      { path: '/press-mentions', label: 'প্রেস', labelEn: 'Press' },
+      { path: '/community-channels', label: 'কমিউনিটি', labelEn: 'Community' },
     ],
   },
   {

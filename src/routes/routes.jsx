@@ -32,6 +32,10 @@ import JpCitiesManage from "../pages/JpCitiesManage";
 import EventsManage from "../pages/EventsManage";
 import ChecklistManage from "../pages/ChecklistManage";
 import ScamItemsManage from "../pages/ScamItemsManage";
+import GlossaryManage from "../pages/GlossaryManage";
+import UniversityRankingsManage from "../pages/UniversityRankingsManage";
+import PressManage from "../pages/PressManage";
+import CommunityManage from "../pages/CommunityManage";
 import Applications from "../pages/Applications";
 import Reviews from "../pages/Reviews";
 import CommentsModeration from "../pages/CommentsModeration";
@@ -97,6 +101,10 @@ const routesConfig = [
       { path: "/events", element: <PrivateRoute element={<EventsManage />} /> },
       { path: "/checklist", element: <PrivateRoute element={<ChecklistManage />} /> },
       { path: "/scam-items", element: <PrivateRoute element={<ScamItemsManage />} /> },
+      { path: "/glossary", element: <PrivateRoute element={<GlossaryManage />} /> },
+      { path: "/university-rankings", element: <PrivateRoute element={<UniversityRankingsManage />} /> },
+      { path: "/press-mentions", element: <PrivateRoute element={<PressManage />} /> },
+      { path: "/community-channels", element: <PrivateRoute element={<CommunityManage />} /> },
     ],
   },
   { path: "/login", element: <LoginComponent /> },
