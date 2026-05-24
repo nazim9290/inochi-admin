@@ -51,6 +51,28 @@ const SEED = [
   { ...CAT.edu, questionEn: 'Why is there a gap between your last education and now?', question: 'শেষ শিক্ষা ও বর্তমানের মধ্যে gap কেন?', questionJa: '最終学歴と現在の間のブランクの理由は？', tipEn: 'If for JLPT prep, family work, or savings — say so directly with proof you can show.', tip: 'JLPT prep, পরিবার-কাজ বা সঞ্চয়ের জন্য হলে সরাসরি বলুন, প্রমাণসহ।', tipJa: 'JLPT準備・家業・貯蓄のためなら直接述べ、証明を用意。', modelAnswerEn: 'After my Bachelor\'s I worked 14 months at my family business while preparing for JLPT N5 at Inochi. Working with our Japanese suppliers convinced me real fluency would change my contribution.', modelAnswer: 'Bachelor\'s-এর পর ১৪ মাস পরিবারের ব্যবসায় কাজ + Inochi-তে JLPT N5 prep। জাপানি supplier-দের সাথে কাজ করে বুঝেছি প্রকৃত fluency আমার অবদান বদলাবে।', modelAnswerJa: '学士後14ヶ月家業に従事しInochiでJLPT N5準備。日本の仕入先との仕事で流暢さの重要性を確信。', redFlagEn: 'Avoid "I was just relaxing." Always have a documented reason.', redFlag: 'এড়ান: "শুধু আরাম করছিলাম।" সবসময় documented কারণ রাখুন।', redFlagJa: '「休んでいた」は避ける。文書化した理由を。', sortOrder: 0 },
 ];
 
+// EN: Module-level so inputs keep focus (a component defined inside the parent
+//     is recreated each render → remount → focus loss every keystroke).
+// BN: module-level — input focus ধরে রাখে (parent-এর ভেতরে define করলে প্রতি
+//     render-এ recreate → remount → প্রতি keystroke-এ focus হারায়)।
+function TriField({ form, setForm, k, label, area }) {
+  return (
+    <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+      {[['', 'বাংলা'], ['En', 'English'], ['Ja', '日本語']].map(([suf, lng]) => {
+        const key = k + suf;
+        return (
+          <div key={key}>
+            <label className={labelClass}>{label} ({lng})</label>
+            {area
+              ? <textarea value={form[key]} onChange={(e) => setForm({ ...form, [key]: e.target.value })} rows={2} className={inputClass} />
+              : <input value={form[key]} onChange={(e) => setForm({ ...form, [key]: e.target.value })} className={inputClass} />}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function VisaInterviewManage() {
   const api = axiosInterceptor();
   const [rows, setRows] = useState([]);
@@ -101,22 +123,6 @@ export default function VisaInterviewManage() {
     flash(true, `${n}টি import হয়েছে`); load();
   };
 
-  const TriField = ({ k, label, area }) => (
-    <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-      {[['', 'বাংলা'], ['En', 'English'], ['Ja', '日本語']].map(([suf, lng]) => {
-        const key = k + suf;
-        return (
-          <div key={key}>
-            <label className={labelClass}>{label} ({lng})</label>
-            {area
-              ? <textarea value={form[key]} onChange={(e) => setForm({ ...form, [key]: e.target.value })} rows={2} className={inputClass} />
-              : <input value={form[key]} onChange={(e) => setForm({ ...form, [key]: e.target.value })} className={inputClass} />}
-          </div>
-        );
-      })}
-    </div>
-  );
-
   // Group rows by category for the list view.
   const grouped = rows.reduce((acc, r) => {
     (acc[r.categoryKey] = acc[r.categoryKey] || { label: r.categoryLabelEn || r.categoryKey, items: [] }).items.push(r);
@@ -145,13 +151,13 @@ export default function VisaInterviewManage() {
         </div>
         <div className="rounded-lg bg-brand-tealLight/5 p-3 space-y-3">
           <p className="text-xs font-bold uppercase text-brand-slate">Category (এই category-র সব প্রশ্নে একই রাখুন)</p>
-          <TriField k="categoryLabel" label="Category নাম" />
-          <TriField k="categoryIntro" label="Category ভূমিকা" area />
+          <TriField form={form} setForm={setForm} k="categoryLabel" label="Category নাম" />
+          <TriField form={form} setForm={setForm} k="categoryIntro" label="Category ভূমিকা" area />
         </div>
-        <TriField k="question" label="প্রশ্ন" area />
-        <TriField k="tip" label="Tip" area />
-        <TriField k="modelAnswer" label="মডেল উত্তর" area />
-        <TriField k="redFlag" label="Red flag (যা এড়াবেন)" area />
+        <TriField form={form} setForm={setForm} k="question" label="প্রশ্ন" area />
+        <TriField form={form} setForm={setForm} k="tip" label="Tip" area />
+        <TriField form={form} setForm={setForm} k="modelAnswer" label="মডেল উত্তর" area />
+        <TriField form={form} setForm={setForm} k="redFlag" label="Red flag (যা এড়াবেন)" area />
         <div className="flex gap-2">
           <button type="button" onClick={save} disabled={saving} className="rounded-md bg-brand-teal px-5 py-2.5 text-sm font-bold text-white hover:bg-brand-navy disabled:opacity-50">{saving ? 'সেভ…' : form.id ? 'আপডেট' : '+ যোগ করুন'}</button>
           {form.id && <button type="button" onClick={reset} className="rounded-md border border-brand-navy px-4 py-2.5 text-sm font-semibold text-brand-navy hover:bg-brand-tealLight/10">বাতিল</button>}

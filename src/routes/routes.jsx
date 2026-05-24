@@ -38,6 +38,7 @@ import PressManage from "../pages/PressManage";
 import CommunityManage from "../pages/CommunityManage";
 import JlptSessionsManage from "../pages/JlptSessionsManage";
 import VisaInterviewManage from "../pages/VisaInterviewManage";
+import QuizManage from "../pages/QuizManage";
 import Applications from "../pages/Applications";
 import Reviews from "../pages/Reviews";
 import CommentsModeration from "../pages/CommentsModeration";
@@ -109,6 +110,7 @@ const routesConfig = [
       { path: "/community-channels", element: <PrivateRoute element={<CommunityManage />} /> },
       { path: "/jlpt-calendar", element: <PrivateRoute element={<JlptSessionsManage />} /> },
       { path: "/visa-interview", element: <PrivateRoute element={<VisaInterviewManage />} /> },
+      { path: "/eligibility-quiz", element: <PrivateRoute element={<QuizManage />} /> },
     ],
   },
   { path: "/login", element: <LoginComponent /> },
