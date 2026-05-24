@@ -106,6 +106,8 @@ export const NAV_SECTIONS = [
       { path: '/university-rankings', label: 'ইউনি র‍্যাংকিং', labelEn: 'Uni Rankings' },
       { path: '/press-mentions', label: 'প্রেস', labelEn: 'Press' },
       { path: '/community-channels', label: 'কমিউনিটি', labelEn: 'Community' },
+      { path: '/jlpt-calendar', label: 'JLPT ক্যালেন্ডার', labelEn: 'JLPT Calendar' },
+      { path: '/visa-interview', label: 'ভিসা ইন্টারভিউ', labelEn: 'Visa Interview' },
     ],
   },
   {
