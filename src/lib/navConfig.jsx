@@ -109,6 +109,7 @@ export const NAV_SECTIONS = [
       { path: '/jlpt-calendar', label: 'JLPT ক্যালেন্ডার', labelEn: 'JLPT Calendar' },
       { path: '/visa-interview', label: 'ভিসা ইন্টারভিউ', labelEn: 'Visa Interview' },
       { path: '/eligibility-quiz', label: 'এলিজিবিলিটি কুইজ', labelEn: 'Eligibility Quiz' },
+      { path: '/mock-test', label: 'JLPT মক টেস্ট', labelEn: 'JLPT Mock Test' },
     ],
   },
   {
