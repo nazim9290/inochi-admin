@@ -41,6 +41,7 @@ import VisaInterviewManage from "../pages/VisaInterviewManage";
 import QuizManage from "../pages/QuizManage";
 import MockTestManage from "../pages/MockTestManage";
 import IntakeManage from "../pages/IntakeManage";
+import UniversityManage from "../pages/UniversityManage";
 import Applications from "../pages/Applications";
 import Reviews from "../pages/Reviews";
 import CommentsModeration from "../pages/CommentsModeration";
@@ -115,6 +116,7 @@ const routesConfig = [
       { path: "/eligibility-quiz", element: <PrivateRoute element={<QuizManage />} /> },
       { path: "/mock-test", element: <PrivateRoute element={<MockTestManage />} /> },
       { path: "/intakes", element: <PrivateRoute element={<IntakeManage />} /> },
+      { path: "/partner-universities", element: <PrivateRoute element={<UniversityManage />} /> },
     ],
   },
   { path: "/login", element: <LoginComponent /> },
