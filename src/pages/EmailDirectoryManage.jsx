@@ -15,7 +15,7 @@
  *          আলাদা "Send Email" পেজে।
  */
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import { confirmDialog } from '../components/ConfirmDialog';
 
@@ -38,7 +38,11 @@ const emptyContact = {
 const isEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(e || '').trim());
 
 export default function EmailDirectoryManage() {
-  const api = useMemo(() => axiosInterceptor(), []);
+  // EN: axiosInterceptor() is itself a hook (uses useAuth + useNavigate), so it
+  //     must be called at the top level every render — NEVER inside useMemo.
+  // BN: axiosInterceptor() নিজেই hook (useAuth + useNavigate ব্যবহার করে), তাই
+  //     প্রতি render-এ top level-এ কল করতে হয় — useMemo-র ভেতরে কখনো নয়।
+  const api = axiosInterceptor();
   const [groups, setGroups] = useState([]);
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);

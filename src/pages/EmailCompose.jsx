@@ -29,7 +29,11 @@ const labelClass = 'mb-1 block text-xs font-bold uppercase tracking-wider text-b
 const isEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(e || '').trim());
 
 export default function EmailCompose() {
-  const api = useMemo(() => axiosInterceptor(), []);
+  // EN: axiosInterceptor() is a hook (useAuth + useNavigate inside) — must run
+  //     at top level every render, not wrapped in useMemo (caused React #311).
+  // BN: axiosInterceptor() একটা hook (ভেতরে useAuth + useNavigate) — প্রতি
+  //     render-এ top level-এ চালাতে হয়, useMemo-তে নয় (React #311 হচ্ছিল)।
+  const api = axiosInterceptor();
 
   const [groups, setGroups] = useState([]);
   const [contacts, setContacts] = useState([]);
