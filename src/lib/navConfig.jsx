@@ -110,6 +110,7 @@ export const NAV_SECTIONS = [
       { path: '/visa-interview', label: 'ভিসা ইন্টারভিউ', labelEn: 'Visa Interview' },
       { path: '/eligibility-quiz', label: 'এলিজিবিলিটি কুইজ', labelEn: 'Eligibility Quiz' },
       { path: '/mock-test', label: 'JLPT মক টেস্ট', labelEn: 'JLPT Mock Test' },
+      { path: '/intakes', label: 'ইনটেক পেজ', labelEn: 'Intakes' },
     ],
   },
   {

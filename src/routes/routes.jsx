@@ -40,6 +40,7 @@ import JlptSessionsManage from "../pages/JlptSessionsManage";
 import VisaInterviewManage from "../pages/VisaInterviewManage";
 import QuizManage from "../pages/QuizManage";
 import MockTestManage from "../pages/MockTestManage";
+import IntakeManage from "../pages/IntakeManage";
 import Applications from "../pages/Applications";
 import Reviews from "../pages/Reviews";
 import CommentsModeration from "../pages/CommentsModeration";
@@ -113,6 +114,7 @@ const routesConfig = [
       { path: "/visa-interview", element: <PrivateRoute element={<VisaInterviewManage />} /> },
       { path: "/eligibility-quiz", element: <PrivateRoute element={<QuizManage />} /> },
       { path: "/mock-test", element: <PrivateRoute element={<MockTestManage />} /> },
+      { path: "/intakes", element: <PrivateRoute element={<IntakeManage />} /> },
     ],
   },
   { path: "/login", element: <LoginComponent /> },
