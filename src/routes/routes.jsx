@@ -42,6 +42,8 @@ import QuizManage from "../pages/QuizManage";
 import MockTestManage from "../pages/MockTestManage";
 import IntakeManage from "../pages/IntakeManage";
 import UniversityManage from "../pages/UniversityManage";
+import ScholarshipsManage from "../pages/ScholarshipsManage";
+import PreDepartureManage from "../pages/PreDepartureManage";
 import Applications from "../pages/Applications";
 import Reviews from "../pages/Reviews";
 import CommentsModeration from "../pages/CommentsModeration";
@@ -117,6 +119,8 @@ const routesConfig = [
       { path: "/mock-test", element: <PrivateRoute element={<MockTestManage />} /> },
       { path: "/intakes", element: <PrivateRoute element={<IntakeManage />} /> },
       { path: "/partner-universities", element: <PrivateRoute element={<UniversityManage />} /> },
+      { path: "/scholarships", element: <PrivateRoute element={<ScholarshipsManage />} /> },
+      { path: "/pre-departure", element: <PrivateRoute element={<PreDepartureManage />} /> },
     ],
   },
   { path: "/login", element: <LoginComponent /> },

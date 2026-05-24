@@ -112,6 +112,8 @@ export const NAV_SECTIONS = [
       { path: '/mock-test', label: 'JLPT মক টেস্ট', labelEn: 'JLPT Mock Test' },
       { path: '/intakes', label: 'ইনটেক পেজ', labelEn: 'Intakes' },
       { path: '/partner-universities', label: 'পার্টনার স্কুল', labelEn: 'Partner Schools' },
+      { path: '/scholarships', label: 'বৃত্তি', labelEn: 'Scholarships' },
+      { path: '/pre-departure', label: 'যাত্রার প্রস্তুতি', labelEn: 'Pre-Departure' },
     ],
   },
   {
