@@ -209,6 +209,13 @@ export default function EmailCompose() {
                   <option value="">— গ্রুপ —</option>
                   {groups.map((g) => <option key={g.id} value={g.name}>{g.name} ({g.memberCount})</option>)}
                 </select>
+                {/* EN: Guide the (non-technical) admin: groups are created on the
+                        Directory tab, not here. BN: গ্রুপ তৈরি হয় ডিরেক্টরি ট্যাবে। */}
+                {groups.length === 0 && (
+                  <p className="mt-1.5 rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                    এখনো কোনো গ্রুপ নেই। উপরে <strong>“ডিরেক্টরি”</strong> ট্যাবে গিয়ে গ্রুপ তৈরি করুন এবং স্কুলগুলোকে সেই গ্রুপে যোগ করুন — তারপর এখানে দেখা যাবে। (গ্রুপ ছাড়াও <strong>“বেছে নেওয়া”</strong> বা <strong>“পুরো তালিকা”</strong> দিয়ে পাঠাতে পারেন।)
+                  </p>
+                )}
               </div>
             )}
 
