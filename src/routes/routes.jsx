@@ -44,6 +44,7 @@ import IntakeManage from "../pages/IntakeManage";
 import UniversityManage from "../pages/UniversityManage";
 import ScholarshipsManage from "../pages/ScholarshipsManage";
 import PreDepartureManage from "../pages/PreDepartureManage";
+import AiBlogManage from "../pages/AiBlogManage";
 import Applications from "../pages/Applications";
 import Reviews from "../pages/Reviews";
 import CommentsModeration from "../pages/CommentsModeration";
@@ -121,6 +122,7 @@ const routesConfig = [
       { path: "/partner-universities", element: <PrivateRoute element={<UniversityManage />} /> },
       { path: "/scholarships", element: <PrivateRoute element={<ScholarshipsManage />} /> },
       { path: "/pre-departure", element: <PrivateRoute element={<PreDepartureManage />} /> },
+      { path: "/ai-blog", element: <PrivateRoute element={<AiBlogManage />} /> },
     ],
   },
   { path: "/login", element: <LoginComponent /> },

@@ -126,6 +126,7 @@ export const NAV_SECTIONS = [
       { path: '/team-create', label: 'টিম', labelEn: 'Team' },
       { path: '/blogs-manage', label: 'ব্লগ ম্যানেজ', labelEn: 'Blog — Manage' },
       { path: '/create-blog', label: 'নতুন ব্লগ', labelEn: 'Blog — New' },
+      { path: '/ai-blog', label: 'AI অটো-ব্লগ', labelEn: 'AI Auto-Blog' },
       { path: '/create-brand', label: 'ব্র্যান্ড', labelEn: 'Brands' },
     ],
   },
