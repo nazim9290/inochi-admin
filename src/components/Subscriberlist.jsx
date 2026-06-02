@@ -19,6 +19,7 @@ const Subscriberlist = () => {
   const [search, setSearch] = useState('');
   const [busyId, setBusyId] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [cleaning, setCleaning] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -83,6 +84,33 @@ const Subscriberlist = () => {
     downloadCsv(`subscribers-${new Date().toISOString().slice(0, 10)}.csv`, headers, visible);
   };
 
+  // EN: Sweep pending double-opt-in rows that the visitor never confirmed.
+  //     Default 30 days but admin can override; result count is shown back.
+  // BN: যেসব double-opt-in pending row visitor confirm করেনি, ৩০+ দিন পরে
+  //     সরাই। Default ৩০ দিন; admin override করতে পারে।
+  const cleanupUnconfirmed = async () => {
+    const days = Number(window.prompt('কত দিনের পুরোনো unconfirmed subscriber সরাবেন?', '30') || '30');
+    if (!Number.isFinite(days) || days < 1) return;
+    const ok = await confirmDialog({
+      title: 'Unconfirmed cleanup',
+      message: `${days} দিনের চেয়ে পুরোনো যেসব subscriber কখনো confirm-link click করেনি, তাদের সরানো হবে। চালিয়ে যাবেন?`,
+      confirmText: 'হ্যাঁ, সরান',
+      cancelText: 'বাতিল',
+      danger: true,
+    });
+    if (!ok) return;
+    setCleaning(true);
+    try {
+      const { data } = await api.post('/subscriber/cleanup', { days });
+      alert(`${data?.deleted ?? 0} টি pending subscriber সরানো হয়েছে।`);
+      load();
+    } catch (err) {
+      alert('Cleanup failed');
+    } finally {
+      setCleaning(false);
+    }
+  };
+
   return (
     <div className="space-y-5 max-w-5xl">
       <div>
@@ -132,6 +160,15 @@ const Subscriberlist = () => {
           className="rounded bg-white border border-brand-tealLight/60 px-3 py-2 text-sm font-semibold text-brand-navy hover:bg-brand-tealLight/20 disabled:opacity-50"
         >
           ⬇ CSV Export
+        </button>
+        <button
+          type="button"
+          onClick={cleanupUnconfirmed}
+          disabled={cleaning}
+          title="যেসব pending subscriber কখনো confirm-link click করেনি, তাদের সরাও"
+          className="rounded bg-amber-50 border border-amber-300/60 px-3 py-2 text-sm font-semibold text-amber-700 hover:bg-amber-100 disabled:opacity-50"
+        >
+          {cleaning ? 'সাফ হচ্ছে…' : '🧹 Unconfirmed সাফ করুন'}
         </button>
       </div>
 
