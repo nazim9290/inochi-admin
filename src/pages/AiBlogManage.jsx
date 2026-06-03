@@ -299,10 +299,14 @@ function StatusBanner({ status }) {
       {status.authorIdConfigured ? '' : ' · Author: প্রথম admin (default)'}
       <div className="mt-1 text-xs">
         Cover image:{' '}
-        {status.hasUnsplashKey ? (
-          <span className="text-emerald-700">✓ Unsplash linked</span>
+        {status.hasImageGen ? (
+          <span className="text-emerald-700">
+            ✓ AI generation enabled ({status.imageProvider})
+          </span>
         ) : (
-          <span className="text-amber-700">⚠ UNSPLASH_ACCESS_KEY missing — post-এ image থাকবে না</span>
+          <span className="text-amber-700">
+            ⚠ Cloudinary credentials missing — post-এ image থাকবে না
+          </span>
         )}
       </div>
     </div>
