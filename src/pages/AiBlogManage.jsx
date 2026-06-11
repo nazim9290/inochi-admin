@@ -118,7 +118,8 @@ const AiBlogManage = () => {
       <header>
         <h1 className="text-2xl font-extrabold text-brand-navy">AI Blog Auto-Publish</h1>
         <p className="mt-1 text-sm text-brand-slate">
-          DeepSeek প্রতিদিন একটি trilingual (bn + en + ja) SEO-optimised blog post বানিয়ে publish করে।
+          DeepSeek প্রতিদিন কয়েকটি trilingual (bn + en + ja) SEO-optimised blog post বানিয়ে publish
+          করে — প্রতিদিন নতুন টপিক (জাপান স্টাডি / জাপান কেন / উচ্চশিক্ষা) ঘুরিয়ে, AI cover image সহ।
           এখানে topic queue manage করুন, এখনই generate করুন, বা শেষ runs দেখুন।
         </p>
       </header>
@@ -292,10 +293,15 @@ function StatusBanner({ status }) {
       </div>
     );
   }
+  // EN: Show all configured publish times (falls back to legacy single hour).
+  // BN: সব configured publish time দেখাই (পুরোনো single hour-এ fallback)।
+  const times = (status.hours?.length ? status.hours : [status.hour])
+    .map((h) => `${String(h).padStart(2, '0')}:17`)
+    .join(', ');
   return (
     <div className="rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-      🟢 Ready — প্রতিদিন স্থানীয় সময় <strong>{String(status.hour).padStart(2, '0')}:17</strong>-এ
-      run হবে। Model: <code>{status.model}</code>
+      🟢 Ready — প্রতিদিন <strong>{status.perDay ?? 1}টি</strong> পোস্ট, স্থানীয় সময়{' '}
+      <strong>{times}</strong>-এ run হবে। Model: <code>{status.model}</code>
       {status.authorIdConfigured ? '' : ' · Author: প্রথম admin (default)'}
       <div className="mt-1 text-xs">
         Cover image:{' '}
