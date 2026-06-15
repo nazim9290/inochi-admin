@@ -14,6 +14,7 @@ import { useEffect, useMemo, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import { relativeTimeBn, formatFullDateBn, downloadCsv, phoneDigits, waLink } from '../lib/inboxUtils';
 import { confirmDialog } from './ConfirmDialog';
+import SourceTag from './SourceTag';
 
 // EN: Shared button style — kept inline so the file remains self-contained.
 // BN: Shared button style — file self-contained রাখার জন্য inline।
@@ -277,6 +278,7 @@ function ContactTable({ loading, rows, busyId, onOpen, onAnswered, onDelete }) {
               <th className="px-4 py-3 font-semibold">নাম</th>
               <th className="px-4 py-3 font-semibold">যোগাযোগ</th>
               <th className="px-4 py-3 font-semibold">বার্তা</th>
+              <th className="px-4 py-3 font-semibold">উৎস</th>
               <th className="px-4 py-3 font-semibold">কখন</th>
               <th className="px-4 py-3 font-semibold text-right">কাজ</th>
             </tr>
@@ -304,6 +306,9 @@ function ContactTable({ loading, rows, busyId, onOpen, onAnswered, onDelete }) {
                   </td>
                   <td className="px-4 py-3 align-top max-w-md">
                     <p className="line-clamp-2 text-xs">{r.msg || '—'}</p>
+                  </td>
+                  <td className="px-4 py-3 align-top">
+                    <SourceTag source={r.source} attribution={r.attribution} />
                   </td>
                   <td className="px-4 py-3 align-top whitespace-nowrap text-xs text-brand-slate">
                     {relativeTimeBn(r.createdAt)}

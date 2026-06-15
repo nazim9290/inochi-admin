@@ -13,6 +13,7 @@ import { useEffect, useMemo, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import { relativeTimeBn, downloadCsv, phoneDigits, waLink } from '../lib/inboxUtils';
 import { confirmDialog } from './ConfirmDialog';
+import SourceTag from './SourceTag';
 
 const SeminerBookList = () => {
   const api = axiosInterceptor();
@@ -140,6 +141,7 @@ const SeminerBookList = () => {
                   <th className="px-4 py-3 font-semibold">নাম</th>
                   <th className="px-4 py-3 font-semibold">ফোন</th>
                   <th className="px-4 py-3 font-semibold">Email</th>
+                  <th className="px-4 py-3 font-semibold">উৎস</th>
                   <th className="px-4 py-3 font-semibold">কখন</th>
                   <th className="px-4 py-3 font-semibold text-right">কাজ</th>
                 </tr>
@@ -171,6 +173,9 @@ const SeminerBookList = () => {
                           {r.email}
                         </a>
                       ) : '—'}
+                    </td>
+                    <td className="px-4 py-3 align-top">
+                      <SourceTag source={r.source} attribution={r.attribution} />
                     </td>
                     <td className="px-4 py-3 align-top whitespace-nowrap text-xs text-brand-slate">
                       {relativeTimeBn(r.createdAt)}

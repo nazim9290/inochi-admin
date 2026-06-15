@@ -15,6 +15,7 @@ import { useEffect, useMemo, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import { relativeTimeBn, formatFullDateBn, downloadCsv, phoneDigits, waLink } from '../lib/inboxUtils';
 import { confirmDialog } from '../components/ConfirmDialog';
+import SourceTag from '../components/SourceTag';
 
 const STATUSES = [
   { key: 'all', label: 'সব', tone: 'navy' },
@@ -313,6 +314,7 @@ function Table({ loading, rows, busyId, onOpen, onStatusChange, onDelete }) {
               <th className="px-3 py-3 font-semibold">যোগাযোগ</th>
               <th className="px-3 py-3 font-semibold">প্রোগ্রাম</th>
               <th className="px-3 py-3 font-semibold">শিক্ষা</th>
+              <th className="px-3 py-3 font-semibold">উৎস</th>
               <th className="px-3 py-3 font-semibold">কখন</th>
               <th className="px-3 py-3 font-semibold text-right">কাজ</th>
             </tr>
@@ -350,6 +352,9 @@ function Table({ loading, rows, busyId, onOpen, onStatusChange, onDelete }) {
                 <td className="px-3 py-3 align-top text-xs">
                   <p>{EDU_LABEL[r.highestEducation] || '—'} {r.passingYear ? `(${r.passingYear})` : ''}</p>
                   <p className="text-brand-slate/80 truncate max-w-[160px]">{r.institution || '—'}</p>
+                </td>
+                <td className="px-3 py-3 align-top">
+                  <SourceTag source={r.source} attribution={r.attribution} />
                 </td>
                 <td className="px-3 py-3 align-top whitespace-nowrap text-xs text-brand-slate">
                   {relativeTimeBn(r.createdAt)}

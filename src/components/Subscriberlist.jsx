@@ -11,6 +11,7 @@ import { useEffect, useMemo, useState } from 'react';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import { relativeTimeBn, downloadCsv } from '../lib/inboxUtils';
 import { confirmDialog } from './ConfirmDialog';
+import SourceTag from './SourceTag';
 
 const Subscriberlist = () => {
   const api = axiosInterceptor();
@@ -188,6 +189,7 @@ const Subscriberlist = () => {
                 <tr>
                   <th className="px-4 py-3 font-semibold">#</th>
                   <th className="px-4 py-3 font-semibold">Email</th>
+                  <th className="px-4 py-3 font-semibold">উৎস</th>
                   <th className="px-4 py-3 font-semibold">কখন</th>
                   <th className="px-4 py-3 font-semibold text-right">কাজ</th>
                 </tr>
@@ -200,6 +202,9 @@ const Subscriberlist = () => {
                       <a href={`mailto:${r.email}`} className="font-semibold text-brand-navy hover:text-brand-teal break-all">
                         {r.email}
                       </a>
+                    </td>
+                    <td className="px-4 py-3">
+                      <SourceTag source={r.source} attribution={r.attribution} />
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-xs text-brand-slate">
                       {relativeTimeBn(r.createdAt)}
