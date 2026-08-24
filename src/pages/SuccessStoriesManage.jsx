@@ -100,6 +100,11 @@ const SuccessStoriesManage = () => {
   // EN: Whether the city is being typed by hand instead of picked from the list.
   // BN: শহরটা তালিকা থেকে বাছা হচ্ছে না হাতে লেখা হচ্ছে — সেই অবস্থা।
   const [customCity, setCustomCity] = useState(false);
+  // EN: Id of the story currently being sent to Facebook — disables that one
+  //     button so a slow request cannot be fired twice into a double post.
+  // BN: এই মুহূর্তে যে story Facebook-এ যাচ্ছে তার id — ওই বাটনটা disable রাখে,
+  //     যাতে ধীর request-এ দুইবার চাপ পড়ে ডাবল পোস্ট না হয়।
+  const [postingId, setPostingId] = useState(null);
 
   const load = async () => {
     try {
@@ -190,6 +195,34 @@ const SuccessStoriesManage = () => {
     const journey = { ...blankJourney(), ...(s.journey || {}) };
     setForm({ ...empty, ...s, journey });
     setCustomCity(isCustomCity(s.location, s.locationEn));
+  };
+
+  // EN: Send this story to the Facebook page. Confirmed first because it posts
+  //     publicly and a post cannot be un-posted cleanly — and because the usual
+  //     reason for using it is that an earlier post was wrong, which the admin
+  //     still has to delete in Facebook by hand.
+  // BN: এই story Facebook page-এ পাঠায়। আগে confirm নেওয়া হয়, কারণ এটা
+  //     সবার সামনে পোস্ট হয়ে যায় আর পরিষ্কারভাবে আন-পোস্ট করা যায় না — আর
+  //     সাধারণত এটা লাগেই আগের পোস্টটা ভুল হলে, যেটা admin-কে Facebook-এ
+  //     নিজে হাতে মুছতে হয়।
+  const postToFacebook = async (s) => {
+    const ok = await confirmDialog({
+      title: 'Facebook-এ পোস্ট করবেন?',
+      message: `"${s.studentName}" — এই story এখনই Inochi-র Facebook page-এ পোস্ট হয়ে যাবে, সবাই দেখতে পাবে। আগের কোনো ভুল পোস্ট থাকলে সেটা Facebook থেকে নিজে মুছে নিন — এই বাটন পুরনো পোস্ট মোছে না।`,
+      confirmText: 'হ্যাঁ, পোস্ট করুন',
+      cancelText: 'বাতিল',
+    });
+    if (!ok) return;
+
+    setPostingId(s.id);
+    try {
+      await api.post(`/success-stories/${s.id}/post-to-facebook`);
+      alert('Facebook-এ পোস্ট হয়েছে।');
+    } catch (err) {
+      alert(`পোস্ট করা যায়নি: ${err.response?.data?.error || err.message}`);
+    } finally {
+      setPostingId(null);
+    }
   };
 
   const remove = async (id) => {
@@ -509,6 +542,17 @@ const SuccessStoriesManage = () => {
                     className="text-xs text-brand-teal font-semibold hover:text-brand-navy"
                   >
                     Edit
+                  </button>
+                  {/* EN: Re-send this story to the Facebook page. The automatic
+                      post only goes out once, when the story is created.
+                      BN: এই story আবার Facebook page-এ পাঠায়। স্বয়ংক্রিয় পোস্ট
+                      শুধু একবারই যায় — story তৈরির সময়। */}
+                  <button
+                    onClick={() => postToFacebook(s)}
+                    disabled={postingId === s.id}
+                    className="text-xs text-brand-navy font-semibold hover:text-brand-teal disabled:opacity-50"
+                  >
+                    {postingId === s.id ? 'পোস্ট হচ্ছে…' : 'Facebook-এ পোস্ট'}
                   </button>
                   <button
                     onClick={() => remove(s.id)}
