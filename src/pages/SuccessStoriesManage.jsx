@@ -27,8 +27,57 @@ const JOURNEY_PHASES = [
 const blankJourney = () =>
   JOURNEY_PHASES.reduce((acc, p) => ({ ...acc, [p.key]: { photoUrl: '', date: '' } }), {});
 
+// EN: Japanese cities Inochi students actually go to. Picking one fills the
+//     Bangla AND the English location together, so a city is never spelled two
+//     different ways across the two languages — that mismatch used to show up
+//     on the public page and in share previews. A city that is not here is
+//     handled by the "অন্যান্য" option, which reveals the free-text fields.
+// BN: Inochi-র student-রা জাপানে যেসব শহরে যায়। একটা বাছলেই বাংলা আর ইংরেজি
+//     দুটো location একসাথে ভরে যায় — তাই এক শহরের নাম দুই ভাষায় দুইরকম বানানে
+//     লেখা হয় না; এই গরমিল আগে public page আর share preview-তে দেখা যেত।
+//     তালিকায় না থাকা শহরের জন্য "অন্যান্য" — ওতে হাতে লেখার ঘর খুলে যায়।
+const JP_CITIES = [
+  { bn: 'টোকিও', en: 'Tokyo' },
+  { bn: 'ওসাকা', en: 'Osaka' },
+  { bn: 'কিয়োটো', en: 'Kyoto' },
+  { bn: 'ফুকুওকা', en: 'Fukuoka' },
+  { bn: 'নাগোয়া', en: 'Nagoya' },
+  { bn: 'সাইতামা', en: 'Saitama' },
+  { bn: 'সাপ্পোরো', en: 'Sapporo' },
+  { bn: 'সেন্দাই', en: 'Sendai' },
+  { bn: 'ইয়োকোহামা', en: 'Yokohama' },
+  { bn: 'কোবে', en: 'Kobe' },
+  { bn: 'হিরোশিমা', en: 'Hiroshima' },
+  { bn: 'চিবা', en: 'Chiba' },
+  { bn: 'কাওয়াসাকি', en: 'Kawasaki' },
+  { bn: 'কিতাকিউশু', en: 'Kitakyushu' },
+  { bn: 'নিগাতা', en: 'Niigata' },
+  { bn: 'হামামাৎসু', en: 'Hamamatsu' },
+  { bn: 'শিজুওকা', en: 'Shizuoka' },
+  { bn: 'ওকায়ামা', en: 'Okayama' },
+  { bn: 'কুমামোতো', en: 'Kumamoto' },
+  { bn: 'কাগোশিমা', en: 'Kagoshima' },
+  { bn: 'নারা', en: 'Nara' },
+  { bn: 'কানাজাওয়া', en: 'Kanazawa' },
+  { bn: 'মাৎসুয়ামা', en: 'Matsuyama' },
+  { bn: 'নাগাসাকি', en: 'Nagasaki' },
+];
+
+const OTHER_CITY = '__other__';
+
+// EN: True when a saved story's location does not match any listed city, so the
+//     form must reopen in free-text mode rather than silently dropping it.
+// BN: Save করা story-র location তালিকার কোনো শহরের সাথে না মিললে true — form
+//     তখন free-text mode-এ খুলবে, চুপচাপ মান হারাবে না।
+const isCustomCity = (location, locationEn) => {
+  if (!location && !locationEn) return false;
+  return !JP_CITIES.some((c) => c.bn === location && c.en === locationEn);
+};
+
 const empty = {
   studentName: '',
+  headline: '',
+  headlineEn: '',
   university: '',
   location: '',
   locationEn: '',
@@ -47,6 +96,9 @@ const SuccessStoriesManage = () => {
   const [stories, setStories] = useState([]);
   const [form, setForm] = useState(empty);
   const [editingId, setEditingId] = useState(null);
+  // EN: Whether the city is being typed by hand instead of picked from the list.
+  // BN: শহরটা তালিকা থেকে বাছা হচ্ছে না হাতে লেখা হচ্ছে — সেই অবস্থা।
+  const [customCity, setCustomCity] = useState(false);
 
   const load = async () => {
     try {
@@ -90,9 +142,30 @@ const SuccessStoriesManage = () => {
       },
     }));
 
+  // EN: Picking a city writes both languages at once. "অন্যান্য" clears them
+  //     and hands the admin the free-text fields instead.
+  // BN: শহর বাছলে দুই ভাষাতেই একসাথে বসে যায়। "অন্যান্য" বাছলে দুটোই খালি হয়ে
+  //     হাতে লেখার ঘর খুলে যায়।
+  const setCity = (e) => {
+    const choice = e.target.value;
+    if (choice === OTHER_CITY) {
+      setCustomCity(true);
+      setForm((prev) => ({ ...prev, location: '', locationEn: '' }));
+      return;
+    }
+    setCustomCity(false);
+    const city = JP_CITIES.find((c) => c.en === choice);
+    setForm((prev) => ({
+      ...prev,
+      location: city ? city.bn : '',
+      locationEn: city ? city.en : '',
+    }));
+  };
+
   const reset = () => {
     setForm(empty);
     setEditingId(null);
+    setCustomCity(false);
   };
 
   const submit = async (e) => {
@@ -115,6 +188,7 @@ const SuccessStoriesManage = () => {
     //     controlled input পাবে (React-এর uncontrolled→controlled warning এড়ানো)।
     const journey = { ...blankJourney(), ...(s.journey || {}) };
     setForm({ ...empty, ...s, journey });
+    setCustomCity(isCustomCity(s.location, s.locationEn));
   };
 
   const remove = async (id) => {
@@ -185,7 +259,61 @@ const SuccessStoriesManage = () => {
               />
             </div>
           </div>
-          <BilingualField label="Location" name="location" value={form.location} valueEn={form.locationEn} onChange={onChange} placeholderBn="টোকিও, জাপান" placeholderEn="Tokyo, Japan" />
+          {/* EN: City picker. One selection fills both languages; "অন্যান্য"
+              falls back to the bilingual free-text field.
+              BN: শহর বাছাই। একবার বাছলেই দুই ভাষা ভরে যায়; "অন্যান্য" বাছলে
+              দুই ভাষার হাতে-লেখা ঘর দেখায়। */}
+          <div>
+            <span className={labelClass}>
+              জাপানে কোন শহরে আছে?
+              <HelpTooltip>
+                তালিকা থেকে শহর বাছলে বাংলা আর ইংরেজি দুটোই নিজে থেকে ভরে যাবে — আলাদা করে
+                লিখতে হবে না। তালিকায় শহরটা না থাকলে &quot;অন্যান্য&quot; বাছুন।
+              </HelpTooltip>
+            </span>
+            <select
+              value={customCity ? OTHER_CITY : form.locationEn || ''}
+              onChange={setCity}
+              className={inputClass}
+            >
+              <option value="">— শহর বাছুন —</option>
+              {JP_CITIES.map((c) => (
+                <option key={c.en} value={c.en}>
+                  {c.bn} / {c.en}
+                </option>
+              ))}
+              <option value={OTHER_CITY}>অন্যান্য (হাতে লিখব)</option>
+            </select>
+          </div>
+
+          {customCity && (
+            <BilingualField
+              label="Location (হাতে লেখা)"
+              name="location"
+              value={form.location}
+              valueEn={form.locationEn}
+              onChange={onChange}
+              placeholderBn="টোকিও"
+              placeholderEn="Tokyo"
+            />
+          )}
+
+          {/* EN: Optional share headline — drives the Facebook preview title.
+              BN: Optional share headline — Facebook preview-এর title এটাই। */}
+          <BilingualField
+            label="Headline / ট্যাগলাইন (ঐচ্ছিক)"
+            name="headline"
+            value={form.headline}
+            valueEn={form.headlineEn}
+            onChange={onChange}
+            placeholderBn="আকাশ আহমেদ — টোকিওতে পড়াশোনা শুরু"
+            placeholderEn="Akash Ahmed starts his studies in Tokyo"
+          />
+          <p className="-mt-2 text-xs text-brand-slate">
+            Facebook-এ পোস্ট হলে ছবির নিচে এই লাইনটাই বড় করে দেখাবে। খালি রাখলে student-এর
+            নাম, স্কুল আর শহর দিয়ে নিজে থেকেই একটা লাইন তৈরি হবে।
+          </p>
+
           <BilingualField label="Story / quote" name="story" value={form.story} valueEn={form.storyEn} onChange={onChange} type="textarea" rows={3} />
 
           {/* EN: 5-phase journey gallery — admin uploads photos as the student
