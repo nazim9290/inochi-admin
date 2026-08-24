@@ -15,6 +15,7 @@ import BilingualField from '../components/BilingualField';
 import BilingualRichEditor from '../components/editor/BilingualRichEditor';
 import ImageCropModal from '../components/editor/ImageCropModal';
 import PendingBlogs from '../components/PendingBlogs';
+import PasteFromClaude from '../components/PasteFromClaude';
 import { confirmDialog } from '../components/ConfirmDialog';
 
 const labelClass = 'block text-sm font-semibold text-brand-navy mb-1';
@@ -31,13 +32,7 @@ const emptyForm = {
 };
 
 const CATEGORIES_BN = ['study', 'service', 'blogs', 'culture', 'news'];
-const CATEGORIES_EN = [
-  'Study in Japan',
-  'Services',
-  'Blog',
-  'Culture',
-  'News',
-];
+const CATEGORIES_EN = ['Study in Japan', 'Services', 'Blog', 'Culture', 'News'];
 
 const BlogsManage = () => {
   const api = axiosInterceptor();
@@ -61,9 +56,7 @@ const BlogsManage = () => {
     try {
       const [pendingRes, publishedRes] = await Promise.all([
         api.get('/pending-blogs').catch(() => ({ data: { pendingBlogs: [] } })),
-        api
-          .get('/published-blogs')
-          .catch(() => ({ data: { publishedBlogs: [] } })),
+        api.get('/published-blogs').catch(() => ({ data: { publishedBlogs: [] } })),
       ]);
       setPending(pendingRes.data?.pendingBlogs || []);
       setPublished(publishedRes.data?.publishedBlogs || []);
@@ -205,12 +198,9 @@ const BlogsManage = () => {
       <div className="bg-white rounded-xl shadow-sm border border-brand-tealLight/40 p-5">
         <div className="flex items-start justify-between flex-wrap gap-3">
           <div>
-            <h1 className="text-2xl font-extrabold text-brand-navy">
-              Blog Manage
-            </h1>
+            <h1 className="text-2xl font-extrabold text-brand-navy">Blog Manage</h1>
             <p className="text-xs text-brand-slate mt-1 max-w-xl">
-              Pending blog approve করুন, published blog edit/delete করুন। নতুন
-              blog তৈরি করতে পাশের{' '}
+              Pending blog approve করুন, published blog edit/delete করুন। নতুন blog তৈরি করতে পাশের{' '}
               <Link
                 to="/create-blog"
                 className="font-semibold text-brand-teal hover:text-brand-navy underline"
@@ -245,9 +235,7 @@ const BlogsManage = () => {
       {editingId && (
         <div className="bg-white rounded-xl shadow-sm border border-brand-teal/60 p-5">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-brand-navy">
-              Blog Edit করছেন
-            </h2>
+            <h2 className="text-lg font-bold text-brand-navy">Blog Edit করছেন</h2>
             <button
               type="button"
               onClick={cancelEdit}
@@ -256,6 +244,10 @@ const BlogsManage = () => {
               Cancel
             </button>
           </div>
+
+          {/* EN: One-paste form fill from the claude.ai inochi-content skill.
+              BN: claude.ai-এর inochi-content skill থেকে এক-পেস্টে form ভরা। */}
+          <PasteFromClaude type="blog" onApply={(f) => setForm((p) => ({ ...p, ...f }))} />
 
           <div className="space-y-4">
             <BilingualField
@@ -378,9 +370,7 @@ const BlogsManage = () => {
 
         <div className="p-5">
           {loading ? (
-            <p className="text-sm text-brand-slate text-center py-10">
-              Loading…
-            </p>
+            <p className="text-sm text-brand-slate text-center py-10">Loading…</p>
           ) : tab === 'pending' ? (
             pending.length === 0 ? (
               <EmptyState
@@ -439,9 +429,7 @@ const TabButton = ({ active, onClick, label, count, tone }) => {
   const idleCls = 'text-brand-slate hover:bg-brand-tealLight/10';
   const chipBase = 'rounded-full px-2 py-0.5 text-[10px] font-bold';
   const chipCls =
-    tone === 'warn'
-      ? 'bg-amber-100 text-amber-800'
-      : 'bg-brand-teal/15 text-brand-teal';
+    tone === 'warn' ? 'bg-amber-100 text-amber-800' : 'bg-brand-teal/15 text-brand-teal';
   return (
     <button onClick={onClick} className={`${base} ${active ? activeCls : idleCls}`}>
       {label}
@@ -477,20 +465,12 @@ const PublishedCard = ({ data, onEdit, onDelete, onUnpublish }) => {
         {data.category && (
           <p className="text-xs uppercase font-semibold text-brand-teal">
             {data.category}
-            {data.categoryEn && (
-              <span className="text-brand-slate"> · {data.categoryEn}</span>
-            )}
+            {data.categoryEn && <span className="text-brand-slate"> · {data.categoryEn}</span>}
           </p>
         )}
-        {data.title && (
-          <p className="font-semibold text-brand-navy line-clamp-2">
-            {data.title}
-          </p>
-        )}
+        {data.title && <p className="font-semibold text-brand-navy line-clamp-2">{data.title}</p>}
         {data.titleEn && (
-          <p className="text-xs text-brand-slate italic line-clamp-1">
-            {data.titleEn}
-          </p>
+          <p className="text-xs text-brand-slate italic line-clamp-1">{data.titleEn}</p>
         )}
         {data.content && (
           <p
@@ -499,9 +479,7 @@ const PublishedCard = ({ data, onEdit, onDelete, onUnpublish }) => {
           />
         )}
         <div className="text-[11px] text-brand-slate/70 mt-auto">
-          {data.createdAt
-            ? new Date(data.createdAt).toLocaleDateString('en-GB')
-            : ''}
+          {data.createdAt ? new Date(data.createdAt).toLocaleDateString('en-GB') : ''}
           {data.author?.name && <> · {data.author.name}</>}
         </div>
         <div className="flex gap-2 pt-1">

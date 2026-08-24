@@ -11,6 +11,7 @@ import axiosInterceptor from '../axios/axiosInterceptor';
 import BilingualField from '../components/BilingualField';
 import BilingualRichEditor from '../components/editor/BilingualRichEditor';
 import ImageCropModal from '../components/editor/ImageCropModal';
+import PasteFromClaude from '../components/PasteFromClaude';
 
 const labelClass = 'block text-sm font-semibold text-brand-navy mb-1';
 const fieldClass =
@@ -85,8 +86,13 @@ const CreateBlogPage = () => {
     <div className="max-w-5xl bg-white rounded-xl shadow-sm border border-brand-tealLight/40 p-6">
       <h1 className="text-2xl font-extrabold text-brand-navy mb-1">নতুন Blog তৈরি করুন</h1>
       <p className="text-xs text-brand-slate mb-6">
-        Title ও Description দুই ভাষাতেই দিন। Cover image upload করুন। তৈরি হলে &quot;Pending Blogs&quot; এ যাবে — সেখান থেকে Approve করুন।
+        Title ও Description দুই ভাষাতেই দিন। Cover image upload করুন। তৈরি হলে &quot;Pending
+        Blogs&quot; এ যাবে — সেখান থেকে Approve করুন।
       </p>
+
+      {/* EN: One-paste form fill from the claude.ai inochi-content skill.
+          BN: claude.ai-এর inochi-content skill থেকে এক-পেস্টে form ভরা। */}
+      <PasteFromClaude type="blog" onApply={(f) => setForm((p) => ({ ...p, ...f }))} />
 
       {message && (
         <div
@@ -127,9 +133,7 @@ const CreateBlogPage = () => {
             onChange={onCoverPicked}
             className="block w-full text-sm text-brand-slate file:mr-3 file:py-2 file:px-4 file:rounded file:border-0 file:bg-brand-tealLight/30 file:text-brand-navy file:font-semibold hover:file:bg-brand-tealLight/50"
           />
-          <p className="text-[11px] text-brand-slate mt-1">
-            ছবি বেছে নিলে crop করার window আসবে।
-          </p>
+          <p className="text-[11px] text-brand-slate mt-1">ছবি বেছে নিলে crop করার window আসবে।</p>
           {image.url && (
             <img
               src={image.url}
@@ -142,8 +146,15 @@ const CreateBlogPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <label>
             <span className={labelClass}>Category (Bangla)</span>
-            <select name="category" value={form.category} onChange={onChange} className={fieldClass}>
-              <option value="" disabled>Category বেছে নিন</option>
+            <select
+              name="category"
+              value={form.category}
+              onChange={onChange}
+              className={fieldClass}
+            >
+              <option value="" disabled>
+                Category বেছে নিন
+              </option>
               <option value="study">জাপানে পড়াশোনা</option>
               <option value="service">সেবা</option>
               <option value="blogs">ব্লগ</option>
@@ -153,7 +164,12 @@ const CreateBlogPage = () => {
           </label>
           <label>
             <span className={labelClass}>Category (English)</span>
-            <select name="categoryEn" value={form.categoryEn} onChange={onChange} className={fieldClass}>
+            <select
+              name="categoryEn"
+              value={form.categoryEn}
+              onChange={onChange}
+              className={fieldClass}
+            >
               <option value="">Select category</option>
               <option value="Study in Japan">Study in Japan</option>
               <option value="Services">Services</option>

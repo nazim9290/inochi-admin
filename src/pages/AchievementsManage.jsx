@@ -12,6 +12,7 @@ import BilingualField from '../components/BilingualField';
 import ImageUploadField from '../components/ImageUploadField';
 import { confirmDialog } from '../components/ConfirmDialog';
 import HelpTooltip from '../components/HelpTooltip';
+import PasteFromClaude from '../components/PasteFromClaude';
 
 const inputClass =
   'w-full px-3 py-2 text-sm border border-brand-tealLight/60 rounded focus:outline-none focus:ring-2 focus:ring-brand-teal/40';
@@ -68,12 +69,7 @@ const AchievementsManage = () => {
     const { name, value, type, checked } = e.target;
     setForm({
       ...form,
-      [name]:
-        type === 'checkbox'
-          ? checked
-          : name === 'sortOrder'
-          ? Number(value)
-          : value,
+      [name]: type === 'checkbox' ? checked : name === 'sortOrder' ? Number(value) : value,
     });
   };
 
@@ -147,6 +143,9 @@ const AchievementsManage = () => {
         </p>
       </div>
 
+      {/* EN: One-paste form fill from the claude.ai inochi-content skill.
+          BN: claude.ai-এর inochi-content skill থেকে এক-পেস্টে form ভরা। */}
+      <PasteFromClaude type="achievement" onApply={(f) => setForm((p) => ({ ...p, ...f }))} />
       <form
         onSubmit={submit}
         className="bg-white rounded-xl border border-brand-tealLight/40 shadow-sm p-5"
@@ -160,7 +159,11 @@ const AchievementsManage = () => {
             <label>
               <span className={labelClass}>
                 Type / ধরন
-                <HelpTooltip>কোন ধরনের অর্জন? ভিসা প্রাপ্তি = visa office থেকে passport ফেরত। Reception = জাপানে পৌঁছানোর পর airport reception। Event = seminar/orientation। Classroom = ক্লাসের মুহূর্ত।</HelpTooltip>
+                <HelpTooltip>
+                  কোন ধরনের অর্জন? ভিসা প্রাপ্তি = visa office থেকে passport ফেরত। Reception =
+                  জাপানে পৌঁছানোর পর airport reception। Event = seminar/orientation। Classroom =
+                  ক্লাসের মুহূর্ত।
+                </HelpTooltip>
               </span>
               <select name="type" value={form.type} onChange={onChange} className={inputClass}>
                 {TYPE_OPTIONS.map((t) => (
@@ -218,7 +221,10 @@ const AchievementsManage = () => {
             <label>
               <span className={labelClass}>
                 Sort order
-                <HelpTooltip>ছোট সংখ্যা = list-এ আগে দেখাবে। সবচেয়ে নতুন/গুরুত্বপূর্ণ অর্জনে কম সংখ্যা দিন (e.g. 0 বা 1)।</HelpTooltip>
+                <HelpTooltip>
+                  ছোট সংখ্যা = list-এ আগে দেখাবে। সবচেয়ে নতুন/গুরুত্বপূর্ণ অর্জনে কম সংখ্যা দিন
+                  (e.g. 0 বা 1)।
+                </HelpTooltip>
               </span>
               <input
                 type="number"
@@ -230,16 +236,14 @@ const AchievementsManage = () => {
             </label>
 
             <label className="flex items-center gap-2 pb-2">
-              <input
-                type="checkbox"
-                name="featured"
-                checked={form.featured}
-                onChange={onChange}
-              />
+              <input type="checkbox" name="featured" checked={form.featured} onChange={onChange} />
               <span className="text-xs text-brand-navy font-semibold">
                 Featured (Home page-এ দেখাবে)
               </span>
-              <HelpTooltip>Tick করলে Home page-এর "Recent Wins" strip-এ এই অর্জন দেখাবে। সর্বোচ্চ ১২টা featured অর্জন দেখানো হয়।</HelpTooltip>
+              <HelpTooltip>
+                Tick করলে Home page-এর "Recent Wins" strip-এ এই অর্জন দেখাবে। সর্বোচ্চ ১২টা featured
+                অর্জন দেখানো হয়।
+              </HelpTooltip>
             </label>
 
             <label className="flex items-center gap-2 pb-2">
@@ -250,7 +254,9 @@ const AchievementsManage = () => {
                 onChange={onChange}
               />
               <span className="text-xs text-brand-navy font-semibold">Published</span>
-              <HelpTooltip>Tick থাকলে public site-এ দেখাবে। Untick করলে admin-এ draft হিসাবে save থাকবে।</HelpTooltip>
+              <HelpTooltip>
+                Tick থাকলে public site-এ দেখাবে। Untick করলে admin-এ draft হিসাবে save থাকবে।
+              </HelpTooltip>
             </label>
           </div>
 

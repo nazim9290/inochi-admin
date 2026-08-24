@@ -4,6 +4,7 @@ import BilingualField from '../components/BilingualField';
 import ImageUploadField from '../components/ImageUploadField';
 import { confirmDialog } from '../components/ConfirmDialog';
 import HelpTooltip from '../components/HelpTooltip';
+import PasteFromClaude from '../components/PasteFromClaude';
 
 const inputClass =
   'w-full px-3 py-2 text-sm border border-brand-tealLight/60 rounded focus:outline-none focus:ring-2 focus:ring-brand-teal/40';
@@ -17,11 +18,11 @@ const labelClass = 'block text-xs font-semibold text-brand-navy mb-1';
 //     প্রতিটা phase-এর Bangla+English label আছে — bilingual form। ভবিষ্যতে
 //     ৬ষ্ঠ phase = এখানে append + adapter-এর PHASE_ORDER-এ একই key যোগ।
 const JOURNEY_PHASES = [
-  { key: 'class',    labelBn: 'ক্লাস টাইম',         labelEn: 'Class time at Inochi' },
-  { key: 'coe',      labelBn: 'COE প্রাপ্তি',        labelEn: 'COE received' },
-  { key: 'visa',     labelBn: 'ভিসা প্রাপ্তি',       labelEn: 'Visa stamped' },
-  { key: 'arrival',  labelBn: 'জাপান পৌঁছানো',     labelEn: 'Arrival in Japan' },
-  { key: 'firstDay', labelBn: 'জাপানে প্রথম দিন',   labelEn: 'First day in Japan' },
+  { key: 'class', labelBn: 'ক্লাস টাইম', labelEn: 'Class time at Inochi' },
+  { key: 'coe', labelBn: 'COE প্রাপ্তি', labelEn: 'COE received' },
+  { key: 'visa', labelBn: 'ভিসা প্রাপ্তি', labelEn: 'Visa stamped' },
+  { key: 'arrival', labelBn: 'জাপান পৌঁছানো', labelEn: 'Arrival in Japan' },
+  { key: 'firstDay', labelBn: 'জাপানে প্রথম দিন', labelEn: 'First day in Japan' },
 ];
 
 const blankJourney = () =>
@@ -209,11 +210,19 @@ const SuccessStoriesManage = () => {
       <div>
         <h1 className="text-xl font-extrabold text-brand-navy">Success Stories</h1>
         <p className="text-xs text-brand-slate">
-          সফল student-এর testimonial। দুই ভাষায় edit করুন। নিচে ৫-ধাপের journey gallery — class থেকে জাপান পর্যন্ত প্রতিটা মুহূর্তের ছবি upload করলে public site-এ animated journey strip দেখাবে।
+          সফল student-এর testimonial। দুই ভাষায় edit করুন। নিচে ৫-ধাপের journey gallery — class
+          থেকে জাপান পর্যন্ত প্রতিটা মুহূর্তের ছবি upload করলে public site-এ animated journey strip
+          দেখাবে।
         </p>
       </div>
 
-      <form onSubmit={submit} className="bg-white rounded-xl border border-brand-tealLight/40 shadow-sm p-5">
+      {/* EN: One-paste form fill from the claude.ai inochi-content skill.
+          BN: claude.ai-এর inochi-content skill থেকে এক-পেস্টে form ভরা। */}
+      <PasteFromClaude type="success-story" onApply={(f) => setForm((p) => ({ ...p, ...f }))} />
+      <form
+        onSubmit={submit}
+        className="bg-white rounded-xl border border-brand-tealLight/40 shadow-sm p-5"
+      >
         <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wide mb-4">
           {editingId ? 'Edit Story' : 'Add Story'}
         </h2>
@@ -221,34 +230,75 @@ const SuccessStoriesManage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <label>
               <span className={labelClass}>Student name (universal)</span>
-              <input name="studentName" value={form.studentName} onChange={onChange} className={inputClass} required />
+              <input
+                name="studentName"
+                value={form.studentName}
+                onChange={onChange}
+                className={inputClass}
+                required
+              />
             </label>
             <label>
               <span className={labelClass}>University / school (universal)</span>
-              <input name="university" value={form.university} onChange={onChange} className={inputClass} />
+              <input
+                name="university"
+                value={form.university}
+                onChange={onChange}
+                className={inputClass}
+              />
             </label>
             <label>
               <span className={labelClass}>Batch year</span>
-              <input name="batchYear" value={form.batchYear} onChange={onChange} className={inputClass} placeholder="2024" />
+              <input
+                name="batchYear"
+                value={form.batchYear}
+                onChange={onChange}
+                className={inputClass}
+                placeholder="2024"
+              />
             </label>
             <label>
               <span className={labelClass}>
                 JLPT level
-                <HelpTooltip>সবচেয়ে high level যা পাশ করেছে: N5 (beginner) → N1 (advanced)। জানা না থাকলে খালি রাখুন।</HelpTooltip>
+                <HelpTooltip>
+                  সবচেয়ে high level যা পাশ করেছে: N5 (beginner) → N1 (advanced)। জানা না থাকলে খালি
+                  রাখুন।
+                </HelpTooltip>
               </span>
-              <input name="jlptLevel" value={form.jlptLevel} onChange={onChange} className={inputClass} placeholder="N3" />
+              <input
+                name="jlptLevel"
+                value={form.jlptLevel}
+                onChange={onChange}
+                className={inputClass}
+                placeholder="N3"
+              />
             </label>
             <label>
               <span className={labelClass}>
                 Sort order
-                <HelpTooltip>ছোট সংখ্যা = সাইটে আগে দেখাবে। সবচেয়ে inspiring গল্প-গুলোয় কম সংখ্যা।</HelpTooltip>
+                <HelpTooltip>
+                  ছোট সংখ্যা = সাইটে আগে দেখাবে। সবচেয়ে inspiring গল্প-গুলোয় কম সংখ্যা।
+                </HelpTooltip>
               </span>
-              <input type="number" name="sortOrder" value={form.sortOrder} onChange={onChange} className={inputClass} />
+              <input
+                type="number"
+                name="sortOrder"
+                value={form.sortOrder}
+                onChange={onChange}
+                className={inputClass}
+              />
             </label>
             <label className="flex items-center gap-2 pb-2">
-              <input type="checkbox" name="published" checked={form.published} onChange={onChange} />
+              <input
+                type="checkbox"
+                name="published"
+                checked={form.published}
+                onChange={onChange}
+              />
               <span className="text-xs text-brand-navy font-semibold">Published</span>
-              <HelpTooltip>Tick থাকলে public site-এ live। Untick করলে শুধু admin-এ draft।</HelpTooltip>
+              <HelpTooltip>
+                Tick থাকলে public site-এ live। Untick করলে শুধু admin-এ draft।
+              </HelpTooltip>
             </label>
             <div className="md:col-span-2">
               <ImageUploadField
@@ -267,8 +317,8 @@ const SuccessStoriesManage = () => {
             <span className={labelClass}>
               জাপানে কোন শহরে আছে?
               <HelpTooltip>
-                তালিকা থেকে শহর বাছলে বাংলা আর ইংরেজি দুটোই নিজে থেকে ভরে যাবে — আলাদা করে
-                লিখতে হবে না। তালিকায় শহরটা না থাকলে &quot;অন্যান্য&quot; বাছুন।
+                তালিকা থেকে শহর বাছলে বাংলা আর ইংরেজি দুটোই নিজে থেকে ভরে যাবে — আলাদা করে লিখতে হবে
+                না। তালিকায় শহরটা না থাকলে &quot;অন্যান্য&quot; বাছুন।
               </HelpTooltip>
             </span>
             <select
@@ -310,11 +360,19 @@ const SuccessStoriesManage = () => {
             placeholderEn="Akash Ahmed starts his studies in Tokyo"
           />
           <p className="-mt-2 text-xs text-brand-slate">
-            Facebook-এ পোস্ট হলে ছবির নিচে এই লাইনটাই বড় করে দেখাবে। খালি রাখলে student-এর
-            নাম, স্কুল আর শহর দিয়ে নিজে থেকেই একটা লাইন তৈরি হবে।
+            Facebook-এ পোস্ট হলে ছবির নিচে এই লাইনটাই বড় করে দেখাবে। খালি রাখলে student-এর নাম,
+            স্কুল আর শহর দিয়ে নিজে থেকেই একটা লাইন তৈরি হবে।
           </p>
 
-          <BilingualField label="Story / quote" name="story" value={form.story} valueEn={form.storyEn} onChange={onChange} type="textarea" rows={3} />
+          <BilingualField
+            label="Story / quote"
+            name="story"
+            value={form.story}
+            valueEn={form.storyEn}
+            onChange={onChange}
+            type="textarea"
+            rows={3}
+          />
 
           {/* EN: 5-phase journey gallery — admin uploads photos as the student
               progresses. Each phase optional; only filled phases render publicly.
@@ -326,8 +384,8 @@ const SuccessStoriesManage = () => {
               Journey (৫টি ধাপ — যা যা পেয়েছেন উপলোড করুন)
             </h3>
             <p className="text-xs text-brand-slate mb-4">
-              পাঁচটা মুহূর্ত পাশাপাশি দেখলে student-এর সম্পূর্ণ যাত্রা প্রমাণিত হবে।
-              যেকোনোটা skip করতে পারেন — শুধু upload করা photo public site-এ দেখাবে।
+              পাঁচটা মুহূর্ত পাশাপাশি দেখলে student-এর সম্পূর্ণ যাত্রা প্রমাণিত হবে। যেকোনোটা skip
+              করতে পারেন — শুধু upload করা photo public site-এ দেখাবে।
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {JOURNEY_PHASES.map((phase) => {
@@ -338,9 +396,7 @@ const SuccessStoriesManage = () => {
                     className="min-w-0 rounded-lg border border-brand-tealLight/50 bg-brand-tealLight/5 p-3"
                   >
                     <div className="flex items-baseline justify-between mb-2">
-                      <span className="text-sm font-semibold text-brand-navy">
-                        {phase.labelBn}
-                      </span>
+                      <span className="text-sm font-semibold text-brand-navy">{phase.labelBn}</span>
                       <span className="text-[10px] text-brand-slate uppercase tracking-wider">
                         {phase.labelEn}
                       </span>
@@ -368,11 +424,18 @@ const SuccessStoriesManage = () => {
           </div>
         </div>
         <div className="flex gap-2 mt-4">
-          <button type="submit" className="bg-brand-teal hover:bg-brand-navy text-white font-semibold px-5 py-2 rounded text-sm">
+          <button
+            type="submit"
+            className="bg-brand-teal hover:bg-brand-navy text-white font-semibold px-5 py-2 rounded text-sm"
+          >
             {editingId ? 'Update' : 'Add'} Story
           </button>
           {editingId && (
-            <button type="button" onClick={reset} className="bg-white border border-brand-navy text-brand-navy font-semibold px-5 py-2 rounded text-sm">
+            <button
+              type="button"
+              onClick={reset}
+              className="bg-white border border-brand-navy text-brand-navy font-semibold px-5 py-2 rounded text-sm"
+            >
               Cancel
             </button>
           )}
@@ -390,14 +453,22 @@ const SuccessStoriesManage = () => {
             {stories.map((s) => (
               <li key={s.id} className="flex items-start gap-4 p-4">
                 {s.photoUrl ? (
-                  <img src={s.photoUrl} alt={s.studentName} className="w-12 h-12 rounded-full object-cover flex-shrink-0" />
+                  <img
+                    src={s.photoUrl}
+                    alt={s.studentName}
+                    className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                  />
                 ) : (
                   <div className="w-12 h-12 rounded-full bg-brand-tealLight/40 flex-shrink-0" />
                 )}
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-brand-navy text-sm">
                     {s.studentName}
-                    {!s.published && <span className="ml-2 text-[10px] bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded uppercase">Draft</span>}
+                    {!s.published && (
+                      <span className="ml-2 text-[10px] bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded uppercase">
+                        Draft
+                      </span>
+                    )}
                     {/* EN: Tiny journey badge — at-a-glance count of phases admin
                          has photos for. Helps spot stories that need more uploads. */}
                     {/* BN: ছোট journey badge — কয়টা phase-এর photo upload হয়েছে
@@ -407,26 +478,44 @@ const SuccessStoriesManage = () => {
                         (p) => s.journey && s.journey[p.key] && s.journey[p.key].photoUrl
                       ).length;
                       return (
-                        <span className={
-                          'ml-2 text-[10px] px-1.5 py-0.5 rounded uppercase ' +
-                          (filled === 5
-                            ? 'bg-brand-teal text-white'
-                            : filled > 0
-                              ? 'bg-brand-tealLight/40 text-brand-navy'
-                              : 'bg-gray-100 text-gray-500')
-                        }>
+                        <span
+                          className={
+                            'ml-2 text-[10px] px-1.5 py-0.5 rounded uppercase ' +
+                            (filled === 5
+                              ? 'bg-brand-teal text-white'
+                              : filled > 0
+                                ? 'bg-brand-tealLight/40 text-brand-navy'
+                                : 'bg-gray-100 text-gray-500')
+                          }
+                        >
                           Journey {filled}/5
                         </span>
                       );
                     })()}
                   </p>
-                  <p className="text-xs text-brand-slate">{s.university} · {s.batchYear}</p>
+                  <p className="text-xs text-brand-slate">
+                    {s.university} · {s.batchYear}
+                  </p>
                   <p className="text-xs text-brand-slate mt-1 line-clamp-2">{s.story}</p>
-                  {s.storyEn && <p className="text-xs text-brand-slate/70 italic mt-1 line-clamp-2">{s.storyEn}</p>}
+                  {s.storyEn && (
+                    <p className="text-xs text-brand-slate/70 italic mt-1 line-clamp-2">
+                      {s.storyEn}
+                    </p>
+                  )}
                 </div>
                 <div className="flex gap-2 flex-shrink-0">
-                  <button onClick={() => edit(s)} className="text-xs text-brand-teal font-semibold hover:text-brand-navy">Edit</button>
-                  <button onClick={() => remove(s.id)} className="text-xs text-red-500 font-semibold hover:text-red-700">Delete</button>
+                  <button
+                    onClick={() => edit(s)}
+                    className="text-xs text-brand-teal font-semibold hover:text-brand-navy"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => remove(s.id)}
+                    className="text-xs text-red-500 font-semibold hover:text-red-700"
+                  >
+                    Delete
+                  </button>
                 </div>
               </li>
             ))}
