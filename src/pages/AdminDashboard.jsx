@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axiosInterceptor from '../axios/axiosInterceptor';
 import { useInbox } from '../context/InboxContext';
+import VisitorsByCountry from '../components/VisitorsByCountry';
 
 const ICONS = {
   edit: (
@@ -139,6 +140,13 @@ const AdminDashboard = () => {
           <Card title="Success Stories" value={stats.stories} hint="শিক্ষার্থীদের গল্প" to="/success-stories" />
         </div>
       </div>
+
+      {/* EN: Visitors by country, straight from GA4 — sits right under the
+          content counts so the first thing the admin sees is who is actually
+          arriving, not just how much has been published.
+          BN: GA4 থেকে সরাসরি দেশভিত্তিক ভিজিটর — content-এর সংখ্যার ঠিক নিচে,
+          যাতে admin প্রথমেই দেখে কারা আসলে আসছে, শুধু কত কিছু প্রকাশ হয়েছে তা নয়। */}
+      <VisitorsByCountry />
 
       {/* Quick actions — content */}
       <div>
