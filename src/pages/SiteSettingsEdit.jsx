@@ -914,6 +914,10 @@ const SiteSettingsEdit = () => {
           Property → HTML tag method → meta content value paste করুন।
           <br />
           3. <strong>GTM ID</strong> (optional, advanced) — tagmanager.google.com → Container ID।
+          <br />
+          4. <strong>Clarity Project ID</strong> — clarity.microsoft.com → Settings → Project ID।
+          ফ্রি heatmap আর session recording দেখায় — কে কোথায় ক্লিক করছে, কোন পেজে গিয়ে ফিরে
+          যাচ্ছে। খালি রাখলে বন্ধ থাকবে।
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <SinglePlain
@@ -922,6 +926,17 @@ const SiteSettingsEdit = () => {
             value={data.gaTrackingId}
             onChange={onChange}
             placeholder="G-XXXXXXXXXX"
+          />
+          {/* EN: Microsoft Clarity — not a Google product, but it belongs with
+              the other analytics IDs rather than in a section of its own.
+              BN: Microsoft Clarity — Google-এর জিনিস না, তবু আলাদা section না
+              বানিয়ে বাকি analytics ID-র সাথেই রাখা হলো। */}
+          <SinglePlain
+            label="Microsoft Clarity Project ID"
+            name="clarityProjectId"
+            value={data.clarityProjectId}
+            onChange={onChange}
+            placeholder="y8dc8w8sj0"
           />
           <SinglePlain
             label="Google Search Console verification"
