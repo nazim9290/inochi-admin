@@ -63,6 +63,15 @@ const VisitorsByCountry = () => {
 
   const countries = data?.countries || [];
   const top = countries.slice(0, 10);
+  // EN: GA4 resolves geography hours after it records the visit, so a freshly
+  //     connected property reports real users with an empty country for a day
+  //     or two. Say that plainly instead of labelling them "Unknown", which
+  //     reads like something is broken.
+  // BN: GA4 ভিজিট রেকর্ড করার কয়েক ঘণ্টা পর ভৌগোলিক তথ্য বসায়, তাই সদ্য
+  //     যুক্ত property-তে এক-দুই দিন আসল visitor-ও দেশ ছাড়াই আসে। "Unknown"
+  //     লিখলে মনে হয় কিছু ভেঙেছে — তাই খোলাখুলি সেটাই বলা হচ্ছে।
+  const isUnresolved = (c) => !c.code && (!c.country || /unknown|not set/i.test(c.country));
+  const allUnresolved = top.length > 0 && top.every(isUnresolved);
   // EN: Bars are scaled against the biggest country, not the total — otherwise
   //     one dominant country flattens every other bar to nothing.
   // BN: Bar মোট সংখ্যার সাপেক্ষে নয়, সবচেয়ে বড় দেশের সাপেক্ষে scale করা —
@@ -145,8 +154,13 @@ const VisitorsByCountry = () => {
               {top.map((c) => (
                 <li key={c.country} className="flex items-center gap-3">
                   <span className="text-lg leading-none w-6 flex-shrink-0">{flagOf(c.code)}</span>
-                  <span className="text-sm text-brand-navy w-40 flex-shrink-0 truncate">
-                    {c.country}
+                  <span
+                    className={
+                      'text-sm w-40 flex-shrink-0 truncate ' +
+                      (isUnresolved(c) ? 'text-brand-slate italic' : 'text-brand-navy')
+                    }
+                  >
+                    {isUnresolved(c) ? 'দেশ এখনো জানা যায়নি' : c.country}
                   </span>
                   <div className="flex-1 h-2 bg-brand-tealLight/20 rounded overflow-hidden min-w-0">
                     <div
@@ -160,6 +174,13 @@ const VisitorsByCountry = () => {
                 </li>
               ))}
             </ul>
+            {allUnresolved && (
+              <p className="text-xs text-brand-slate mt-4 bg-brand-tealLight/10 border border-brand-tealLight/40 rounded p-3 leading-relaxed">
+                ভিজিটর গোনা হচ্ছে ঠিকভাবে, কিন্তু Google এখনো বলেনি তারা কোন দেশ থেকে এসেছে।
+                সদ্য চালু হওয়া Analytics-এ এটাই স্বাভাবিক — সাধারণত ২৪–৪৮ ঘণ্টার মধ্যে দেশের নাম
+                বসে যায়। কিছু করতে হবে না, অপেক্ষা করুন।
+              </p>
+            )}
             {countries.length > top.length && (
               <p className="text-xs text-brand-slate mt-3">
                 আরও {countries.length - top.length}টি দেশ — পুরো তালিকা Google Analytics-এ।
