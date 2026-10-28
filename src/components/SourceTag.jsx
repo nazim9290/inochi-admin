@@ -11,15 +11,17 @@ const SourceTag = ({ source, attribution }) => {
   const s = String(source || '').trim();
   if (!s) return <span className="text-brand-slate/40">—</span>;
 
-  const cls = /\bad\b|ads/i.test(s)
-    ? 'bg-blue-100 text-blue-700' // paid ad
-    : /facebook|instagram|youtube|tiktok|linkedin|twitter|x\//i.test(s)
-      ? 'bg-indigo-50 text-indigo-700' // social (organic)
-      : /google|bing|organic/i.test(s)
-        ? 'bg-emerald-50 text-emerald-700' // search
-        : /direct/i.test(s)
-          ? 'bg-slate-100 text-slate-600' // direct
-          : 'bg-amber-50 text-amber-700'; // referral / other
+  const cls = /^ai search/i.test(s)
+    ? 'bg-brand-teal/15 text-brand-navy' // ChatGPT / Perplexity / Gemini…
+    : /\bad\b|ads/i.test(s)
+      ? 'bg-blue-100 text-blue-700' // paid ad
+      : /facebook|instagram|youtube|tiktok|linkedin|twitter|x\//i.test(s)
+        ? 'bg-indigo-50 text-indigo-700' // social (organic)
+        : /google|bing|organic/i.test(s)
+          ? 'bg-emerald-50 text-emerald-700' // search
+          : /direct/i.test(s)
+            ? 'bg-slate-100 text-slate-600' // direct
+            : 'bg-amber-50 text-amber-700'; // referral / other
 
   return (
     <span
