@@ -224,7 +224,7 @@ const SiteSettingsEdit = () => {
               name="heroCtaPrimaryLink"
               value={data.heroCtaPrimaryLink}
               onChange={onChange}
-              placeholder="/bookseminer"
+              placeholder="/book-counseling"
             />
             <BilingualField
               label="Secondary CTA text"
