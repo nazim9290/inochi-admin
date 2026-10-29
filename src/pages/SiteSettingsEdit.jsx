@@ -624,10 +624,15 @@ const SiteSettingsEdit = () => {
                 onChange={onChange}
                 rows={2}
                 className={inputClass + ' min-h-[60px] font-mono text-xs'}
-                placeholder="EAAxxxxxxxxxx..."
+                placeholder={
+                  data.fbPageAccessTokenSet
+                    ? '✅ token সেট করা আছে। বদলাতে চাইলে শুধু নতুন token এখানে লিখুন।'
+                    : 'EAAxxxxxxxxxx...'
+                }
               />
               <span className="text-[11px] text-brand-slate/70">
-                🔒 এই token গোপনীয়। কাউকে শেয়ার করবেন না।
+                🔒 এই token গোপনীয়। নিরাপত্তার জন্য সেভ করা token আর দেখানো হয় না; ঘর
+                খালি রেখে Save করলে আগের token-ই থাকে।
               </span>
             </label>
           </div>

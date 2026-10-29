@@ -88,8 +88,6 @@
 import React, { useState } from "react";
 import axiosInterceptor from "../axios/axiosInterceptor";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { BaseUrl } from "../utils/constant";
 const CreateCaruselTop = () => {
   const [category, setCategory] = useState("");
   const [image, setImage] = useState({});
@@ -131,8 +129,10 @@ const CreateCaruselTop = () => {
 
   const handleSubmit = async () => {
     try {
-      const { data } = await axios.post(
-        `${BaseUrl}/create-carusel`,
+      // EN: Authenticated client: /create-carusel is admin-only now.
+      // BN: Login-সহ client: /create-carusel এখন শুধু admin-এর।
+      const { data } = await api.post(
+        '/create-carusel',
         {
           image,
           category,
