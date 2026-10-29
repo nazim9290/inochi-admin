@@ -1,5 +1,5 @@
 // AuthContext.js
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import React, { createContext, useContext, useReducer } from 'react';
 
 const AuthContext = createContext();
 
@@ -28,20 +28,25 @@ const authReducer = (state, action) => {
   }
 };
 
+// EN: Read the saved session before the first render. Restoring it in an
+//     effect let PrivateRoute see "logged out" for one render and bounce
+//     every refreshed or bookmarked page to the dashboard.
+// BN: প্রথম render-এর আগেই saved session পড়ি। Effect-এ restore করলে এক
+//     render-এর জন্য PrivateRoute "logged out" দেখত, তাই refresh বা bookmark
+//     করা প্রতিটা page dashboard-এ চলে যেত।
+const loadStoredSession = () => {
+  try {
+    const token = localStorage.getItem('authToken');
+    const user = localStorage.getItem('authUser');
+    if (token && user) return { isAuthenticated: true, token, user: JSON.parse(user) };
+  } catch {
+    // Corrupt storage: start logged out.
+  }
+  return initialState;
+};
+
 const AuthProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(authReducer, initialState);
-
-  useEffect(() => {
-    const storedToken = localStorage.getItem('authToken');
-    const storedUser = localStorage.getItem('authUser');
-
-    if (storedToken && storedUser) {
-      dispatch({
-        type: 'LOGIN',
-        payload: { token: storedToken, user: JSON.parse(storedUser) },
-      });
-    }
-  }, []);
+  const [state, dispatch] = useReducer(authReducer, undefined, loadStoredSession);
 
   const login = (token, user) => {
     localStorage.setItem('authToken', token);
