@@ -87,6 +87,7 @@ const empty = {
   storyEn: '',
   batchYear: '',
   jlptLevel: '',
+  studentEmail: '',
   sortOrder: 0,
   published: true,
   journey: blankJourney(),
@@ -305,6 +306,31 @@ const SuccessStoriesManage = () => {
                 className={inputClass}
                 placeholder="N3"
               />
+            </label>
+            {/* EN: Private. Never shown on the site; triggers one Google-review request email.
+                BN: গোপন। সাইটে কখনো দেখায় না; একবার Google রিভিউর অনুরোধ ইমেইল যায়। */}
+            <label>
+              <span className={labelClass}>
+                ছাত্রের ইমেইল (গোপন, ঐচ্ছিক)
+                <HelpTooltip>
+                  দিলে গল্পটা publish হওয়ার সাথে সাথে ছাত্রকে একবার ভদ্রভাবে Google রিভিউ দেওয়ার অনুরোধ
+                  ইমেইল যাবে। ইমেইল সাইটে কখনো দেখায় না। আগে সেভ করা থাকলে এই ঘর ফাঁকা দেখাবে; ফাঁকা
+                  রাখলে আগেরটাই থাকবে। Site Settings-এ "Google review link" ভরা না থাকলে ইমেইল যাবে না।
+                </HelpTooltip>
+              </span>
+              <input
+                type="email"
+                name="studentEmail"
+                value={form.studentEmail || ''}
+                onChange={onChange}
+                className={inputClass}
+                placeholder="student@gmail.com"
+              />
+              {form.reviewRequestedAt && (
+                <span className="mt-1 block text-[11px] text-emerald-700">
+                  ✓ রিভিউ অনুরোধ পাঠানো হয়েছে: {new Date(form.reviewRequestedAt).toLocaleDateString()}
+                </span>
+              )}
             </label>
             <label>
               <span className={labelClass}>

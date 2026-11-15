@@ -977,10 +977,22 @@ const SiteSettingsEdit = () => {
             onChange={onChange}
             placeholder="50"
           />
+          <SinglePlain
+            label="Google review link (রিভিউ লেখার লিংক)"
+            name="googleReviewUrl"
+            value={data.googleReviewUrl}
+            onChange={onChange}
+            placeholder="https://g.page/r/XXXXXXXX/review"
+          />
         </div>
         <p className="mt-2 text-[11px] text-brand-slate/80">
           💡 rating + count দু'টোই সেট করলে Google search snippet-এ ⭐ দেখাবে (AggregateRating
           schema fire হবে)।
+        </p>
+        <p className="mt-1 text-[11px] text-brand-slate/80">
+          💡 Review link কোথায় পাবেন: Google-এ নিজের business খুলুন → "Ask for reviews" / "রিভিউ
+          চান" → লিংক কপি করে এখানে বসান। এটা ভরা থাকলে success story-তে ছাত্রের ইমেইল দিলে তাকে
+          একবার রিভিউর অনুরোধ যায়।
         </p>
       </div>
 
