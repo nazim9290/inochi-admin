@@ -252,7 +252,12 @@ const SuccessStoriesManage = () => {
 
       {/* EN: One-paste form fill from the claude.ai inochi-content skill.
           BN: claude.ai-এর inochi-content skill থেকে এক-পেস্টে form ভরা। */}
-      <PasteFromClaude type="success-story" onApply={(f) => setForm((p) => ({ ...p, ...f }))} />
+      {/* EN: Pasted text never sets the private email (it decides who gets mail).
+          BN: পেস্ট করা লেখা কখনো গোপন ইমেইল বসায় না (কে মেইল পাবে, তা ঠিক করে)। */}
+      <PasteFromClaude
+        type="success-story"
+        onApply={({ studentEmail, reviewRequestedAt, ...f }) => setForm((p) => ({ ...p, ...f }))}
+      />
       <form
         onSubmit={submit}
         className="bg-white rounded-xl border border-brand-tealLight/40 shadow-sm p-5"
